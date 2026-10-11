@@ -89,4 +89,29 @@ const pages = defineCollection({
     }),
 });
 
-export const collections = { products, categories, pages };
+/** Date written by the CMS as 2026-10-04 (YAML may already parse it) -> Date, or null if missing/invalid */
+const day = () =>
+  z
+    .union([z.date(), z.string()])
+    .nullish()
+    .transform((v) => {
+      if (!v) return null;
+      const d = v instanceof Date ? v : new Date(String(v).trim());
+      return Number.isNaN(d.getTime()) ? null : d;
+    });
+
+const journal = defineCollection({
+  loader: glob({ base: './src/content/journal', pattern: '**/*.md' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: day(),
+      images: z
+        .union([image(), z.array(image())])
+        .nullish()
+        .transform((v) => (v ? (Array.isArray(v) ? v : [v]) : [])),
+      draft: flag(),
+    }),
+});
+
+export const collections = { products, categories, pages, journal };

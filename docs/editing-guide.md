@@ -25,9 +25,15 @@ Open the product → set **Availability** to **Sold** → Save. It stays on the 
 
 Open the product → turn on **Hide from website** → Save. It's kept, so you can turn it back on later.
 
-## Show something on the home page
+## Show a product first
 
-The home page shows everything, in one column per category. Turn on **Feature on home page** to move an item to the top of its column.
+Turn on **Show first in the shop** to move an item to the top of its category.
+
+## Write a journal post
+
+The right side of the home page is the journal: photos and a line or two about what's going on in the workshop, newest first.
+
+Click **Journal** → **Add an entry** → give it a title (e.g. *Two chairs back home*), pick the date, add photos, and write a sentence or two → Save. The first photo shows large and any others appear small underneath. To take a post down without deleting it, turn on **Hide from website**.
 
 ## Change the order of products
 
@@ -39,7 +45,7 @@ Click **Categories** → **Add an entry** → give it a name and a short descrip
 
 ## Edit page text
 
-- **Pages → Home page**: headline, introduction, large photo
+- **Pages → Home page**: headline, introduction, large photo, and the heading above the journal
 - **Pages → About page**: your story and a photo
 - **Pages → Contact page**: the welcome text
 

@@ -12,6 +12,13 @@ media:
     # JPG/PNG/WebP only: the build can't process HEIC, GIF or SVG.
     extensions: [jpg, jpeg, png, webp]
     rename: safe
+  - name: journal
+    label: Journal photos
+    input: src/assets/journal
+    output: ../../assets/journal
+    # JPG/PNG/WebP only: the build can't process HEIC, GIF or SVG.
+    extensions: [jpg, jpeg, png, webp]
+    rename: safe
   - name: pages
     label: Page photos
     input: src/assets/pages
@@ -101,7 +108,8 @@ content:
             label: Value
             type: string
       - name: featured
-        label: Feature on home page
+        label: Show first in the shop
+        description: Moves this item to the top of its category.
         type: boolean
         default: false
       - name: order
@@ -149,6 +157,52 @@ content:
         description: Lower numbers appear first.
         type: number
 
+  # ---------------------------------------------------------------- Journal
+  - name: journal
+    label: Journal
+    type: collection
+    path: src/content/journal
+    format: yaml-frontmatter
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, date, draft]
+      primary: title
+      search: [title]
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: date
+        label: Date
+        description: Newest posts show first on the home page.
+        type: date
+        required: true
+      - name: images
+        label: Photos
+        description: The first photo is shown large; any others appear as small photos underneath.
+        type: image
+        options:
+          media: journal
+          multiple:
+            max: 12
+      - name: body
+        label: Text
+        description: A sentence or two about what's in the photos.
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+      - name: draft
+        label: Hide from website
+        description: Keep this post saved but off the site.
+        type: boolean
+        default: false
+
   # ---------------------------------------------------------------- Pages
   - name: pages
     label: Pages
@@ -180,7 +234,8 @@ content:
             description: A few words describing the photo, for screen readers.
             type: string
           - name: featured_heading
-            label: Featured products heading
+            label: Journal heading
+            description: The label above the journal on the home page, e.g. "Journal" or "From the workshop".
             type: string
 
       - name: about

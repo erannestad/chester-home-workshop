@@ -26,14 +26,16 @@ npm run preview   # serve dist/
 | Path | Role |
 |---|---|
 | `.pages.yml` | CMS UI definition: collections, fields, labels, media |
-| `src/content.config.ts` | Zod schemas for `products`, `categories`, `pages` |
+| `src/content.config.ts` | Zod schemas for `products`, `categories`, `pages`, `journal` |
 | `src/content/products/*.md` | One product per file. Filename = URL slug (`/products/{id}/`) |
 | `src/content/categories/*.md` | Categories. Filename = id (`/shop/{id}/`) |
 | `src/content/pages/{home,about,contact}.md` | Page copy |
+| `src/content/journal/*.md` | Journal posts (home page, right side). Filename `YYYY-MM-DD-slug.md` |
 | `src/data/settings.json` | Business name, email, phone, Instagram, announcement bar, ordering note |
-| `src/assets/{products,pages}/` | Photos. They must live here (not `public/`) so Astro optimizes them |
+| `src/assets/{products,journal,pages}/` | Photos. They must live here (not `public/`) so Astro optimizes them |
 | `src/lib/catalog.ts` | **Catalog adapter.** The only module that reads product/category data |
 | `src/lib/site.ts` | Settings loader with defaults |
+| `src/lib/journal.ts` | Journal loader (`getPosts()`, newest first) |
 | `src/site.config.ts` | Dev-only config (contact `formEndpoint`) |
 | `src/components/BuyBox.astro` | **The only place purchase UI/logic lives** |
 | `src/components/Photo.astro` | Wrapper around `<Image>` for local or remote photos |
@@ -44,7 +46,7 @@ npm run preview   # serve dist/
 ## Rules (keep these true)
 
 1. **A CMS edit must never break the build.** Schemas are forgiving on purpose. Optional fields use the `text()`, `num()` and `flag()` helpers in `content.config.ts`, so null, `""` and `"28"` all coerce safely. Unknown `status` values fall back to `available`, and missing images become `[]` with a placeholder block. Never add `.min()`, `.url()`, strict enums or required fields beyond `title`. Enforce requirements in `.pages.yml` (`required: true`, `pattern`) instead.
-2. **Pages read data only through `src/lib/catalog.ts`.** Use the normalized `Product` and `Category` types; don't call `getCollection('products')` in pages or components. This keeps a later switch to Square/Shopify a one-file change. Page copy (`pages` collection) is the exception and uses `getEntry` directly.
+2. **Pages read data only through `src/lib/catalog.ts`.** Use the normalized `Product` and `Category` types; don't call `getCollection('products')` in pages or components. This keeps a later switch to Square/Shopify a one-file change. Page copy (`pages` collection) is the exception and uses `getEntry` directly; journal posts go through `src/lib/journal.ts`.
 3. **Adding a product field touches four places, in order:**
    1. `.pages.yml`
    2. `content.config.ts` (forgiving helper)

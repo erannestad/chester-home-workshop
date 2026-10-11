@@ -1,0 +1,42 @@
+---
+import Photo from './Photo.astro';
+import { formatDate, type Post } from '../lib/journal';
+
+interface Props {
+  post: Post;
+  priority?: boolean;
+}
+
+const { post, priority = false } = Astro.props;
+const [first, ...rest] = post.images;
+---
+
+<article class="post" id={post.id}>
+  {
+    first && (
+      <Photo
+        src={first}
+        alt={post.title}
+        widths={[320, 480, 640, 960]}
+        sizes="(min-width: 56rem) 20vw, 100vw"
+        priority={priority}
+      />
+    )
+  }
+  {
+    rest.length > 0 && (
+      <div class="post-more">
+        {rest.map((img, i) => (
+          <Photo src={img} alt={`${post.title}, photo ${i + 2}`} widths={[200, 320, 480]} sizes="(min-width: 56rem) 10vw, 50vw" />
+        ))}
+      </div>
+    )
+  }
+  <div class="caption">
+    <p class="caption-index">{post.date && <time datetime={post.date.toISOString().slice(0, 10)}>{formatDate(post.date)}</time>}</p>
+    <div>
+      <h3 class="title">{post.title}</h3>
+      {post.bodyHtml && <div class="prose" set:html={post.bodyHtml} />}
+    </div>
+  </div>
+</article>

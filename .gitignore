@@ -8,3 +8,6 @@ dist/
 npm-debug.log*
 .dev.vars
 .claude/settings.local.json
+
+# Raw photo drops (copied into src/assets when used)
+process/

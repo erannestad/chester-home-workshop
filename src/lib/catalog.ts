@@ -74,12 +74,13 @@ async function loadCategories(): Promise<Category[]> {
 
 /* ---------- Public API used by pages ---------- */
 
-/** Published products: manual order first, sold items last, then A–Z. Drafts appear only in `npm run dev`. */
+/** Published products: manual order first, then featured, sold items last, then A–Z. Drafts appear only in `npm run dev`. */
 export async function getProducts(): Promise<Product[]> {
   const all = (await loadProducts()).filter((p) => import.meta.env.DEV || !p.draft);
   return all.sort(
     (a, b) =>
       (a.order ?? LAST) - (b.order ?? LAST) ||
+      Number(b.featured) - Number(a.featured) ||
       Number(a.status === 'sold_out') - Number(b.status === 'sold_out') ||
       a.title.localeCompare(b.title),
   );

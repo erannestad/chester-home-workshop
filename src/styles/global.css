@@ -105,14 +105,13 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   .col {
     flex: 1 1 0;
     min-width: var(--col-min);
-    max-width: var(--col-max);
     display: flex;
     flex-direction: column;
     min-height: 0;
   }
-  .col--wide { flex-grow: 1.5; min-width: var(--info-min); max-width: var(--info-max); }
+  .col--wide { flex-grow: 1.5; min-width: var(--info-min); }
+  .col--journal { flex-grow: 3; min-width: calc(var(--col-min) * 2); }
   .col + .col { border-top: 0; border-left: 1px solid var(--rule); }
-  .col:last-child { border-right: 1px solid var(--rule); }
   .col-body { flex: 1; min-height: 0; overflow-y: auto; }
   .col-home { display: inline; }
 }
@@ -164,6 +163,18 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .caption p { margin-bottom: var(--s3); }
 .caption-index { margin: 0; }
 .caption-text { color: var(--ink); }
+
+/* ---------- Journal (home page): posts flow down narrow columns, newest first ---------- */
+.journal {
+  columns: var(--col-min);
+  column-gap: calc(var(--pad) * 2);
+  column-rule: 1px solid var(--rule);
+}
+.post { break-inside: avoid; padding-bottom: var(--s6); }
+.post img { width: 100%; background: var(--wash); margin-bottom: var(--s2); }
+.post-more { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s2); }
+.post time { color: var(--ink-soft); }
+.post .title { margin-bottom: var(--s1); }
 
 /* ---------- Product page ---------- */
 .photos { display: grid; gap: var(--pad); }

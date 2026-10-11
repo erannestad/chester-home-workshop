@@ -33,8 +33,6 @@
   --frame: 0.5rem;           /* margin around the whole frame */
   --pad: 0.625rem;           /* padding inside columns */
   --col-min: 15rem;          /* narrowest a column gets before the row scrolls sideways */
-  --col-max: 32rem;
   --info-min: 20rem;         /* the wider first column */
-  --info-max: 44rem;
   --stack: 56rem;            /* below this width, columns stack (set in global.css media queries) */
 }
