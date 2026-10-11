@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import CategoryNav from '../../components/CategoryNav.astro';
+import { getCategories, getProducts } from '../../lib/catalog';
+
+const categories = await getCategories();
+const products = await getProducts();
+---
+
+<Base title="Shop">
+  <h1>Shop</h1>
+  <div class="section-head">
+    <CategoryNav categories={categories} />
+    <span class="muted">{products.length} {products.length === 1 ? 'item' : 'items'}</span>
+  </div>
+  {
+    products.length ? (
+      <ul class="grid">
+        {products.map((p, i) => (
+          <ProductCard product={p} priority={i < 4} />
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Nothing is listed right now. <a href="/contact/">Get in touch</a> to ask about current work.</p>
+    )
+  }
+</Base>

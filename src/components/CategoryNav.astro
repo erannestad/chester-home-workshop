@@ -1,0 +1,25 @@
+---
+import type { Category } from '../lib/catalog';
+
+interface Props {
+  categories: Category[];
+  current?: string; // category id, or undefined for "All"
+}
+
+const { categories, current } = Astro.props;
+---
+
+<nav class="filters" aria-label="Categories">
+  <ul>
+    <li><a href="/shop/" aria-current={!current ? 'page' : undefined}>All</a></li>
+    {
+      categories.map((c) => (
+        <li>
+          <a href={`/shop/${c.id}/`} aria-current={current === c.id ? 'page' : undefined}>
+            {c.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

@@ -1,0 +1,85 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { settings, instagramUrl, instagramHandle } from '../lib/site';
+import { siteConfig } from '../site.config';
+
+const page = await getEntry('pages', 'contact');
+const { Content } = page ? await render(page) : { Content: null };
+const endpoint = siteConfig.formEndpoint;
+const tel = settings.phone.replace(/[^\d+]/g, '');
+---
+
+<Base title={page?.data.title || 'Contact'} description={page?.data.intro}>
+  <div class:list={[{ split: !!endpoint }]}>
+    <div>
+      <h1>{page?.data.heading || 'Contact'}</h1>
+      {page?.data.intro && <p class="lede">{page.data.intro}</p>}
+      <div class="prose">{Content && <Content />}</div>
+
+      <p class="asking" id="asking" hidden>Asking about: <strong id="asking-item"></strong></p>
+
+      <ul class="contact-lines">
+        {settings.email && <li><span class="label">Email</span> <a href={`mailto:${settings.email}`}>{settings.email}</a></li>}
+        {settings.phone && <li><span class="label">Phone</span> <a href={`tel:${tel}`}>{settings.phone}</a></li>}
+        {settings.instagram && <li><span class="label">Instagram</span> <a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a></li>}
+        {settings.location && <li><span class="label">Location</span> {settings.location}</li>}
+      </ul>
+
+      {
+        !endpoint && settings.email && (
+          <p>
+            <a class="button" id="mail-button" data-email={settings.email} href={`mailto:${settings.email}?subject=Inquiry`}>
+              Write to us
+            </a>
+          </p>
+        )
+      }
+    </div>
+
+    {
+      endpoint && (
+        <form class="form" method="post" action={endpoint}>
+          <label>
+            Name
+            <input name="name" autocomplete="name" required />
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Item or service (optional)
+            <input name="item" id="item" />
+          </label>
+          <label>
+            Message
+            <textarea name="message" id="message" required />
+          </label>
+          <button class="button" type="submit">Send</button>
+        </form>
+      )
+    }
+  </div>
+
+  <!-- Pre-fills the inquiry when arriving from a product page (/contact/?item=...). -->
+  <script is:inline>
+    (function () {
+      var item = new URLSearchParams(location.search).get('item');
+      if (!item) return;
+      document.getElementById('asking-item').textContent = item;
+      document.getElementById('asking').hidden = false;
+      var field = document.getElementById('item');
+      if (field) field.value = item;
+      var msg = document.getElementById('message');
+      if (msg && !msg.value) msg.value = 'Hello, I am interested in ' + item + '.\n\n';
+      var btn = document.getElementById('mail-button');
+      if (btn) {
+        btn.href =
+          'mailto:' + btn.dataset.email +
+          '?subject=' + encodeURIComponent('Inquiry: ' + item) +
+          '&body=' + encodeURIComponent('Hello, I am interested in ' + item + '.\n\n');
+      }
+    })();
+  </script>
+</Base>

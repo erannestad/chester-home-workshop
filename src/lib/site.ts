@@ -1,0 +1,43 @@
+// Site-wide settings, edited by the CMS in src/data/settings.json.
+import raw from '../data/settings.json';
+
+type Settings = {
+  site_name: string;
+  tagline: string;
+  location: string;
+  email: string;
+  phone: string;
+  instagram: string;
+  announcement: string;
+  ordering_note: string;
+};
+
+const defaults: Settings = {
+  site_name: 'Chester Home Workshop',
+  tagline: '',
+  location: '',
+  email: '',
+  phone: '',
+  instagram: '',
+  announcement: '',
+  ordering_note: '',
+};
+
+const clean = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+
+export const settings: Settings = Object.fromEntries(
+  Object.keys(defaults).map((k) => [k, clean((raw as Record<string, unknown>)[k]) || defaults[k as keyof Settings]]),
+) as Settings;
+
+/** Accepts "@handle", "handle" or a full URL. */
+export function instagramUrl(value: string): string {
+  if (!value) return '';
+  if (/^https?:\/\//.test(value)) return value;
+  return `https://www.instagram.com/${value.replace(/^@/, '')}/`;
+}
+
+export function instagramHandle(value: string): string {
+  if (!value) return '';
+  const m = value.match(/instagram\.com\/([^/?#]+)/);
+  return '@' + (m ? m[1] : value.replace(/^@/, ''));
+}

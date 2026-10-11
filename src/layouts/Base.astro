@@ -1,0 +1,60 @@
+---
+import '@fontsource-variable/source-serif-4/opsz.css';
+import '@fontsource-variable/source-serif-4/opsz-italic.css';
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { settings } from '../lib/site';
+import type { ProductImage } from '../lib/catalog';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: ProductImage | null; // social share image
+}
+
+const { title, description, image } = Astro.props;
+const pageTitle = title ? `${title} · ${settings.site_name}` : `${settings.site_name}`;
+const pageDescription = description || settings.tagline;
+
+// Absolute URLs for social cards need `site` set in astro.config.mjs.
+let ogImage: string | undefined;
+if (Astro.site && image) {
+  const img = await getImage({ src: image, width: 1200, format: 'jpg', ...(typeof image === 'string' ? { inferSize: true } : {}) });
+  ogImage = new URL(img.src, Astro.site).href;
+}
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={settings.site_name} />
+    <meta property="og:title" content={title || settings.site_name} />
+    <meta property="og:description" content={pageDescription} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    {settings.announcement && <p class="announcement">{settings.announcement}</p>}
+    <div class="wrap">
+      <Header />
+    </div>
+    <main id="main" class="wrap">
+      <slot />
+    </main>
+    <div class="wrap">
+      <Footer />
+    </div>
+  </body>
+</html>

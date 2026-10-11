@@ -1,0 +1,43 @@
+/*
+  Design tokens. Change the look of the whole site from here.
+
+  Brand color: black for now. To try a brownish red, swap --brand for one of:
+    #7b2d26  barn red        #6e3b2e  oxblood brown       #8a3b2b  brick
+*/
+:root {
+  /* Color */
+  --brand: #111111;
+  --brand-contrast: #ffffff; /* text on top of --brand */
+  --bg: #ffffff;
+  --ink: #1c1b19;            /* body text (stays near-black even if --brand changes) */
+  --ink-soft: #66615a;       /* secondary text, warm gray */
+  --rule: #e4e0d9;           /* hairlines */
+  --wash: #f6f4f0;           /* image placeholders, quiet panels */
+
+  /* Type: one serif family throughout */
+  --font: "Source Serif 4 Variable", "Iowan Old Style", Charter, Georgia, serif;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-md: 1.25rem;
+  --text-lg: clamp(1.5rem, 1.25rem + 0.9vw, 1.875rem);
+  --text-xl: clamp(2rem, 1.45rem + 2.2vw, 3.25rem);
+  --leading: 1.6;
+  --leading-tight: 1.18;
+
+  /* Space */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s5: 1.5rem;
+  --s6: 2rem;
+  --s7: 3rem;
+  --s8: 4.5rem;
+  --s9: 6.5rem;
+
+  /* Layout */
+  --page: 76rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --measure: 36rem;
+  --card-ratio: 4 / 5;
+}

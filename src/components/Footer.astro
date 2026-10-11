@@ -1,0 +1,24 @@
+---
+import { settings, instagramUrl, instagramHandle } from '../lib/site';
+
+const year = new Date().getFullYear();
+const tel = settings.phone.replace(/[^\d+]/g, '');
+---
+
+<footer class="site-footer">
+  <div>
+    <p class="wordmark">{settings.site_name}</p>
+    {settings.location && <p>{settings.location}</p>}
+  </div>
+  <ul>
+    {settings.email && <li><a href={`mailto:${settings.email}`}>{settings.email}</a></li>}
+    {settings.phone && <li><a href={`tel:${tel}`}>{settings.phone}</a></li>}
+    {settings.instagram && <li><a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a></li>}
+  </ul>
+  <ul>
+    <li><a href="/shop/">Shop</a></li>
+    <li><a href="/about/">About</a></li>
+    <li><a href="/contact/">Contact</a></li>
+  </ul>
+  <p class="fine">© {year} {settings.site_name}</p>
+</footer>

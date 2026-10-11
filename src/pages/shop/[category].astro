@@ -1,0 +1,36 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import CategoryNav from '../../components/CategoryNav.astro';
+import { getCategories, getProducts, type Category } from '../../lib/catalog';
+
+export const getStaticPaths = (async () => {
+  const categories = await getCategories();
+  return categories.map((category) => ({ params: { category: category.id }, props: { category } }));
+}) satisfies GetStaticPaths;
+
+const { category } = Astro.props as { category: Category };
+const categories = await getCategories();
+const products = (await getProducts()).filter((p) => p.category === category.id);
+---
+
+<Base title={category.title} description={category.summary}>
+  <h1>{category.title}</h1>
+  {category.bodyHtml && <div class="prose lede" set:html={category.bodyHtml} />}
+  <div class="section-head" style="margin-top: var(--s7)">
+    <CategoryNav categories={categories} current={category.id} />
+    <span class="muted">{products.length} {products.length === 1 ? 'item' : 'items'}</span>
+  </div>
+  {
+    products.length ? (
+      <ul class="grid">
+        {products.map((p, i) => (
+          <ProductCard product={p} priority={i < 4} />
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Nothing is listed here right now. <a href="/contact/">Get in touch</a> to ask about current work.</p>
+    )
+  }
+</Base>

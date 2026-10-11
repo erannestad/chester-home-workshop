@@ -1,0 +1,77 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Photo from '../../components/Photo.astro';
+import Base from '../../layouts/Base.astro';
+import BuyBox from '../../components/BuyBox.astro';
+import { getCategories, getProducts, priceLine, STATUS_LABEL, type Product } from '../../lib/catalog';
+
+export const getStaticPaths = (async () => {
+  const products = await getProducts();
+  return products.map((product) => ({ params: { id: product.id }, props: { product } }));
+}) satisfies GetStaticPaths;
+
+const { product } = Astro.props as { product: Product };
+const category = (await getCategories()).find((c) => c.id === product.category);
+const [first, ...rest] = product.images;
+---
+
+<Base title={product.title} description={product.summary} image={first}>
+  <p class="breadcrumb">
+    <a href="/shop/">Shop</a>
+    {category && <> / <a href={`/shop/${category.id}/`}>{category.title}</a></>}
+  </p>
+
+  <article class="product">
+    <div class="product-hero">
+      {
+        first ? (
+          <Photo
+            src={first}
+            alt={product.title}
+            widths={[480, 720, 960, 1280, 1600]}
+            sizes="(min-width: 76rem) 40rem, (min-width: 54rem) 55vw, 92vw"
+            priority
+          />
+        ) : (
+          <div class="card-img" aria-hidden="true" />
+        )
+      }
+    </div>
+
+    <div class="product-info">
+      <h1>{product.title}</h1>
+      <p class="price">
+        {priceLine(product)}
+        {product.status !== 'available' && <span class="label">{STATUS_LABEL[product.status]}</span>}
+      </p>
+      {product.summary && <p class="summary">{product.summary}</p>}
+      {product.bodyHtml && <div class="prose" set:html={product.bodyHtml} />}
+      {
+        product.details.length > 0 && (
+          <dl class="details">
+            {product.details.map((d) => (
+              <>
+                <dt>{d.label}</dt>
+                <dd>{d.value}</dd>
+              </>
+            ))}
+          </dl>
+        )
+      }
+      <BuyBox product={product} />
+    </div>
+
+    <div class="product-more">
+      {
+        rest.map((img, i) => (
+          <Photo
+            src={img}
+            alt={`${product.title}, view ${i + 2}`}
+            widths={[360, 540, 720, 960]}
+            sizes="(min-width: 76rem) 20rem, (min-width: 54rem) 28vw, 46vw"
+          />
+        ))
+      }
+    </div>
+  </article>
+</Base>

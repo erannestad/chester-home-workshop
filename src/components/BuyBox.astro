@@ -1,0 +1,34 @@
+---
+/*
+  The single place that decides how someone buys a product.
+
+  Today: every product gets an inquiry button that opens the contact page
+  with the product name filled in.
+
+  Adding online checkout later (see README → "Adding online checkout"):
+  replace the inquiry button for available items with a Buy button that posts
+  the product id to a checkout function (Stripe Checkout or Square). Nothing
+  else in the site needs to change.
+*/
+import { settings } from '../lib/site';
+import type { Product } from '../lib/catalog';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const inquireHref = `/contact/?item=${encodeURIComponent(product.title)}`;
+
+const label =
+  product.status === 'sold_out'
+    ? 'Ask about similar work'
+    : product.status === 'made_to_order'
+      ? 'Request a quote'
+      : 'Inquire to purchase';
+---
+
+<div class="buy">
+  <a class:list={['button', { secondary: product.status === 'sold_out' }]} href={inquireHref}>{label}</a>
+  {settings.ordering_note && <p class="note">{settings.ordering_note}</p>}
+</div>

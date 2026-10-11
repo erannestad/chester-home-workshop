@@ -1,0 +1,10 @@
+// Cloudflare Workers config: serves the static build in ./dist. No server code.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chester-home-workshop",
+  "compatibility_date": "2026-10-11",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

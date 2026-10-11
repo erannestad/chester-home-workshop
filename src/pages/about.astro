@@ -1,0 +1,29 @@
+---
+import { getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+
+const page = await getEntry('pages', 'about');
+const { Content } = page ? await render(page) : { Content: null };
+---
+
+<Base title={page?.data.title || 'About'} description={page?.data.intro} image={page?.data.image}>
+  <div class="split">
+    <div>
+      <h1>{page?.data.heading || page?.data.title || 'About'}</h1>
+      {page?.data.intro && <p class="lede">{page.data.intro}</p>}
+      <div class="prose">{Content && <Content />}</div>
+    </div>
+    {
+      page?.data.image && (
+        <Image
+          src={page.data.image}
+          alt={page.data.image_alt}
+          widths={[480, 720, 960, 1280]}
+          sizes="(min-width: 54rem) 45vw, 92vw"
+          priority
+        />
+      )
+    }
+  </div>
+</Base>

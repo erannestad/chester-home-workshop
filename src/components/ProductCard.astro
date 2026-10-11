@@ -1,0 +1,37 @@
+---
+import Photo from './Photo.astro';
+import { priceLine, STATUS_LABEL, type Product } from '../lib/catalog';
+
+interface Props {
+  product: Product;
+  priority?: boolean;
+}
+
+const { product, priority = false } = Astro.props;
+const img = product.images[0];
+const isSold = product.status === 'sold_out';
+---
+
+<li class:list={['card', { 'is-sold': isSold }]}>
+  <a href={`/products/${product.id}/`}>
+    {
+      img ? (
+        <Photo
+          src={img}
+          alt=""
+          class="card-img"
+          widths={[360, 540, 720, 1080]}
+          sizes="(min-width: 76rem) 17rem, (min-width: 40rem) 45vw, 92vw"
+          priority={priority}
+        />
+      ) : (
+        <div class="card-img" aria-hidden="true" />
+      )
+    }
+    <h3 class="card-title">{product.title}</h3>
+  </a>
+  <p class="card-meta">
+    {priceLine(product)}
+    {product.status !== 'available' && <span class="label">{STATUS_LABEL[product.status]}</span>}
+  </p>
+</li>

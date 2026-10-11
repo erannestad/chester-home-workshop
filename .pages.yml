@@ -1,0 +1,275 @@
+# Pages CMS configuration (https://pagescms.org/docs/configuration/)
+# Defines what your mom sees at app.pagescms.org. Edit with care: field `name`s must
+# match src/content.config.ts.
+
+media:
+  - name: products
+    label: Product photos
+    input: src/assets/products
+    # Written into product files relative to src/content/products/, so Astro can
+    # optimize the photos (resize + WebP) at build time.
+    output: ../../assets/products
+    # JPG/PNG/WebP only: the build can't process HEIC, GIF or SVG.
+    extensions: [jpg, jpeg, png, webp]
+    rename: safe
+  - name: pages
+    label: Page photos
+    input: src/assets/pages
+    output: ../../assets/pages
+    # JPG/PNG/WebP only: the build can't process HEIC, GIF or SVG.
+    extensions: [jpg, jpeg, png, webp]
+    rename: safe
+
+content:
+  # ---------------------------------------------------------------- Products
+  - name: products
+    label: Products
+    type: collection
+    path: src/content/products
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [title, category, price, status, draft]
+      primary: title
+      search: [title, summary]
+      sort: [title, price, order]
+      default:
+        sort: title
+        order: asc
+    fields:
+      - name: title
+        label: Name
+        type: string
+        required: true
+      - name: images
+        label: Photos
+        description: The first photo is the main one. Phone photos are fine; the site resizes them.
+        type: image
+        options:
+          media: products
+          multiple:
+            max: 10
+      - name: category
+        label: Category
+        type: reference
+        options:
+          collection: categories
+          value: "{name}"
+          label: "{primary}"
+      - name: price
+        label: Price ($)
+        description: Leave blank for "Price on request".
+        type: number
+        options:
+          min: 0
+      - name: price_note
+        label: Price note
+        description: Optional, e.g. "per yard", "8 oz jar", "Original, 9 × 12 in.", "Quoted per piece".
+        type: string
+      - name: status
+        label: Availability
+        type: select
+        default: available
+        options:
+          values:
+            - name: available
+              label: Available
+            - name: made_to_order
+              label: Made to order / by quote
+            - name: sold_out
+              label: Sold
+      - name: summary
+        label: Short description
+        description: One or two sentences. Shown at the top of the product page and in search results.
+        type: text
+      - name: body
+        label: Full description
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+      - name: details
+        label: Details
+        description: Optional rows like Material / Linen, Size / 18 × 18 in.
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+          - name: value
+            label: Value
+            type: string
+      - name: featured
+        label: Feature on home page
+        type: boolean
+        default: false
+      - name: order
+        label: Sort order
+        description: Optional. Lower numbers appear first in the shop.
+        type: number
+      - name: draft
+        label: Hide from website
+        description: Keep this product saved but off the site.
+        type: boolean
+        default: false
+
+  # ---------------------------------------------------------------- Categories
+  - name: categories
+    label: Categories
+    type: collection
+    path: src/content/categories
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [title, order]
+      primary: title
+      sort: [order, title]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - name: title
+        label: Name
+        type: string
+        required: true
+      - name: summary
+        label: Short description
+        description: Shown on the home page under "What we make".
+        type: text
+      - name: body
+        label: Category page text
+        description: Shown at the top of this category's shop page.
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+      - name: order
+        label: Sort order
+        description: Lower numbers appear first.
+        type: number
+
+  # ---------------------------------------------------------------- Pages
+  - name: pages
+    label: Pages
+    type: group
+    items:
+      - name: home
+        label: Home page
+        type: file
+        path: src/content/pages/home.md
+        format: yaml-frontmatter
+        fields:
+          - name: title
+            type: string
+            hidden: true
+            default: Home
+          - name: heading
+            label: Headline
+            type: text
+          - name: intro
+            label: Introduction
+            type: text
+          - name: image
+            label: Large photo
+            type: image
+            options:
+              media: pages
+          - name: image_alt
+            label: Photo description
+            description: A few words describing the photo, for screen readers.
+            type: string
+          - name: featured_heading
+            label: Featured products heading
+            type: string
+
+      - name: about
+        label: About page
+        type: file
+        path: src/content/pages/about.md
+        format: yaml-frontmatter
+        fields:
+          - name: title
+            type: string
+            hidden: true
+            default: About
+          - name: heading
+            label: Headline
+            type: string
+          - name: intro
+            label: Introduction
+            type: text
+          - name: body
+            label: Text
+            type: rich-text
+            options:
+              format: markdown
+              media: false
+          - name: image
+            label: Photo
+            type: image
+            options:
+              media: pages
+          - name: image_alt
+            label: Photo description
+            type: string
+
+      - name: contact
+        label: Contact page
+        type: file
+        path: src/content/pages/contact.md
+        format: yaml-frontmatter
+        fields:
+          - name: title
+            type: string
+            hidden: true
+            default: Contact
+          - name: heading
+            label: Headline
+            type: string
+          - name: intro
+            label: Introduction
+            type: text
+          - name: body
+            label: More text (optional)
+            type: rich-text
+            options:
+              format: markdown
+              media: false
+
+  # ---------------------------------------------------------------- Settings
+  - name: settings
+    label: Site settings
+    type: file
+    path: src/data/settings.json
+    format: json
+    fields:
+      - name: site_name
+        label: Business name
+        type: string
+        required: true
+      - name: tagline
+        label: Tagline
+        description: Used as the default description in search results.
+        type: string
+      - name: location
+        label: Location
+        type: string
+      - name: email
+        label: Email
+        type: string
+      - name: phone
+        label: Phone
+        type: string
+      - name: instagram
+        label: Instagram
+        description: "@handle or full link"
+        type: string
+      - name: announcement
+        label: Announcement bar
+        description: Optional message shown at the very top of every page, e.g. "Fresh honey is in. Order by Friday for weekend pickup." Leave blank to hide.
+        type: string
+      - name: ordering_note
+        label: Ordering note
+        description: Shown under the button on every product page (pickup, shipping, timing).
+        type: text

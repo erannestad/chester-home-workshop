@@ -1,0 +1,81 @@
+---
+import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { getCategories, getProducts } from '../lib/catalog';
+import { settings } from '../lib/site';
+
+const page = await getEntry('pages', 'home');
+const categories = await getCategories();
+const products = await getProducts();
+const featured = products.filter((p) => p.featured && p.status !== 'sold_out').slice(0, 8);
+---
+
+<Base description={page?.data.intro || settings.tagline} image={page?.data.image}>
+  <section class="intro">
+    <div>
+      <h1>{page?.data.heading || settings.site_name}</h1>
+      {page?.data.intro && <p class="lede">{page.data.intro}</p>}
+    </div>
+    {
+      page?.data.image && (
+        <Image
+          src={page.data.image}
+          alt={page.data.image_alt}
+          class="hero-image"
+          widths={[640, 960, 1280, 1920, 2400]}
+          sizes="(min-width: 76rem) 71rem, 100vw"
+          priority
+        />
+      )
+    }
+  </section>
+
+  {
+    categories.length > 0 && (
+      <section class="section" aria-labelledby="what-we-make">
+        <div class="section-head">
+          <h2 id="what-we-make">What we make</h2>
+          <a href="/shop/">View everything</a>
+        </div>
+        <ul class="category-list">
+          {categories.map((c) => (
+            <li>
+              <h3>
+                <a href={`/shop/${c.id}/`}>{c.title}</a>
+              </h3>
+              {c.summary && <p>{c.summary}</p>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    featured.length > 0 && (
+      <section class="section" aria-labelledby="featured">
+        <div class="section-head">
+          <h2 id="featured">{page?.data.featured_heading || 'Selected work'}</h2>
+          <a href="/shop/">Shop all</a>
+        </div>
+        <ul class="grid">
+          {featured.map((p) => (
+            <ProductCard product={p} />
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Commissions &amp; upholstery</h2>
+    </div>
+    <p class="prose">
+      Custom fabric colors, painted commissions and upholstery work are quoted individually.{' '}
+      <a href="/contact/">Get in touch</a> with what you have in mind.
+    </p>
+  </section>
+</Base>

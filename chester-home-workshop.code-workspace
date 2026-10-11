@@ -1,0 +1,73 @@
+{
+  "folders": [
+    { "name": "Chester Home Workshop", "path": "." }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.astro": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.astro": true,
+      "**/.wrangler": true,
+      "package-lock.json": true
+    },
+    "files.associations": {
+      "wrangler.jsonc": "jsonc",
+      "*.code-workspace": "jsonc"
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.tabSize": 2,
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "[markdown]": {
+      "files.trimTrailingWhitespace": false,
+      "editor.wordWrap": "on"
+    },
+    "chat.tools.terminal.autoApprove": {
+      "set": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "astro-build.astro-vscode",
+      "anthropic.claude-code",
+      "redhat.vscode-yaml"
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "dev",
+        "type": "npm",
+        "script": "dev",
+        "isBackground": true,
+        "problemMatcher": [],
+        "group": "build"
+      },
+      {
+        "label": "build",
+        "type": "npm",
+        "script": "build",
+        "problemMatcher": [],
+        "group": { "kind": "build", "isDefault": true }
+      },
+      {
+        "label": "check",
+        "type": "npm",
+        "script": "check",
+        "problemMatcher": [],
+        "group": "test"
+      },
+      {
+        "label": "preview",
+        "type": "npm",
+        "script": "preview",
+        "isBackground": true,
+        "problemMatcher": []
+      }
+    ]
+  }
+}

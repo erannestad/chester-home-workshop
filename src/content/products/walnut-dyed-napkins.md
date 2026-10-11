@@ -1,0 +1,18 @@
+---
+title: Walnut-Dyed Cotton Napkins
+images:
+  - ../../assets/products/walnut-dyed-napkins-1.jpg
+category: fabric.md
+price: 36
+price_note: Set of four
+status: available
+summary: Soft cotton napkins dyed a warm brown with black walnut hulls.
+details:
+  - label: Size
+    value: 18 × 18 in.
+  - label: Material
+    value: Cotton
+featured: false
+draft: false
+---
+Hemmed by hand and dyed with hulls gathered in the fall.

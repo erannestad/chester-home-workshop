@@ -1,0 +1,27 @@
+---
+/*
+  Responsive, optimized image for catalog photos.
+  Handles local photos (from the CMS) and remote URLs (if products later come from Square/Shopify).
+*/
+import { Image } from 'astro:assets';
+import type { ProductImage } from '../lib/catalog';
+
+interface Props {
+  src: ProductImage;
+  alt: string;
+  widths: number[];
+  sizes: string;
+  priority?: boolean;
+  class?: string;
+}
+
+const { src, alt, widths, sizes, priority = false, class: className } = Astro.props;
+---
+
+{
+  typeof src === 'string' ? (
+    <Image src={src} inferSize alt={alt} widths={widths} sizes={sizes} priority={priority} class={className} />
+  ) : (
+    <Image src={src} alt={alt} widths={widths} sizes={sizes} priority={priority} class={className} />
+  )
+}
