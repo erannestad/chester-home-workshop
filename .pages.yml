@@ -43,6 +43,20 @@ content:
       default:
         sort: title
         order: asc
+    actions:
+      - name: make-a-copy
+        label: Make a copy
+        scope: entry
+        workflow: duplicate-entry.yml
+        cancelable: false
+        confirm:
+          title: Make a copy of this product
+          message: Everything is copied, including photos. The copy starts out hidden from the website, and shows up in the Products list in about a minute. Leave the name blank to call it "(copy)".
+          button: Make a copy
+        fields:
+          - name: title
+            label: Name for the copy
+            type: text
     fields:
       - name: title
         label: Name

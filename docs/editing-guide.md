@@ -17,6 +17,16 @@ You'll make all changes at **app.pagescms.org**. Sign in with the email link you
    - **Details** (optional): rows like *Material / Linen*, *Size / 18 × 18 in.*
 3. Click **Save**.
 
+## Copy a product
+
+Handy when a new item is a lot like an old one, like another color of the same linen.
+
+1. Open the product you want to copy and click **Make a copy** at the top.
+2. Type a name for the new one, e.g. *Rust Shibori Linen*, and click **Make a copy**. (If you leave it blank, it's called *Indigo Shibori Linen (copy)*.)
+3. Wait about a minute, then go back to **Products**. The copy is in the list with everything filled in, including the photos.
+4. Open the copy and change what's different: the photos, the price, the description.
+5. Turn off **Hide from website** and click **Save**. Copies always start out hidden, so nobody sees one before it's ready.
+
 ## Mark something as sold
 
 Open the product → set **Availability** to **Sold** → Save. It stays on the site, marked "Sold," and moves to the end of the list.

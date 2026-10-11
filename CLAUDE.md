@@ -41,6 +41,7 @@ npm run preview   # serve dist/
 | `src/components/Photo.astro` | Wrapper around `<Image>` for local or remote photos |
 | `src/styles/tokens.css` | Design tokens: color, type scale, spacing |
 | `src/styles/global.css` | All other CSS, plain and sectioned |
+| `scripts/duplicate-entry.mjs` + `.github/workflows/duplicate-entry.yml` | "Make a copy" CMS button on products: copies the file as a hidden draft. Add a folder to `ALLOWED_DIRS` (and an `actions:` entry in `.pages.yml`) to enable it elsewhere |
 | `docs/editing-guide.md` | Mom's how-to. Update it when the CMS changes |
 
 ## Rules (keep these true)
