@@ -59,11 +59,12 @@ npm run preview   # serve dist/
 
 - Minimal, warm, quiet. A Maine / coastal Connecticut feel. A "sophisticated vanilla HTML/CSS" look.
 - **No transitions, animations, fades or page transitions.** No `transition`, no `@keyframes`, no Astro `<ClientRouter />`, no scroll effects. Hover states change instantly (underline thickness, button invert).
-- **One serif family everywhere.** Hierarchy comes from size, small caps (`.label`) and hairline rules (`--rule`), not from weight or extra fonts.
+- **Layout: Cargo-style column index.** On wide screens a bordered frame fills the window; pages are a row of `Column.astro` panels (label bar on top, each scrolls on its own) with a thin bar (`Header.astro`: name, menu, ©) along the bottom. Below `56rem` columns stack and the bar moves to the top. Products render as `ProductCard.astro` entries (image, then a two-part caption: numeral left, details right). Info uses `.rows` (label left, text right, hairline between rows).
+- **One serif family, one size** (`--text`). Hierarchy comes from italics (`.title`), small caps (`.label`) and hairline rules (`--rule`), not from size, weight or extra fonts.
 - **Color:** `--brand` (black now, may become a brownish red; candidates are in `tokens.css`) plus white. Body text uses `--ink`, never `--brand`, so changing the brand color doesn't recolor paragraphs. Use the existing tokens; don't hard-code colors.
 - Plain CSS only (no Tailwind, no CSS-in-JS). Add to the matching section of `global.css`.
 - Minimal client JS. The only script is the inline prefill on `/contact/`. Prefer HTML/CSS solutions.
-- Simple UI: no hamburger menu (the nav wraps on mobile), no carousels, no modals. Product photos stack (hero, then a 2-column grid).
+- Simple UI: no hamburger menu (the nav wraps on mobile), no carousels, no modals. Product photos stack in their own column.
 - Layout must work at 390px wide with no horizontal scroll.
 - Copy tone: plain, warm, short. No exclamation marks or marketing superlatives.
 

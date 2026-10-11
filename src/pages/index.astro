@@ -2,80 +2,83 @@
 import { getEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import Column from '../components/Column.astro';
 import ProductCard from '../components/ProductCard.astro';
 import { getCategories, getProducts } from '../lib/catalog';
-import { settings, link } from '../lib/site';
+import { settings, instagramUrl, instagramHandle, link } from '../lib/site';
 
 const page = await getEntry('pages', 'home');
 const categories = await getCategories();
 const products = await getProducts();
-const featured = products.filter((p) => p.featured && p.status !== 'sold_out').slice(0, 8);
+const tel = settings.phone.replace(/[^\d+]/g, '');
+
+// Featured items go first within each category column.
+const inCategory = (id: string) =>
+  products.filter((p) => p.category === id).sort((a, b) => Number(b.featured) - Number(a.featured));
 ---
 
 <Base description={page?.data.intro || settings.tagline} image={page?.data.image}>
-  <section class="intro">
-    <div>
-      <h1>{page?.data.heading || settings.site_name}</h1>
-      {page?.data.intro && <p class="lede">{page.data.intro}</p>}
-    </div>
+  <Column wide>
     {
       page?.data.image && (
         <Image
           src={page.data.image}
           alt={page.data.image_alt}
-          class="hero-image"
-          widths={[640, 960, 1280, 1920, 2400]}
-          sizes="(min-width: 76rem) 71rem, 100vw"
+          class="lead-image"
+          widths={[480, 720, 1080]}
+          sizes="(min-width: 56rem) 36vw, 100vw"
           priority
         />
       )
     }
-  </section>
+    <dl class="rows">
+      <div>
+        <dt>
+          {settings.location && <>{settings.location}<br /></>}
+          {settings.email && <><a href={`mailto:${settings.email}`}>{settings.email}</a><br /></>}
+          {settings.phone && <><a href={`tel:${tel}`}>{settings.phone}</a><br /></>}
+          {settings.instagram && <a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a>}
+        </dt>
+        <dd>
+          <h1 class="title">{page?.data.heading || settings.site_name}</h1>
+          {page?.data.intro && <p>{page.data.intro}</p>}
+        </dd>
+      </div>
+      {
+        categories.length > 0 && (
+          <div>
+            <dt>What we make</dt>
+            <dd>
+              {categories.map((c) => (
+                <p>
+                  <a href={link(`/shop/${c.id}/`)}>{c.title}</a>
+                  {c.summary && <><br /><span class="muted">{c.summary}</span></>}
+                </p>
+              ))}
+            </dd>
+          </div>
+        )
+      }
+      <div>
+        <dt>Commissions</dt>
+        <dd>
+          <p>
+            Custom fabric colors, painted commissions and upholstery work are quoted individually.{' '}
+            <a href={link('/contact/')}>Get in touch</a> with what you have in mind.
+          </p>
+        </dd>
+      </div>
+    </dl>
+  </Column>
 
   {
-    categories.length > 0 && (
-      <section class="section" aria-labelledby="what-we-make">
-        <div class="section-head">
-          <h2 id="what-we-make">What we make</h2>
-          <a href={link('/shop/')}>View everything</a>
-        </div>
-        <ul class="category-list">
-          {categories.map((c) => (
-            <li>
-              <h3>
-                <a href={link(`/shop/${c.id}/`)}>{c.title}</a>
-              </h3>
-              {c.summary && <p>{c.summary}</p>}
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
+    categories.map((c, ci) => (
+      <Column label={c.title} href={link(`/shop/${c.id}/`)}>
+        {inCategory(c.id).map((p, i) => (
+          <ProductCard product={p} index={i + 1} priority={ci < 2 && i === 0} />
+        ))}
+        {inCategory(c.id).length === 0 && <p class="empty">Nothing listed right now.</p>}
+      </Column>
+    ))
   }
-
-  {
-    featured.length > 0 && (
-      <section class="section" aria-labelledby="featured">
-        <div class="section-head">
-          <h2 id="featured">{page?.data.featured_heading || 'Selected work'}</h2>
-          <a href={link('/shop/')}>Shop all</a>
-        </div>
-        <ul class="grid">
-          {featured.map((p) => (
-            <ProductCard product={p} />
-          ))}
-        </ul>
-      </section>
-    )
-  }
-
-  <section class="section">
-    <div class="section-head">
-      <h2>Commissions &amp; upholstery</h2>
-    </div>
-    <p class="prose">
-      Custom fabric colors, painted commissions and upholstery work are quoted individually.{' '}
-      <a href={link('/contact/')}>Get in touch</a> with what you have in mind.
-    </p>
-  </section>
 </Base>

@@ -5,34 +5,50 @@ import { link } from '../lib/site';
 
 interface Props {
   product: Product;
+  index: number; // 1-based position in its column
   priority?: boolean;
 }
 
-const { product, priority = false } = Astro.props;
+const { product, index, priority = false } = Astro.props;
 const img = product.images[0];
-const isSold = product.status === 'sold_out';
+const href = link(`/products/${product.id}/`);
+
+const numerals: [number, string][] = [[40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+function roman(n: number): string {
+  let out = '';
+  for (const [value, symbol] of numerals) {
+    while (n >= value) { out += symbol; n -= value; }
+  }
+  return out;
+}
 ---
 
-<li class:list={['card', { 'is-sold': isSold }]}>
-  <a href={link(`/products/${product.id}/`)}>
+<article class:list={['entry', { 'is-sold': product.status === 'sold_out' }]}>
+  <a class="entry-img" href={href} tabindex="-1" aria-hidden="true">
     {
       img ? (
         <Photo
           src={img}
           alt=""
-          class="card-img"
-          widths={[360, 540, 720, 1080]}
-          sizes="(min-width: 76rem) 17rem, (min-width: 40rem) 45vw, 92vw"
+          widths={[320, 480, 640, 960]}
+          sizes="(min-width: 56rem) 28vw, 100vw"
           priority={priority}
         />
       ) : (
-        <div class="card-img" aria-hidden="true" />
+        <div class="placeholder" />
       )
     }
-    <h3 class="card-title">{product.title}</h3>
   </a>
-  <p class="card-meta">
-    {priceLine(product)}
-    {product.status !== 'available' && <span class="label">{STATUS_LABEL[product.status]}</span>}
-  </p>
-</li>
+  <div class="caption">
+    <p class="caption-index">{roman(index)}.</p>
+    <div>
+      <h3 class="title"><a href={href}>{product.title}</a></h3>
+      <p>
+        {priceLine(product)}
+        {product.status !== 'available' && <><br /><span class="label">{STATUS_LABEL[product.status]}</span></>}
+      </p>
+      {product.summary && <p class="caption-text">{product.summary}</p>}
+      <p><a class="more" href={href}>[More]</a></p>
+    </div>
+  </div>
+</article>

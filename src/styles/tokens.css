@@ -10,19 +10,14 @@
   --brand-contrast: #ffffff; /* text on top of --brand */
   --bg: #ffffff;
   --ink: #1c1b19;            /* body text (stays near-black even if --brand changes) */
-  --ink-soft: #66615a;       /* secondary text, warm gray */
-  --rule: #e4e0d9;           /* hairlines */
-  --wash: #f6f4f0;           /* image placeholders, quiet panels */
+  --ink-soft: #6f6a63;       /* secondary text, warm gray */
+  --rule: #dcd8d1;           /* hairlines between columns and rows */
+  --wash: #f4f2ee;           /* image placeholders, quiet panels */
 
-  /* Type: one serif family throughout */
+  /* Type: one serif family, one size. Hierarchy comes from italics, small caps and rules. */
   --font: "Source Serif 4 Variable", "Iowan Old Style", Charter, Georgia, serif;
-  --text-sm: 0.9375rem;
-  --text-base: 1.0625rem;
-  --text-md: 1.25rem;
-  --text-lg: clamp(1.5rem, 1.25rem + 0.9vw, 1.875rem);
-  --text-xl: clamp(2rem, 1.45rem + 2.2vw, 3.25rem);
-  --leading: 1.6;
-  --leading-tight: 1.18;
+  --text: 0.875rem;
+  --leading: 1.4;
 
   /* Space */
   --s1: 0.25rem;
@@ -33,11 +28,13 @@
   --s6: 2rem;
   --s7: 3rem;
   --s8: 4.5rem;
-  --s9: 6.5rem;
 
   /* Layout */
-  --page: 76rem;
-  --gutter: clamp(1rem, 4vw, 2.5rem);
-  --measure: 36rem;
-  --card-ratio: 4 / 5;
+  --frame: 0.5rem;           /* margin around the whole frame */
+  --pad: 0.625rem;           /* padding inside columns */
+  --col-min: 15rem;          /* narrowest a column gets before the row scrolls sideways */
+  --col-max: 32rem;
+  --info-min: 20rem;         /* the wider first column */
+  --info-max: 44rem;
+  --stack: 56rem;            /* below this width, columns stack (set in global.css media queries) */
 }

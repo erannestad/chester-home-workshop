@@ -1,0 +1,27 @@
+---
+/*
+  One full-height column with a label bar on top. Columns sit side by side on wide screens
+  and stack on phones. `wide` is for the first, text-heavy column of a page; its label bar
+  starts with the site name linking home, and the column's own label moves to the right.
+*/
+import { settings, link } from '../lib/site';
+
+interface Props {
+  label?: string;
+  href?: string;
+  wide?: boolean;
+}
+
+const { label = '', href, wide = false } = Astro.props;
+const isHome = Astro.url.pathname === link('/');
+---
+
+<section class:list={['col', { 'col--wide': wide }]} aria-label={label || (wide ? settings.site_name : undefined)}>
+  <header class="col-head">
+    {wide && <a class="col-home" href={link('/')} aria-current={isHome ? 'page' : undefined}>{settings.site_name}</a>}
+    {label && (href ? <a href={href}>{label}</a> : <span>{label}</span>)}
+  </header>
+  <div class="col-body">
+    <slot />
+  </div>
+</section>

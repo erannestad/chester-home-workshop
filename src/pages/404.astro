@@ -1,10 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
+import Column from '../components/Column.astro';
 import { link } from '../lib/site';
 ---
 
 <Base title="Page not found">
-  <h1>Page not found</h1>
-  <p class="lede">That page may have moved, or the item may no longer be listed.</p>
-  <p><a href={link('/shop/')}>Browse the shop</a> or <a href={link('/')}>return home</a>.</p>
+  <Column label="Page not found" wide>
+    <h1 class="title">Page not found</h1>
+    <p>That page may have moved, or the item may no longer be listed.</p>
+    <p><a href={link('/shop/')}>Browse the shop</a> or <a href={link('/')}>return home</a>.</p>
+  </Column>
 </Base>

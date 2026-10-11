@@ -27,7 +27,7 @@ Open the product → turn on **Hide from website** → Save. It's kept, so you c
 
 ## Show something on the home page
 
-Turn on **Feature on home page**. The home page shows up to eight featured items.
+The home page shows everything, in one column per category. Turn on **Feature on home page** to move an item to the top of its column.
 
 ## Change the order of products
 

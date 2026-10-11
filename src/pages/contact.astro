@@ -1,6 +1,7 @@
 ---
 import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Column from '../components/Column.astro';
 import { settings, instagramUrl, instagramHandle } from '../lib/site';
 import { siteConfig } from '../site.config';
 
@@ -11,34 +12,35 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
 ---
 
 <Base title={page?.data.title || 'Contact'} description={page?.data.intro}>
-  <div class:list={[{ split: !!endpoint }]}>
-    <div>
-      <h1>{page?.data.heading || 'Contact'}</h1>
-      {page?.data.intro && <p class="lede">{page.data.intro}</p>}
-      <div class="prose">{Content && <Content />}</div>
+  <Column label={page?.data.title || 'Contact'} wide>
+    <dl class="rows">
+      <div>
+        <dt><h1 class="title">{page?.data.heading || 'Contact'}</h1></dt>
+        <dd>
+          {page?.data.intro && <p>{page.data.intro}</p>}
+          <div class="prose">{Content && <Content />}</div>
+          <p class="asking" id="asking" hidden>Asking about: <em id="asking-item"></em></p>
+          {
+            !endpoint && settings.email && (
+              <p>
+                <a class="button" id="mail-button" data-email={settings.email} href={`mailto:${settings.email}?subject=Inquiry`}>
+                  Write to us
+                </a>
+              </p>
+            )
+          }
+        </dd>
+      </div>
+      {settings.email && <div class="row-tight"><dt>Email</dt><dd><a href={`mailto:${settings.email}`}>{settings.email}</a></dd></div>}
+      {settings.phone && <div class="row-tight"><dt>Phone</dt><dd><a href={`tel:${tel}`}>{settings.phone}</a></dd></div>}
+      {settings.instagram && <div class="row-tight"><dt>Instagram</dt><dd><a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a></dd></div>}
+      {settings.location && <div class="row-tight"><dt>Location</dt><dd>{settings.location}</dd></div>}
+    </dl>
+  </Column>
 
-      <p class="asking" id="asking" hidden>Asking about: <strong id="asking-item"></strong></p>
-
-      <ul class="contact-lines">
-        {settings.email && <li><span class="label">Email</span> <a href={`mailto:${settings.email}`}>{settings.email}</a></li>}
-        {settings.phone && <li><span class="label">Phone</span> <a href={`tel:${tel}`}>{settings.phone}</a></li>}
-        {settings.instagram && <li><span class="label">Instagram</span> <a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a></li>}
-        {settings.location && <li><span class="label">Location</span> {settings.location}</li>}
-      </ul>
-
-      {
-        !endpoint && settings.email && (
-          <p>
-            <a class="button" id="mail-button" data-email={settings.email} href={`mailto:${settings.email}?subject=Inquiry`}>
-              Write to us
-            </a>
-          </p>
-        )
-      }
-    </div>
-
-    {
-      endpoint && (
+  {
+    endpoint && (
+      <Column label="Write to us">
         <form class="form" method="post" action={endpoint}>
           <label>
             Name
@@ -58,9 +60,9 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
           </label>
           <button class="button" type="submit">Send</button>
         </form>
-      )
-    }
-  </div>
+      </Column>
+    )
+  }
 
   <!-- Pre-fills the inquiry when arriving from a product page (/contact/?item=...). -->
   <script is:inline>

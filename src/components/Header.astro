@@ -1,31 +1,24 @@
 ---
-import { settings, link } from '../lib/site';
+/* The thin bar with the site name and menu: along the bottom of the frame on wide screens, at the top on phones. */
+import { settings, instagramUrl, link } from '../lib/site';
 
-const links = [
-  { href: link('/shop/'), label: 'Shop' },
-  { href: link('/about/'), label: 'About' },
-  { href: link('/contact/'), label: 'Contact' },
-];
-
+const year = new Date().getFullYear();
 const path = Astro.url.pathname;
-const isCurrent = (href: string) =>
-  path === href ||
-  (href === link('/shop/') && (path.startsWith(link('/shop/')) || path.startsWith(link('/products/'))));
+const current = (href: string, prefixes: string[] = []) =>
+  path === href || prefixes.some((p) => path.startsWith(p)) ? 'page' : undefined;
 ---
 
-<header class="site-header">
+<header class="bar">
   <a class="wordmark" href={link('/')}>{settings.site_name}</a>
-  <nav class="site-nav" aria-label="Main">
+  <nav aria-label="Main">
     <ul>
-      {
-        links.map((l) => (
-          <li>
-            <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>
-              {l.label}
-            </a>
-          </li>
-        ))
-      }
+      <li><a href={link('/shop/')} aria-current={current(link('/shop/'), [link('/shop/'), link('/products/')])}>Shop</a></li>
+      <li><a href={link('/about/')} aria-current={current(link('/about/'))}>About</a></li>
+      <li><a href={link('/contact/')} aria-current={current(link('/contact/'))}>Contact</a></li>
+      {settings.instagram && <li><a href={instagramUrl(settings.instagram)}>Instagram</a></li>}
     </ul>
   </nav>
+  <p class="fine">
+    © {settings.site_name} {year} · <a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
+  </p>
 </header>

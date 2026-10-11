@@ -2,7 +2,9 @@
 import type { GetStaticPaths } from 'astro';
 import Photo from '../../components/Photo.astro';
 import Base from '../../layouts/Base.astro';
+import Column from '../../components/Column.astro';
 import BuyBox from '../../components/BuyBox.astro';
+import ProductCard from '../../components/ProductCard.astro';
 import { getCategories, getProducts, priceLine, STATUS_LABEL, type Product } from '../../lib/catalog';
 import { link } from '../../lib/site';
 
@@ -13,66 +15,62 @@ export const getStaticPaths = (async () => {
 
 const { product } = Astro.props as { product: Product };
 const category = (await getCategories()).find((c) => c.id === product.category);
-const [first, ...rest] = product.images;
+const others = (await getProducts()).filter((p) => p.id !== product.id && p.category === product.category);
 ---
 
-<Base title={product.title} description={product.summary} image={first}>
-  <p class="breadcrumb">
-    <a href={link('/shop/')}>Shop</a>
-    {category && <> / <a href={link(`/shop/${category.id}/`)}>{category.title}</a></>}
-  </p>
-
-  <article class="product">
-    <div class="product-hero">
+<Base title={product.title} description={product.summary} image={product.images[0]}>
+  <Column label={category ? `Shop / ${category.title}` : 'Shop'} href={link(category ? `/shop/${category.id}/` : '/shop/')} wide>
+    <dl class="rows">
+      <div>
+        <dt>
+          <h1 class="title">{product.title}</h1>
+          {priceLine(product)}
+          {product.status !== 'available' && <><br /><span class="label">{STATUS_LABEL[product.status]}</span></>}
+        </dt>
+        <dd>
+          {product.summary && <p>{product.summary}</p>}
+          {product.bodyHtml && <div class="prose" set:html={product.bodyHtml} />}
+          <BuyBox product={product} />
+        </dd>
+      </div>
       {
-        first ? (
-          <Photo
-            src={first}
-            alt={product.title}
-            widths={[480, 720, 960, 1280, 1600]}
-            sizes="(min-width: 76rem) 40rem, (min-width: 54rem) 55vw, 92vw"
-            priority
-          />
-        ) : (
-          <div class="card-img" aria-hidden="true" />
-        )
-      }
-    </div>
-
-    <div class="product-info">
-      <h1>{product.title}</h1>
-      <p class="price">
-        {priceLine(product)}
-        {product.status !== 'available' && <span class="label">{STATUS_LABEL[product.status]}</span>}
-      </p>
-      {product.summary && <p class="summary">{product.summary}</p>}
-      {product.bodyHtml && <div class="prose" set:html={product.bodyHtml} />}
-      {
-        product.details.length > 0 && (
-          <dl class="details">
-            {product.details.map((d) => (
-              <>
-                <dt>{d.label}</dt>
-                <dd>{d.value}</dd>
-              </>
-            ))}
-          </dl>
-        )
-      }
-      <BuyBox product={product} />
-    </div>
-
-    <div class="product-more">
-      {
-        rest.map((img, i) => (
-          <Photo
-            src={img}
-            alt={`${product.title}, view ${i + 2}`}
-            widths={[360, 540, 720, 960]}
-            sizes="(min-width: 76rem) 20rem, (min-width: 54rem) 28vw, 46vw"
-          />
+        product.details.map((d) => (
+          <div class="row-tight">
+            <dt>{d.label}</dt>
+            <dd>{d.value}</dd>
+          </div>
         ))
       }
+    </dl>
+  </Column>
+
+  <Column label={product.title}>
+    <div class="photos">
+      {
+        product.images.length ? (
+          product.images.map((img, i) => (
+            <Photo
+              src={img}
+              alt={i === 0 ? product.title : `${product.title}, view ${i + 1}`}
+              widths={[480, 720, 960, 1280]}
+              sizes="(min-width: 56rem) 36vw, 100vw"
+              priority={i === 0}
+            />
+          ))
+        ) : (
+          <div class="placeholder" aria-hidden="true" />
+        )
+      }
     </div>
-  </article>
+  </Column>
+
+  {
+    others.length > 0 && (
+      <Column label={category ? `More ${category.title}` : 'More'} href={category && link(`/shop/${category.id}/`)}>
+        {others.map((p, i) => (
+          <ProductCard product={p} index={i + 1} />
+        ))}
+      </Column>
+    )
+  }
 </Base>
