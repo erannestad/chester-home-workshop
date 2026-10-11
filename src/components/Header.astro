@@ -1,6 +1,7 @@
 ---
 /* The thin bar with the site name and menu: along the bottom of the frame on wide screens, at the top on phones. */
 import { settings, instagramUrl, facebookUrl, link } from '../lib/site';
+import Logo from './Logo.astro';
 
 const year = new Date().getFullYear();
 const path = Astro.url.pathname;
@@ -9,7 +10,7 @@ const current = (href: string, prefixes: string[] = []) =>
 ---
 
 <header class="bar">
-  <a class="wordmark" href={link('/')}>{settings.site_name}</a>
+  <a class="wordmark" href={link('/')}><Logo />{settings.site_name}</a>
   <nav aria-label="Main">
     <ul>
       <li><a href={link('/shop/')} aria-current={current(link('/shop/'), [link('/shop/'), link('/products/')])}>Shop</a></li>

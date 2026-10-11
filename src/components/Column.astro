@@ -5,6 +5,7 @@
   starts with the site name linking home, and the column's own label moves to the right.
 */
 import { settings, link } from '../lib/site';
+import Logo from './Logo.astro';
 
 interface Props {
   label?: string;
@@ -19,7 +20,7 @@ const isHome = Astro.url.pathname === link('/');
 
 <section class:list={['col', { 'col--wide': wide, 'col--journal': journal }]} aria-label={label || (wide ? settings.site_name : undefined)}>
   <header class="col-head">
-    {wide && <a class="col-home" href={link('/')} aria-current={isHome ? 'page' : undefined}>{settings.site_name}</a>}
+    {wide && <a class="col-home" href={link('/')} aria-current={isHome ? 'page' : undefined}><Logo />{settings.site_name}</a>}
     {label && (href ? <a href={href}>{label}</a> : <span>{label}</span>)}
   </header>
   <div class="col-body">

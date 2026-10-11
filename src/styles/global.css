@@ -126,6 +126,15 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   padding: var(--s1) var(--pad);
   border-bottom: 1px solid var(--rule);
 }
+/* One line tall, so the bars keep their height. */
+.logo {
+  display: inline-block;
+  width: calc(var(--text) * var(--leading));
+  height: calc(var(--text) * var(--leading));
+  margin-right: 0.5em;
+  vertical-align: top;
+  object-fit: cover;
+}
 .bar nav ul { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); margin: 0; padding: 0; list-style: none; }
 .fine { color: var(--ink-soft); margin: 0; }
 .bar .fine { display: none; }
