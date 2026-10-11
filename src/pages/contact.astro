@@ -2,7 +2,7 @@
 import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Column from '../components/Column.astro';
-import { settings, instagramUrl, instagramHandle } from '../lib/site';
+import { settings, instagramUrl, instagramHandle, facebookUrl } from '../lib/site';
 import { siteConfig } from '../site.config';
 
 const page = await getEntry('pages', 'contact');
@@ -34,6 +34,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
       {settings.email && <div class="row-tight"><dt>Email</dt><dd><a href={`mailto:${settings.email}`}>{settings.email}</a></dd></div>}
       {settings.phone && <div class="row-tight"><dt>Phone</dt><dd><a href={`tel:${tel}`}>{settings.phone}</a></dd></div>}
       {settings.instagram && <div class="row-tight"><dt>Instagram</dt><dd><a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a></dd></div>}
+      {settings.facebook && <div class="row-tight"><dt>Facebook</dt><dd><a href={facebookUrl(settings.facebook)}>{settings.site_name}</a></dd></div>}
       {settings.location && <div class="row-tight"><dt>Location</dt><dd>{settings.location}</dd></div>}
     </dl>
   </Column>

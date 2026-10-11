@@ -42,7 +42,7 @@ src/
     products/*.md          One file per product
     categories/*.md        Fabric, Upholstery, Watercolors, Honey…
     pages/                 home.md, about.md, contact.md
-  data/settings.json       Business name, email, phone, Instagram, announcement bar, ordering note
+  data/settings.json       Business name, email, phone, Instagram, Facebook, announcement bar, ordering note
   assets/products/         Product photos (optimized to WebP at build time)
   assets/pages/            Page photos
   lib/catalog.ts           Catalog adapter. The ONLY file that knows where products come from.

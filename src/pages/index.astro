@@ -6,7 +6,7 @@ import Column from '../components/Column.astro';
 import JournalPost from '../components/JournalPost.astro';
 import { getCategories } from '../lib/catalog';
 import { getPosts } from '../lib/journal';
-import { settings, instagramUrl, instagramHandle, link } from '../lib/site';
+import { settings, instagramUrl, instagramHandle, facebookUrl, link } from '../lib/site';
 
 const page = await getEntry('pages', 'home');
 const categories = await getCategories();
@@ -34,7 +34,8 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
           {settings.location && <>{settings.location}<br /></>}
           {settings.email && <><a href={`mailto:${settings.email}`}>{settings.email}</a><br /></>}
           {settings.phone && <><a href={`tel:${tel}`}>{settings.phone}</a><br /></>}
-          {settings.instagram && <a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a>}
+          {settings.instagram && <><a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a><br /></>}
+          {settings.facebook && <a href={facebookUrl(settings.facebook)}>Facebook</a>}
         </dt>
         <dd>
           <h1 class="title">{page?.data.heading || settings.site_name}</h1>

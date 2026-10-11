@@ -8,6 +8,7 @@ type Settings = {
   email: string;
   phone: string;
   instagram: string;
+  facebook: string;
   announcement: string;
   ordering_note: string;
 };
@@ -19,6 +20,7 @@ const defaults: Settings = {
   email: '',
   phone: '',
   instagram: '',
+  facebook: '',
   announcement: '',
   ordering_note: '',
 };
@@ -45,4 +47,12 @@ export function instagramHandle(value: string): string {
   if (!value) return '';
   const m = value.match(/instagram\.com\/([^/?#]+)/);
   return '@' + (m ? m[1] : value.replace(/^@/, ''));
+}
+
+/** Accepts a page name ("chesterhomeworkshop"), "facebook.com/..." or a full URL. */
+export function facebookUrl(value: string): string {
+  if (!value) return '';
+  if (/^https?:\/\//.test(value)) return value;
+  if (/facebook\.com\//.test(value)) return `https://${value.replace(/^\/+/, '')}`;
+  return `https://www.facebook.com/${value.replace(/^@/, '')}`;
 }

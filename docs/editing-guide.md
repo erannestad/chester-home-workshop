@@ -59,9 +59,9 @@ Click **Categories** → **Add an entry** → give it a name and a short descrip
 - **Pages → About page**: your story and a photo
 - **Pages → Contact page**: the welcome text
 
-## Announcements, email, phone, Instagram
+## Announcements, email, phone, Instagram, Facebook
 
-**Site settings** has the business details. It also has two handy fields:
+**Site settings** has the business details. For **Facebook**, open the Facebook page in a browser, copy the address from the top of the window, and paste it in. Leave Instagram or Facebook blank and its link disappears from the site. It also has two handy fields:
 
 - **Announcement bar**: a short message across the top of every page, e.g. *Fresh honey is in. Pickup Saturdays.* Clear it to hide the bar.
 - **Ordering note**: shown under the button on every product page (pickup, shipping, timing).

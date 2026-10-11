@@ -334,6 +334,10 @@ content:
         label: Instagram
         description: "@handle or full link"
         type: string
+      - name: facebook
+        label: Facebook
+        description: Paste the link to the Facebook page, e.g. https://www.facebook.com/chesterhomeworkshop. Leave blank to hide.
+        type: string
       - name: announcement
         label: Announcement bar
         description: Optional message shown at the very top of every page, e.g. "Fresh honey is in. Order by Friday for weekend pickup." Leave blank to hide.

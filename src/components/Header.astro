@@ -1,6 +1,6 @@
 ---
 /* The thin bar with the site name and menu: along the bottom of the frame on wide screens, at the top on phones. */
-import { settings, instagramUrl, link } from '../lib/site';
+import { settings, instagramUrl, facebookUrl, link } from '../lib/site';
 
 const year = new Date().getFullYear();
 const path = Astro.url.pathname;
@@ -16,6 +16,7 @@ const current = (href: string, prefixes: string[] = []) =>
       <li><a href={link('/about/')} aria-current={current(link('/about/'))}>About</a></li>
       <li><a href={link('/contact/')} aria-current={current(link('/contact/'))}>Contact</a></li>
       {settings.instagram && <li><a href={instagramUrl(settings.instagram)}>Instagram</a></li>}
+      {settings.facebook && <li><a href={facebookUrl(settings.facebook)}>Facebook</a></li>}
     </ul>
   </nav>
   <p class="fine">
