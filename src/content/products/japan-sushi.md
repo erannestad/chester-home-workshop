@@ -1,7 +1,7 @@
 ---
-title: "Japan Sushi"
+title: Japan Sushi
 images:
-  - ../../assets/products/dsc06453-large-1.jpeg
+  - ../../assets/products/falmouth-large.jpeg
 category: watercolors.md
 price: 240
 price_note: Original, 9 × 12 in.
