@@ -1,6 +1,7 @@
 ---
 title: Salt Marsh, August
 images:
+  - ../../assets/products/evan-becca.jpg
   - ../../assets/products/salt-marsh-august-1.jpg
 category: watercolors.md
 price: 180
