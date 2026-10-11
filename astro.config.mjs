@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://erannestad.github.io',
+  site: 'https://ericrannestad.com',
   base: '/chester-home-workshop/',
   trailingSlash: 'always',
   build: { format: 'directory' },

@@ -1,19 +1,20 @@
 ---
-import { settings } from '../lib/site';
+import { settings, link } from '../lib/site';
 
 const links = [
-  { href: '/shop/', label: 'Shop' },
-  { href: '/about/', label: 'About' },
-  { href: '/contact/', label: 'Contact' },
+  { href: link('/shop/'), label: 'Shop' },
+  { href: link('/about/'), label: 'About' },
+  { href: link('/contact/'), label: 'Contact' },
 ];
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) =>
-  path === href || (href === '/shop/' && (path.startsWith('/shop/') || path.startsWith('/products/')));
+  path === href ||
+  (href === link('/shop/') && (path.startsWith(link('/shop/')) || path.startsWith(link('/products/'))));
 ---
 
 <header class="site-header">
-  <a class="wordmark" href="/">{settings.site_name}</a>
+  <a class="wordmark" href={link('/')}>{settings.site_name}</a>
   <nav class="site-nav" aria-label="Main">
     <ul>
       {

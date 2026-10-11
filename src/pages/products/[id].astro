@@ -4,6 +4,7 @@ import Photo from '../../components/Photo.astro';
 import Base from '../../layouts/Base.astro';
 import BuyBox from '../../components/BuyBox.astro';
 import { getCategories, getProducts, priceLine, STATUS_LABEL, type Product } from '../../lib/catalog';
+import { link } from '../../lib/site';
 
 export const getStaticPaths = (async () => {
   const products = await getProducts();
@@ -17,8 +18,8 @@ const [first, ...rest] = product.images;
 
 <Base title={product.title} description={product.summary} image={first}>
   <p class="breadcrumb">
-    <a href="/shop/">Shop</a>
-    {category && <> / <a href={`/shop/${category.id}/`}>{category.title}</a></>}
+    <a href={link('/shop/')}>Shop</a>
+    {category && <> / <a href={link(`/shop/${category.id}/`)}>{category.title}</a></>}
   </p>
 
   <article class="product">

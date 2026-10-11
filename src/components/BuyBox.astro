@@ -10,7 +10,7 @@
   the product id to a checkout function (Stripe Checkout or Square). Nothing
   else in the site needs to change.
 */
-import { settings } from '../lib/site';
+import { settings, link } from '../lib/site';
 import type { Product } from '../lib/catalog';
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const { product } = Astro.props;
-const inquireHref = `/contact/?item=${encodeURIComponent(product.title)}`;
+const inquireHref = `${link('/contact/')}?item=${encodeURIComponent(product.title)}`;
 
 const label =
   product.status === 'sold_out'

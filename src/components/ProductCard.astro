@@ -1,6 +1,7 @@
 ---
 import Photo from './Photo.astro';
 import { priceLine, STATUS_LABEL, type Product } from '../lib/catalog';
+import { link } from '../lib/site';
 
 interface Props {
   product: Product;
@@ -13,7 +14,7 @@ const isSold = product.status === 'sold_out';
 ---
 
 <li class:list={['card', { 'is-sold': isSold }]}>
-  <a href={`/products/${product.id}/`}>
+  <a href={link(`/products/${product.id}/`)}>
     {
       img ? (
         <Photo

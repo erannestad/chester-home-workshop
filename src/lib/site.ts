@@ -29,6 +29,11 @@ export const settings: Settings = Object.fromEntries(
   Object.keys(defaults).map((k) => [k, clean((raw as Record<string, unknown>)[k]) || defaults[k as keyof Settings]]),
 ) as Settings;
 
+/** Prefixes an internal path ("/shop/") with the deploy base ("/chester-home-workshop/"). */
+export function link(path: string): string {
+  return import.meta.env.BASE_URL.replace(/\/$/, '') + path;
+}
+
 /** Accepts "@handle", "handle" or a full URL. */
 export function instagramUrl(value: string): string {
   if (!value) return '';

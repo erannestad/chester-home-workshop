@@ -1,5 +1,6 @@
 ---
 import type { Category } from '../lib/catalog';
+import { link } from '../lib/site';
 
 interface Props {
   categories: Category[];
@@ -11,11 +12,11 @@ const { categories, current } = Astro.props;
 
 <nav class="filters" aria-label="Categories">
   <ul>
-    <li><a href="/shop/" aria-current={!current ? 'page' : undefined}>All</a></li>
+    <li><a href={link('/shop/')} aria-current={!current ? 'page' : undefined}>All</a></li>
     {
       categories.map((c) => (
         <li>
-          <a href={`/shop/${c.id}/`} aria-current={current === c.id ? 'page' : undefined}>
+          <a href={link(`/shop/${c.id}/`)} aria-current={current === c.id ? 'page' : undefined}>
             {c.title}
           </a>
         </li>

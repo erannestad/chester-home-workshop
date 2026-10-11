@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import CategoryNav from '../../components/CategoryNav.astro';
 import { getCategories, getProducts } from '../../lib/catalog';
+import { link } from '../../lib/site';
 
 const categories = await getCategories();
 const products = await getProducts();
@@ -22,7 +23,7 @@ const products = await getProducts();
         ))}
       </ul>
     ) : (
-      <p class="empty">Nothing is listed right now. <a href="/contact/">Get in touch</a> to ask about current work.</p>
+      <p class="empty">Nothing is listed right now. <a href={link('/contact/')}>Get in touch</a> to ask about current work.</p>
     )
   }
 </Base>

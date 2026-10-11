@@ -4,7 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ProductCard from '../components/ProductCard.astro';
 import { getCategories, getProducts } from '../lib/catalog';
-import { settings } from '../lib/site';
+import { settings, link } from '../lib/site';
 
 const page = await getEntry('pages', 'home');
 const categories = await getCategories();
@@ -37,13 +37,13 @@ const featured = products.filter((p) => p.featured && p.status !== 'sold_out').s
       <section class="section" aria-labelledby="what-we-make">
         <div class="section-head">
           <h2 id="what-we-make">What we make</h2>
-          <a href="/shop/">View everything</a>
+          <a href={link('/shop/')}>View everything</a>
         </div>
         <ul class="category-list">
           {categories.map((c) => (
             <li>
               <h3>
-                <a href={`/shop/${c.id}/`}>{c.title}</a>
+                <a href={link(`/shop/${c.id}/`)}>{c.title}</a>
               </h3>
               {c.summary && <p>{c.summary}</p>}
             </li>
@@ -58,7 +58,7 @@ const featured = products.filter((p) => p.featured && p.status !== 'sold_out').s
       <section class="section" aria-labelledby="featured">
         <div class="section-head">
           <h2 id="featured">{page?.data.featured_heading || 'Selected work'}</h2>
-          <a href="/shop/">Shop all</a>
+          <a href={link('/shop/')}>Shop all</a>
         </div>
         <ul class="grid">
           {featured.map((p) => (
@@ -75,7 +75,7 @@ const featured = products.filter((p) => p.featured && p.status !== 'sold_out').s
     </div>
     <p class="prose">
       Custom fabric colors, painted commissions and upholstery work are quoted individually.{' '}
-      <a href="/contact/">Get in touch</a> with what you have in mind.
+      <a href={link('/contact/')}>Get in touch</a> with what you have in mind.
     </p>
   </section>
 </Base>

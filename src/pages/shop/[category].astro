@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import CategoryNav from '../../components/CategoryNav.astro';
 import { getCategories, getProducts, type Category } from '../../lib/catalog';
+import { link } from '../../lib/site';
 
 export const getStaticPaths = (async () => {
   const categories = await getCategories();
@@ -30,7 +31,7 @@ const products = (await getProducts()).filter((p) => p.category === category.id)
         ))}
       </ul>
     ) : (
-      <p class="empty">Nothing is listed here right now. <a href="/contact/">Get in touch</a> to ask about current work.</p>
+      <p class="empty">Nothing is listed here right now. <a href={link('/contact/')}>Get in touch</a> to ask about current work.</p>
     )
   }
 </Base>

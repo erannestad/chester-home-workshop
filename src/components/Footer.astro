@@ -1,5 +1,5 @@
 ---
-import { settings, instagramUrl, instagramHandle } from '../lib/site';
+import { settings, instagramUrl, instagramHandle, link } from '../lib/site';
 
 const year = new Date().getFullYear();
 const tel = settings.phone.replace(/[^\d+]/g, '');
@@ -16,9 +16,10 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
     {settings.instagram && <li><a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a></li>}
   </ul>
   <ul>
-    <li><a href="/shop/">Shop</a></li>
-    <li><a href="/about/">About</a></li>
-    <li><a href="/contact/">Contact</a></li>
+    <li><a href={link('/shop/')}>Shop</a></li>
+    <li><a href={link('/about/')}>About</a></li>
+    <li><a href={link('/contact/')}>Contact</a></li>
+    <li><a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a></li>
   </ul>
   <p class="fine">© {year} {settings.site_name}</p>
 </footer>
