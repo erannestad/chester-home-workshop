@@ -1,7 +1,7 @@
 ---
 title: Harbor at Low Tide
 images:
-  - ../../assets/products/harbor-at-low-tide-1.jpg
+  - ../../assets/products/dsc06453-large-1.jpeg
 category: watercolors.md
 price: 240
 price_note: Original, 9 × 12 in.
