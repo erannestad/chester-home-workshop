@@ -6,9 +6,9 @@ Website for Eric's mom's home business in Chester, CT: hand-dyed fabric, upholst
 
 - **Astro 7**, fully static output (`astro build` → `dist/`). No adapter, no SSR, no UI framework.
 - **Pages CMS** (app.pagescms.org, free hosted). Configured by `.pages.yml`. Edits files in this repo directly. Mom is an email-invited collaborator with no GitHub account.
-- **Cloudflare Workers static assets** (`wrangler.jsonc`, serves `./dist`), deployed by Cloudflare's GitHub integration on push to `main`.
-  - Not Netlify: its free plan charges credits per deploy, and CMS edits deploy often.
-  - Not Vercel: Hobby is non-commercial.
+- **GitHub Pages**, deployed by `.github/workflows/deploy.yml` on every push to `main` (including CMS commits). Custom domain **chesterhomeworkshop.com** at the root, so there is no `base`. Internal links go through `url()` in `src/lib/site.ts`, so a `base` can be reintroduced safely.
+  - GitHub Pages is static only (no server functions). Its terms also discourage sites mainly for commercial transactions, so checkout code must not assume Pages can run anything. See "Checkout plan".
+  - `wrangler.jsonc` is kept from the earlier Cloudflare plan. It is unused unless hosting moves there.
 - **Font:** Source Serif 4 variable (opsz), self-hosted through `@fontsource-variable`.
 - Node 22.12+ (`.nvmrc`).
 
@@ -85,6 +85,8 @@ npm run preview   # serve dist/
 
 Online-only, low volume → **Stripe Checkout, with products staying in the CMS.** Never introduce a second product catalog (no Stripe Products or per-product payment links to maintain).
 
+**Hosting caveat:** the steps below need a server function. GitHub Pages can't run one. Either move hosting to Cloudflare (DNS change only; the repo and CMS stay the same), or keep Pages and deploy just the checkout Worker on Cloudflare at a subdomain like `pay.chesterhomeworkshop.com`. Then `catalog.json` is fetched from the live site URL instead of the `ASSETS` binding. Decide this with Eric before building.
+
 1. Add `src/pages/catalog.json.ts`, which emits `{ id, title, price, status }[]` from `getProducts()`.
 2. Add `worker/index.ts`. In `wrangler.jsonc` set `"main"`, and under `assets` add `"binding": "ASSETS"` and `"run_worker_first": ["/api/*"]`.
    - `POST /api/checkout` reads the price from `catalog.json` through `env.ASSETS`, never from the client.
@@ -97,5 +99,5 @@ Online-only, low volume → **Stripe Checkout, with products staying in the CMS.
 
 - All products, categories, page copy and photos are **placeholder samples**.
 - `settings.json` email is `hello@example.com` (placeholder).
-- `astro.config.mjs` `site` is commented out until the domain is known. It enables canonical and `og:image`.
+- `astro.config.mjs` `site` is `https://chesterhomeworkshop.com`. It enables canonical URLs and `og:image`.
 - Contact uses a `mailto:` button unless `formEndpoint` is set in `src/site.config.ts`.

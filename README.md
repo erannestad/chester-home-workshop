@@ -6,7 +6,7 @@ Website for Chester Home Workshop: hand-dyed fabric, upholstery, watercolors and
 |---|---|---|
 | Site | [Astro](https://astro.build) 7, static HTML + one plain CSS file. No JS framework. | Free |
 | CMS | [Pages CMS](https://pagescms.org) (hosted at app.pagescms.org). Edits the files in this repo. | Free |
-| Hosting | Cloudflare Workers (static assets), auto-deploys from GitHub. | Free tier |
+| Hosting | GitHub Pages at chesterhomeworkshop.com, deployed by GitHub Actions on every push. | Free |
 | Checkout | Not yet. Every product has an inquiry button. Plan: Stripe Checkout, see [Adding online checkout](#adding-online-checkout). | Stripe per-sale fees only |
 
 Every save in the CMS is a git commit. Every commit rebuilds the site (about a minute).
@@ -33,8 +33,9 @@ npm run check     # type-check
 CLAUDE.md                  Project context for Claude Code (rules, design constraints, CMS gotchas)
 .claude/                   Claude Code project settings + commands: /verify, /add-field, /stripe-checkout
 .pages.yml                 CMS configuration (what the editor sees)
-astro.config.mjs           Site config (set `site` once the domain is live)
-wrangler.jsonc             Cloudflare config (serves dist/)
+astro.config.mjs           Site config (`site` = https://chesterhomeworkshop.com)
+.github/workflows/         deploy.yml (build + publish to Pages), duplicate-entry.yml (CMS "Make a copy")
+wrangler.jsonc             Unused; kept in case hosting moves to Cloudflare
 src/
   content.config.ts        Content schemas (forgiving: blank fields never break the build)
   content/
@@ -64,18 +65,18 @@ src/
 
 ## Deploy (one-time)
 
-1. **GitHub:** create a private repo and push this folder.
-   ```sh
-   git init && git add -A && git commit -m "Initial site"
-   git branch -M main
-   git remote add origin git@github.com:<you>/chester-home-workshop.git
-   git push -u origin main
-   ```
-2. **Cloudflare:** Dashboard → Workers & Pages → Create → *Import a repository* → pick the repo.
-   - Build command: `npm run build`
-   - Deploy command: `npx wrangler deploy`
-   - It deploys to `chester-home-workshop.<account>.workers.dev`. Add the real domain under the Worker's *Settings → Domains & Routes*.
-3. Once the domain is live, set `site` in `astro.config.mjs`. That turns on canonical URLs and social-share images.
+Hosted on GitHub Pages from `erannestad/chester-home-workshop`. ericrannestad.com remains the user-site domain; this repo overrides it with its own.
+
+1. **Verify the domain:** GitHub account → Settings → Pages → add `chesterhomeworkshop.com`. Add the TXT record (`_github-pages-challenge-erannestad`) at GoDaddy. ✅ Done.
+2. **DNS at GoDaddy:** delete the default parked `@` A record, then add:
+   - `A @` → 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153
+   - `AAAA @` → 2606:50c0:8000::153, 2606:50c0:8001::153, 2606:50c0:8002::153, 2606:50c0:8003::153
+   - `CNAME www` → `erannestad.github.io`
+3. **Repo → Settings → Pages:**
+   - Source: **GitHub Actions**.
+   - Custom domain: `chesterhomeworkshop.com` → Save.
+   - Tick **Enforce HTTPS** once it appears (up to 24 h).
+4. Push. `deploy.yml` builds and publishes on every push to `main`.
 
 ## CMS setup (one-time)
 

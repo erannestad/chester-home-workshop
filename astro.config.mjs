@@ -2,8 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://ericrannestad.com',
-  base: '/chester-home-workshop/',
+  site: 'https://chesterhomeworkshop.com',
   trailingSlash: 'always',
   build: { format: 'directory' },
   // Allow remote product photos if the catalog later comes from Square or Shopify.
