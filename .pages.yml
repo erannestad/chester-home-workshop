@@ -46,7 +46,7 @@ content:
     format: yaml-frontmatter
     filename: "{primary}.md"
     view:
-      fields: [title, category, price, status, draft]
+      fields: [images, title, category, price, status, draft]
       primary: title
       search: [title, summary]
       sort: [title, price, order]
@@ -189,7 +189,7 @@ content:
     format: yaml-frontmatter
     filename: "{year}-{month}-{day}-{primary}.md"
     view:
-      fields: [title, date, draft]
+      fields: [images, title, date, draft]
       primary: title
       search: [title]
       sort: [date, title]
