@@ -2,8 +2,8 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  // Set this once the domain is live (enables canonical URLs and social share images).
-  // site: 'https://chesterhomeworkshop.com',
+  site: 'https://erannestad.github.io',
+  base: '/chester-home-workshop/',
   trailingSlash: 'always',
   build: { format: 'directory' },
   // Allow remote product photos if the catalog later comes from Square or Shopify.
