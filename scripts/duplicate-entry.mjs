@@ -45,5 +45,12 @@ writeFileSync(target, `---\n${frontmatter}\n---${body}`);
 console.log(`Copied ${source} to ${target}`);
 
 if (process.env.GITHUB_OUTPUT) {
-  appendFileSync(process.env.GITHUB_OUTPUT, `target=${target}\n`);
+  const by = payload.triggeredBy ?? {};
+  const oneLine = (v) => String(v ?? '').replace(/[\r\n<>]+/g, ' ').trim();
+  const email = oneLine(by.email);
+  const name = oneLine(by.name) || email;
+  appendFileSync(
+    process.env.GITHUB_OUTPUT,
+    `target=${target}\nauthor_name=${name}\nauthor_email=${email}\n`,
+  );
 }

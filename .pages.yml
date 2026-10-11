@@ -2,6 +2,16 @@
 # Defines what your mom sees at app.pagescms.org. Edit with care: field `name`s must
 # match src/content.config.ts.
 
+# Record who made each edit: commits are authored by the signed-in editor, not the app.
+settings:
+  commit:
+    identity: user
+    templates:
+      create: "Create {path} by {userName} (via Pages CMS)"
+      update: "Update {path} by {userName} (via Pages CMS)"
+      delete: "Delete {path} by {userName} (via Pages CMS)"
+      rename: "Rename {oldPath} to {newPath} by {userName} (via Pages CMS)"
+
 media:
   - name: products
     label: Product photos
