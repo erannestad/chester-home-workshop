@@ -8,5 +8,6 @@ images:
   - ../../assets/journal/img8598.jpeg
   - ../../assets/journal/img8600-1.jpeg
   - ../../assets/journal/img0090.jpeg
+span: "2"
 draft: false
 ---
