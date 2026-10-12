@@ -1,5 +1,5 @@
 ---
-title: Wedding favors
+title: Wedding Favors
 date: 2026-10-10
 images:
   - ../../assets/journal/img8585.jpeg
