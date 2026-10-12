@@ -1,7 +1,7 @@
 ---
 title: Chair Reupholstery
 images:
-  - ../../assets/products/chair-reupholstery-1.jpg
+  - ../../assets/products/4961164311222305416062282935602558504801709526n.jpg
 category: upholstery.md
 price_note: Quoted per piece
 status: made_to_order
