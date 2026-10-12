@@ -33,6 +33,7 @@
   --frame: 0.5rem;           /* margin around the whole frame */
   --pad: 0.625rem;           /* padding inside columns */
   --col-min: 15rem;          /* narrowest a column gets before the row scrolls sideways */
+  --journal-min: 13.5rem;    /* journal keeps 3 and 4 columns a bit further as the window shrinks */
   --info-min: 20rem;         /* the wider first column */
   --stack: 56rem;            /* below this width, columns stack (set in global.css media queries) */
 }

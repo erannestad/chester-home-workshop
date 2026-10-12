@@ -114,6 +114,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
     const px = (value: string) => parseFloat(value) * (value.includes('rem') ? rem : 1);
     const tokens = getComputedStyle(document.documentElement);
     const colMin = px(tokens.getPropertyValue('--col-min'));
+    const packMin = px(tokens.getPropertyValue('--journal-min'));
     const gap = px(tokens.getPropertyValue('--pad')) * 2;
     const scroller = (el: HTMLElement) => {
       for (let p = el.parentElement; p; p = p.parentElement) {
@@ -140,7 +141,12 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
 
     const pack = () => {
       if (packing) return;
-      const n = Math.max(1, Math.floor((journal.clientWidth + gap) / (colMin + gap)));
+      // 3 and 4 columns use a slightly narrower min so they hold further as the window
+      // shrinks; 5+ stay on --col-min so a normal desktop doesn't pick up an extra column.
+      const inner = journal.clientWidth + gap;
+      const full = Math.max(1, Math.floor(inner / (colMin + gap)));
+      const tight = Math.max(1, Math.floor(inner / (packMin + gap)));
+      const n = full >= 5 ? full : Math.min(4, tight);
       const open = order.find((p) => p.classList.contains('post--open'));
       const key = `${n}:${Math.round(journal.clientWidth)}:${open?.id ?? ''}`;
       if (key === packed) return;

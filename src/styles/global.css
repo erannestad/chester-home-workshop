@@ -192,10 +192,10 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 */
 .journal {
   --gap: calc(var(--pad) * 2);
-  --cols: max(1, round(down, calc((100cqw + var(--gap)) / (var(--col-min) + var(--gap)))));
+  --cols: max(1, round(down, calc((100cqw + var(--gap)) / (var(--journal-min) + var(--gap)))));
   container-type: inline-size;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--col-min), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--journal-min), 1fr));
   column-gap: var(--gap);
   --track: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
   --rule-at: calc(var(--track) + var(--gap) / 2);
