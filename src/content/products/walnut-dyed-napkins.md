@@ -1,7 +1,7 @@
 ---
 title: Walnut-Dyed Cotton Napkins
 images:
-  - ../../assets/products/walnut-dyed-napkins-1.jpg
+  - ../../assets/products/4764547711222066351282282935723104784261973709n.jpg
 category: fabric.md
 price: 36
 price_note: Set of four
