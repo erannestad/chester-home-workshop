@@ -1,41 +1,113 @@
 ---
+/*
+  One journal post. Closed: a photo, thumbnails and the caption, all linking to the post.
+  Open (`photo` set): two columns wide, one large photo at a time with Previous / Next.
+  Every state is a real page (/journal/{id}/{n}/); the script in Home.astro swaps them in place.
+*/
 import Photo from './Photo.astro';
 import { formatDate, type Post } from '../lib/journal';
+import { link } from '../lib/site';
 
 interface Props {
   post: Post;
   priority?: boolean;
+  photo?: number; // open the post at this photo (1-based)
 }
 
-const { post, priority = false } = Astro.props;
-const [first, ...rest] = post.images;
+const { post, priority = false, photo } = Astro.props;
+const open = photo !== undefined;
+const [first, ...others] = post.images;
+const rest = others.slice(0, 4); // one row under the closed post; the gallery shows them all
+const count = Math.max(1, post.images.length);
+const current = Math.min(Math.max(photo ?? 1, 1), count);
+const wrap = (n: number) => ((n - 1 + count) % count) + 1;
+const href = (n: number) => link(`/journal/${post.id}/${n > 1 ? `${n}/` : ''}`) + `#${post.id}`;
+// The open view is one fixed frame that fits every photo, so stepping through them never resizes the post.
+const ratios = post.images.map((img) => img.width / img.height);
+const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Math.max(...ratios)}` : undefined;
 ---
 
-<article class="post" id={post.id}>
-  {
-    first && (
-      <Photo
-        src={first}
-        alt={post.title}
-        widths={[320, 480, 640, 960]}
-        sizes="(min-width: 56rem) 20vw, 100vw"
-        priority={priority}
-      />
-    )
-  }
-  {
-    rest.length > 0 && (
-      <div class="post-more">
-        {rest.map((img, i) => (
-          <Photo src={img} alt={`${post.title}, photo ${i + 2}`} widths={[200, 320, 480]} sizes="(min-width: 56rem) 10vw, 50vw" />
-        ))}
+<article class:list={['post', { 'post--open': open }]} id={post.id} data-count={count} data-title={post.title} data-span={post.span}>
+  <div class="post-closed">
+    {
+      first && (
+        <a class="post-photo" href={href(1)} data-photo="1">
+          <Photo
+            src={first}
+            alt={post.title}
+            widths={[320, 480, 640, 960]}
+            sizes="(min-width: 56rem) 20vw, 100vw"
+            priority={priority}
+          />
+        </a>
+      )
+    }
+    {
+      rest.length > 0 && (
+        <div class="post-more">
+          {rest.map((img, i) => (
+            <a class="post-photo" href={href(i + 2)} data-photo={i + 2}>
+              <Photo src={img} alt={`${post.title}, photo ${i + 2}`} widths={[120, 200, 320]} sizes="(min-width: 56rem) 5vw, 25vw" />
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  <div class="post-gallery">
+    <div class:list={['post-stage', { 'post-stage--single': count === 1 }]} style={frame}>
+      <div class="post-view">
+        {
+          post.images.map((img, i) => (
+            <div class="post-slide" hidden={i !== current - 1}>
+              {count > 1 ? (
+                <a class="post-photo" href={href(wrap(current + 1))} data-photo={wrap(current + 1)} data-step="next">
+                  <Photo
+                    src={img}
+                    alt={`${post.title}, photo ${i + 1} of ${count}`}
+                    widths={[480, 720, 1080, 1600]}
+                    sizes="(min-width: 56rem) 50vw, 100vw"
+                    priority={open && i === current - 1}
+                  />
+                </a>
+              ) : (
+                <Photo src={img} alt={post.title} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 50vw, 100vw" priority={open} />
+              )}
+            </div>
+          ))
+        }
       </div>
-    )
-  }
+      {
+        count > 1 && (
+          <div class="post-thumbs">
+            {post.images.map((img, i) => (
+              <a href={href(i + 1)} data-photo={i + 1} aria-current={i === current - 1 ? 'true' : undefined}>
+                <Photo src={img} alt={`Photo ${i + 1}`} widths={[120, 240]} sizes="3.5rem" />
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <nav class="post-nav" aria-label="Photos">
+      {
+        count > 1 && (
+          <>
+            <a href={href(wrap(current - 1))} data-photo={wrap(current - 1)} data-step="prev">Previous</a>
+            <span class="post-count">{current} / {count}</span>
+            <a href={href(wrap(current + 1))} data-photo={wrap(current + 1)} data-step="next">Next</a>
+          </>
+        )
+      }
+      <a class="post-close" href={link('/') + `#${post.id}`} data-close>Close</a>
+    </nav>
+  </div>
+
   <div class="caption">
     <p class="caption-index">{post.date && <time datetime={post.date.toISOString().slice(0, 10)}>{formatDate(post.date)}</time>}</p>
     <div>
-      <h3 class="title">{post.title}</h3>
+      <h3 class="title"><a href={href(1)} data-photo="1">{post.title}</a></h3>
       {post.bodyHtml && <div class="prose" set:html={post.bodyHtml} />}
     </div>
   </div>

@@ -111,6 +111,11 @@ const journal = defineCollection({
         .nullish()
         .transform((v) => (v ? (Array.isArray(v) ? v : [v]) : [])),
       draft: flag(),
+      // 1–3 journal columns; blank or junk becomes 1 so a CMS typo can't break the build
+      span: num().transform((v) => {
+        const n = v ?? 1;
+        return Math.min(3, Math.max(1, Math.round(n)));
+      }),
     }),
 });
 

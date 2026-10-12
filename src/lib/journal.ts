@@ -7,6 +7,7 @@ export type Post = {
   title: string;
   date: Date | null;
   images: ImageMetadata[];
+  span: number; // 1–3 journal columns on a wide screen
   bodyHtml: string;
 };
 
@@ -19,6 +20,7 @@ export async function getPosts(): Promise<Post[]> {
       title: data.title,
       date: data.date,
       images: data.images,
+      span: data.span,
       bodyHtml: rendered?.html ?? '',
     }))
     .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0) || b.id.localeCompare(a.id));

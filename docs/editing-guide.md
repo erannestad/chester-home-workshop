@@ -43,7 +43,11 @@ Turn on **Show first in the shop** to move an item to the top of its category.
 
 The right side of the home page is the journal: photos and a line or two about what's going on in the workshop, newest first.
 
-Click **Journal** → **Add an entry** → give it a title (e.g. *Two chairs back home*), pick the date, add photos, and write a sentence or two → Save. The first photo shows large and any others appear small underneath. To take a post down without deleting it, turn on **Hide from website**.
+Click **Journal** → **Add an entry** → give it a title (e.g. *Two chairs back home*), pick the date, add photos, and write a sentence or two → Save. The first photo shows large and the next four appear small underneath. Visitors can click a post to open it wider and step through all its photos, in the order you added them.
+
+**Width** is how many columns the post covers on a wide screen: one (the usual size), two, or three. Use two or three when you want a photo to read larger. On a phone every post is one column.
+
+To take a post down without deleting it, turn on **Hide from website**.
 
 ## Change the order of products
 

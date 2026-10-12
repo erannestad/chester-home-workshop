@@ -1,0 +1,21 @@
+---
+/* /journal/{id}/ shows a post's first photo; /journal/{id}/2/, /3/ ... show the others. */
+import type { GetStaticPaths } from 'astro';
+import Home from '../../../components/Home.astro';
+import { getPosts, type Post } from '../../../lib/journal';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.flatMap((post) =>
+    Array.from({ length: Math.max(1, post.images.length) }, (_, i) => ({
+      params: { id: post.id, photo: i === 0 ? undefined : String(i + 1) },
+      props: { post, photo: i + 1 },
+    })),
+  );
+}) satisfies GetStaticPaths;
+
+const { post, photo } = Astro.props as { post: Post; photo: number };
+const description = post.bodyHtml.replace(/<[^>]+>/g, '').trim();
+---
+
+<Home open={{ id: post.id, photo }} title={post.title} description={description} image={post.images[photo - 1] ?? null} />

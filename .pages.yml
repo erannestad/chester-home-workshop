@@ -189,7 +189,7 @@ content:
     format: yaml-frontmatter
     filename: "{year}-{month}-{day}-{primary}.md"
     view:
-      fields: [images, title, date, draft]
+      fields: [images, title, date, span, draft]
       primary: title
       search: [title]
       sort: [date, title]
@@ -221,6 +221,19 @@ content:
         options:
           format: markdown
           media: false
+      - name: span
+        label: Width
+        description: How many columns this post covers on a wide screen. Most posts stay at one. Use two or three for a larger photo.
+        type: select
+        default: "1"
+        options:
+          values:
+            - name: "1"
+              label: One column
+            - name: "2"
+              label: Two columns
+            - name: "3"
+              label: Three columns
       - name: draft
         label: Hide from website
         description: Keep this post saved but off the site.

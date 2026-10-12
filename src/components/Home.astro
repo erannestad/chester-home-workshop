@@ -1,0 +1,295 @@
+---
+/*
+  The home page: info column plus the journal. Also renders /journal/{id}/ pages, where `open`
+  names the post to show two columns wide with one large photo.
+*/
+import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Column from './Column.astro';
+import JournalPost from './JournalPost.astro';
+import { getCategories, type ProductImage } from '../lib/catalog';
+import { getPosts } from '../lib/journal';
+import { settings, instagramUrl, instagramHandle, facebookUrl, link } from '../lib/site';
+
+interface Props {
+  open?: { id: string; photo: number };
+  title?: string;
+  description?: string;
+  image?: ProductImage | null;
+}
+
+const { open, title, description, image } = Astro.props;
+const page = await getEntry('pages', 'home');
+const categories = await getCategories();
+const posts = await getPosts();
+const tel = settings.phone.replace(/[^\d+]/g, '');
+---
+
+<Base title={title} description={description || page?.data.intro || settings.tagline} image={image ?? page?.data.image}>
+  <Column wide>
+    {
+      page?.data.image && (
+        <Image
+          src={page.data.image}
+          alt={page.data.image_alt}
+          class="lead-image"
+          widths={[480, 720, 1080]}
+          sizes="(min-width: 56rem) 36vw, 100vw"
+          priority={!open}
+        />
+      )
+    }
+    <dl class="rows">
+      <div>
+        <dt>
+          {settings.location && <>{settings.location}<br /></>}
+          {settings.email && <><a href={`mailto:${settings.email}`}>{settings.email}</a><br /></>}
+          {settings.phone && <><a href={`tel:${tel}`}>{settings.phone}</a><br /></>}
+          {settings.instagram && <><a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a><br /></>}
+          {settings.facebook && <a href={facebookUrl(settings.facebook)}>Facebook</a>}
+        </dt>
+        <dd>
+          <h1 class="title">{page?.data.heading || settings.site_name}</h1>
+          {page?.data.intro && <p>{page.data.intro}</p>}
+        </dd>
+      </div>
+      {
+        categories.length > 0 && (
+          <div>
+            <dt>What we make</dt>
+            <dd>
+              {categories.map((c) => (
+                <p>
+                  <a href={link(`/shop/${c.id}/`)}>{c.title}</a>
+                  {c.summary && <><br /><span class="muted">{c.summary}</span></>}
+                </p>
+              ))}
+              <p><a href={link('/shop/')}>Shop everything</a></p>
+            </dd>
+          </div>
+        )
+      }
+      <div>
+        <dt>Commissions</dt>
+        <dd>
+          <p>
+            Custom fabric colors, painted commissions and upholstery work are quoted individually.{' '}
+            <a href={link('/contact/')}>Get in touch</a> with what you have in mind.
+          </p>
+        </dd>
+      </div>
+    </dl>
+  </Column>
+
+  <Column label={page?.data.featured_heading || 'Journal'} journal>
+    {
+      posts.length ? (
+        <div class="journal" data-base={link('/')} data-site={settings.site_name}>
+          {posts.map((post, i) => (
+            <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} />
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Nothing here yet.</p>
+      )
+    }
+  </Column>
+</Base>
+
+<script>
+  // Opens journal posts and steps through their photos in place, keeping the address bar in
+  // step with the real pages (/journal/{id}/{n}/) so reload, sharing and Back all work.
+  const journal = document.querySelector<HTMLElement>('.journal');
+
+  if (journal) {
+    const base = journal.dataset.base ?? '/';
+    const site = journal.dataset.site ?? document.title;
+    const pattern = new RegExp(`^${base}journal/([^/]+)/(?:(\\d+)/)?$`);
+    const wrap = (n: number, count: number) => ((n - 1 + count) % count) + 1;
+    const url = (id: string, n: number) => `${base}journal/${id}/${n > 1 ? `${n}/` : ''}`;
+    const path = (href: string) => new URL(href, location.origin).pathname;
+    const openPost = () => journal.querySelector<HTMLElement>('.post--open');
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const px = (value: string) => parseFloat(value) * (value.includes('rem') ? rem : 1);
+    const tokens = getComputedStyle(document.documentElement);
+    const colMin = px(tokens.getPropertyValue('--col-min'));
+    const gap = px(tokens.getPropertyValue('--pad')) * 2;
+    const scroller = (el: HTMLElement) => {
+      for (let p = el.parentElement; p; p = p.parentElement) {
+        const y = getComputedStyle(p).overflowY;
+        if (y === 'auto' || y === 'scroll') return p;
+      }
+      return (document.scrollingElement ?? document.documentElement) as HTMLElement;
+    };
+    const keep = (el: HTMLElement, run: () => void) => {
+      const box = scroller(el);
+      const top = el.getBoundingClientRect().top;
+      run();
+      box.scrollTop += el.getBoundingClientRect().top - top;
+    };
+    let packed = '';
+    let packing = false;
+    const order = [...journal.querySelectorAll<HTMLElement>('.post')].flatMap((post) => {
+      if (Math.random() >= 0.5) return [post];
+      const space = document.createElement('div');
+      space.className = 'journal-space';
+      space.setAttribute('aria-hidden', 'true');
+      return [post, space];
+    });
+
+    const pack = () => {
+      if (packing) return;
+      const n = Math.max(1, Math.floor((journal.clientWidth + gap) / (colMin + gap)));
+      const open = order.find((p) => p.classList.contains('post--open'));
+      const key = `${n}:${Math.round(journal.clientWidth)}:${open?.id ?? ''}`;
+      if (key === packed) return;
+      packed = key;
+      packing = true;
+      try {
+      journal.style.setProperty('--cols', String(n));
+      journal.classList.add('is-packed');
+
+      const i = open ? order.indexOf(open) : -1;
+      const before = i === -1 ? order : order.slice(0, i);
+      const after = i === -1 ? [] : order.slice(i + 1);
+
+      const fill = (name: string, items: HTMLElement[]) => {
+        let row = journal.querySelector<HTMLElement>(`:scope > .journal-pack[data-pack="${name}"]`);
+        if (!items.length) {
+          row?.remove();
+          return;
+        }
+        if (!row) {
+          row = document.createElement('div');
+          row.className = 'journal-pack';
+          row.dataset.pack = name;
+        }
+        row.replaceChildren(...items);
+        journal.append(row);
+
+        const track = (journal.clientWidth - (n - 1) * gap) / n;
+        const colH = Array.from({ length: n }, () => 0);
+        const place = (el: HTMLElement, col: number, span: number) => {
+          const y = Math.max(...colH.slice(col, col + span));
+          el.style.left = `${col * (track + gap)}px`;
+          el.style.top = `${y}px`;
+          el.style.width = `${span * track + (span - 1) * gap}px`;
+          el.classList.toggle('post--span', span > 1);
+          const h = el.offsetHeight;
+          for (let c = col; c < col + span; c++) colH[c] = y + h;
+        };
+
+        for (const el of items) {
+          const want = el.classList.contains('post') ? Number(el.dataset.span) || 1 : 1;
+          const span = Math.min(n, Math.max(1, want));
+          let col = 0;
+          let best = Infinity;
+          for (let c = 0; c <= n - span; c++) {
+            const h = Math.max(...colH.slice(c, c + span));
+            if (h < best) {
+              best = h;
+              col = c;
+            }
+          }
+          place(el, col, span);
+        }
+        row.style.height = `${Math.max(0, ...colH)}px`;
+      };
+
+      fill('before', before);
+      if (open) {
+        open.classList.remove('post--span');
+        open.style.left = '';
+        open.style.top = '';
+        open.style.width = '';
+        journal.append(open);
+      }
+      fill('after', after);
+      } finally {
+        packing = false;
+      }
+    };
+
+    const relayout = () => {
+      const open = openPost();
+      if (open) keep(open, pack);
+      else pack();
+    };
+
+    const show = (id: string | null, n = 1) => {
+      document.title = site;
+      for (const post of journal.querySelectorAll<HTMLElement>('.post')) {
+        const isOpen = post.id === id;
+        post.classList.toggle('post--open', isOpen);
+        if (!isOpen) continue;
+
+        const count = Number(post.dataset.count) || 1;
+        const photo = Math.min(Math.max(n, 1), count);
+        post.querySelectorAll<HTMLElement>('.post-slide').forEach((slide, i) => (slide.hidden = i !== photo - 1));
+        post.querySelectorAll<HTMLElement>('.post-thumbs a').forEach((a, i) => {
+          if (i === photo - 1) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        });
+        post.querySelectorAll<HTMLAnchorElement>('[data-step]').forEach((a) => {
+          const target = wrap(a.dataset.step === 'prev' ? photo - 1 : photo + 1, count);
+          a.href = url(post.id, target);
+          a.dataset.photo = String(target);
+        });
+        const counter = post.querySelector('.post-count');
+        if (counter) counter.textContent = `${photo} / ${count}`;
+        document.title = `${post.dataset.title} · ${site}`;
+      }
+      pack();
+    };
+
+    const go = (post: HTMLElement, a: HTMLAnchorElement) => {
+      const closing = a.hasAttribute('data-close');
+      const wasOpen = post.classList.contains('post--open');
+      const href = path(a.href); // show() rewrites the step links, this one included
+      if (closing || !wasOpen) keep(post, () => show(closing ? null : post.id, Number(a.dataset.photo) || 1));
+      else show(post.id, Number(a.dataset.photo) || 1);
+      // A new history entry for opening or closing a post; stepping through photos replaces it.
+      if (wasOpen && !closing) history.replaceState(null, '', href);
+      else history.pushState(null, '', href);
+    };
+
+    journal.addEventListener('click', (e) => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-photo], a[data-close]');
+      const post = a?.closest<HTMLElement>('.post');
+      if (!a || !post) return;
+      e.preventDefault();
+      go(post, a);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const post = openPost();
+      if (!post || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.target instanceof Element && e.target.closest('input, textarea, select')) return;
+      const selector = { ArrowLeft: '[data-step="prev"]', ArrowRight: '[data-step="next"]', Escape: '[data-close]' }[e.key];
+      const a = selector && post.querySelector<HTMLAnchorElement>(selector);
+      if (!a) return;
+      e.preventDefault();
+      go(post, a);
+    });
+
+    window.addEventListener('popstate', () => {
+      const match = location.pathname.match(pattern);
+      const id = match ? decodeURIComponent(match[1]) : null;
+      const post = (id && document.getElementById(id)) || openPost();
+      if (post) keep(post, () => show(id, Number(match?.[2]) || 1));
+      else show(id, Number(match?.[2]) || 1);
+    });
+
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    const initial = openPost();
+    if (initial) keep(initial, pack);
+    else pack();
+    new ResizeObserver(relayout).observe(journal);
+    journal.querySelectorAll('img').forEach((img) => {
+      if (img.complete || img.closest('.post-gallery')) return;
+      img.addEventListener('load', () => { packed = ''; relayout(); }, { once: true });
+    });
+  }
+</script>
