@@ -30,7 +30,7 @@ img, picture { display: block; max-width: 100%; height: auto; }
 h1, h2, h3, h4 { font-size: inherit; font-weight: 400; line-height: inherit; margin: 0; }
 p, ul, ol, dl, dd { margin: 0 0 var(--s4); }
 p:last-child, ul:last-child, dd > :last-child { margin-bottom: 0; }
-p { text-wrap: pretty; }
+p { text-wrap: pretty; line-height: 1.25; }
 
 a { color: inherit; text-decoration: none; }
 a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
@@ -169,7 +169,7 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   .col-body > .rows:last-child > div:last-child { border-bottom: 0; }
 }
 
-.lead-image { width: 100%; background: var(--wash); margin-bottom: var(--pad); }
+.lead-image { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--wash); margin-bottom: var(--pad); }
 
 /* ---------- Entries (a product in a column) ---------- */
 .entry { padding-bottom: var(--s7); margin-bottom: var(--pad); border-bottom: 1px solid var(--rule); }
@@ -214,17 +214,117 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .journal.is-packed { display: flex; flex-direction: column; overflow-anchor: none; }
 .journal-pack { position: relative; }
 .journal-pack > .post,
-.journal-pack > .journal-space { position: absolute; }
+.journal-pack > .journal-space,
+.journal-pack > .journal-year { position: absolute; }
+.journal-year {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  padding-top: var(--s6);
+  padding-bottom: var(--s6);
+  /* Line across each column only, so the journal's vertical rules sit in front. */
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--rule) 0,
+    var(--rule) var(--track),
+    transparent var(--track),
+    transparent calc(var(--track) + var(--gap))
+  );
+  background-size: calc(100% - 1px) 1px;
+  background-repeat: no-repeat;
+  background-position: 0 50%;
+}
+.journal-year-label {
+  margin: 0;
+  color: var(--tone-gray);
+  background: var(--bg);
+  padding-right: var(--s4);
+}
 .post--span { background: var(--bg); }
 .journal > .post[data-span="2"] { grid-column: span 2; }
 .journal > .post[data-span="3"] { grid-column: span 3; }
 .post { padding-bottom: var(--s6); }
 .journal-space { aspect-ratio: 1; margin-bottom: var(--s6); }
-.post img { width: 100%; background: var(--wash); margin-bottom: var(--s2); }
-.post-more { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 var(--s2); }
+.post img { width: 100%; background: none; }
+.post-closed .post-photo { margin-bottom: var(--s2); }
+.post-more { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 var(--s2); margin-bottom: var(--s2); align-items: start; }
 .post time { color: var(--ink-soft); }
 .post .title { margin-bottom: var(--s1); }
-.post-photo { display: block; }
+.post-photo { display: block; line-height: 0; }
+/*
+  Optional photo pass (Site settings → Gray or Color the journal photos). A Riso stipple sits
+  on the photo, then grayscale, then contrast (black and white points in, mids stay), then
+  screen: darkest pixels become the tone and whites stay white. Gray uses one tone for every
+  post; color cycles rusty hues. Extra thumbnails skip the SVG stipple so it doesn't clip as
+  a strip along the bottom. Hover eases the whole pass off (grain included).
+*/
+.journal--tone .post { --tone: var(--tone-ochre); --tone-ink: var(--tone-ochre-ink); }
+.journal--tone .post[data-tone="mustard"] { --tone: var(--tone-mustard); --tone-ink: var(--tone-mustard-ink); }
+.journal--tone .post[data-tone="plum"] { --tone: var(--tone-plum); --tone-ink: var(--tone-plum-ink); }
+.journal--tone .post[data-tone="olive"] { --tone: var(--tone-olive); --tone-ink: var(--tone-olive-ink); }
+.journal--gray .post,
+.journal--gray .post[data-tone] {
+  --tone: var(--tone-gray);
+  --tone-ink: var(--tone-gray-ink);
+}
+.journal--tone .post,
+.journal--tone .post time,
+.journal--tone .post-count { color: var(--tone-ink); }
+.journal--tone .post-photo,
+.journal--tone .post-thumbs a {
+  position: relative;
+}
+@property --feather {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 2px;
+}
+.journal--tone .post-closed .post-photo {
+  --feather: 2px;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+  mask-composite: intersect;
+  transition: --feather 0.35s ease;
+}
+.journal--tone .post-pass {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--tone);
+  transition: opacity 0.35s ease;
+}
+.journal--tone .post-pass img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: url(#journal-paper) grayscale(1) contrast(1.7);
+  mix-blend-mode: screen;
+}
+.journal--tone .post-more .post-pass img,
+.journal--tone .post-thumbs .post-pass img {
+  filter: grayscale(1) contrast(1.7);
+}
+.journal--tone .post-slide .post-pass img {
+  object-fit: contain;
+  object-position: left top;
+}
+@media (hover: hover) {
+  .journal--tone .post:hover .post-pass { opacity: 0; }
+  .journal--tone .post:hover .post-closed .post-photo { --feather: 0px; }
+}
+.journal--tone .post:focus-within .post-pass { opacity: 0; }
+.journal--tone .post:focus-within .post-closed .post-photo { --feather: 0px; }
+@media (prefers-reduced-motion: reduce) {
+  .journal--tone .post-pass,
+  .journal--tone .post-closed .post-photo { transition: none; }
+}
 
 /* An open post spans the journal's columns and shows one large photo at a time. */
 .post-gallery, .post--open .post-closed, .post-slide[hidden] { display: none; }
@@ -268,10 +368,17 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   height: var(--h);
   width: min(var(--room), calc(var(--h) * var(--widest, 0.75)));
 }
-.post-slide, .post-slide .post-photo { height: 100%; }
+.post-slide { height: 100%; display: flex; align-items: flex-start; }
+.post-slide .post-photo {
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
 .post-slide img {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   object-position: left top;
   background: none;

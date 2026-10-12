@@ -13,9 +13,11 @@ interface Props {
   sizes: string;
   priority?: boolean;
   class?: string;
+  /** Second copy with the journal pass, so grain sits in the photo and the whole pass can ease off. */
+  pass?: boolean;
 }
 
-const { src, alt, widths, sizes, priority = false, class: className } = Astro.props;
+const { src, alt, widths, sizes, priority = false, class: className, pass = false } = Astro.props;
 ---
 
 {
@@ -23,5 +25,16 @@ const { src, alt, widths, sizes, priority = false, class: className } = Astro.pr
     <Image src={src} inferSize alt={alt} widths={widths} sizes={sizes} priority={priority} class={className} />
   ) : (
     <Image src={src} alt={alt} widths={widths} sizes={sizes} priority={priority} class={className} />
+  )
+}
+{
+  pass && (
+    <span class="post-pass" aria-hidden="true">
+      {typeof src === 'string' ? (
+        <Image src={src} inferSize alt="" widths={widths} sizes={sizes} class={className} />
+      ) : (
+        <Image src={src} alt="" widths={widths} sizes={sizes} class={className} />
+      )}
+    </span>
   )
 }

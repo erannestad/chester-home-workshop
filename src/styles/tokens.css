@@ -13,10 +13,22 @@
   --ink-soft: #6f6a63;       /* secondary text, warm gray */
   --rule: #dcd8d1;           /* hairlines between columns and rows */
   --wash: #f4f2ee;           /* image placeholders, quiet panels */
+  /* Journal photo pass: rusty monochrome, one per post (or one gray for all). Hover shows
+     the original. --tone-* is the screen color; --tone-*-ink is a step darker for text. */
+  --tone-gray: #b3aea5;
+  --tone-gray-ink: #5c5852;
+  --tone-ochre: #d8ae65;     /* orangy yellow */
+  --tone-ochre-ink: #a26c2c;
+  --tone-mustard: #b69759;   /* brownish yellow */
+  --tone-mustard-ink: #7f6532;
+  --tone-plum: #b87590;      /* reddish purple */
+  --tone-plum-ink: #80465d;
+  --tone-olive: #879357;     /* dirty green */
+  --tone-olive-ink: #586432;
 
   /* Type: one serif family, one size. Hierarchy comes from italics, small caps and rules. */
   --font: "Source Serif 4 Variable", "Iowan Old Style", Charter, Georgia, serif;
-  --text: 0.875rem;
+  --text: calc(0.875rem + 1pt);
   --leading: 1.4;
 
   /* Space */

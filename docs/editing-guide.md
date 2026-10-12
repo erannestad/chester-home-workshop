@@ -69,6 +69,8 @@ Click **Categories** → **Add an entry** → give it a name and a short descrip
 
 - **Announcement bar**: a short message across the top of every page, e.g. *Fresh honey is in. Pickup Saturdays.* Clear it to hide the bar.
 - **Ordering note**: shown under the button on every product page (pickup, shipping, timing).
+- **Gray the journal photos**: tints every journal photo the same warm gray, with a print-like texture. Hovering a post shows the original. This is on by default. Turn it off to use the color tints, or to keep photos in full color.
+- **Color the journal photos**: tints each journal post a rusty color. Only applies when Gray the journal photos is off. Hovering a post shows the original.
 
 ## Photo tips
 

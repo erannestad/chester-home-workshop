@@ -12,9 +12,12 @@ interface Props {
   post: Post;
   priority?: boolean;
   photo?: number; // open the post at this photo (1-based)
+  tone?: number; // 0–3, cycles the rusty photo pass
+  pass?: boolean; // gray/color photo pass (duplicate img so the pass can ease off)
 }
 
-const { post, priority = false, photo } = Astro.props;
+const tones = ['ochre', 'mustard', 'plum', 'olive'] as const;
+const { post, priority = false, photo, tone = 0, pass = false } = Astro.props;
 const open = photo !== undefined;
 const [first, ...others] = post.images;
 const rest = others.slice(0, 4); // one row under the closed post; the gallery shows them all
@@ -27,7 +30,7 @@ const ratios = post.images.map((img) => img.width / img.height);
 const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Math.max(...ratios)}` : undefined;
 ---
 
-<article class:list={['post', { 'post--open': open }]} id={post.id} data-count={count} data-title={post.title} data-span={post.span}>
+<article class:list={['post', { 'post--open': open }]} id={post.id} data-count={count} data-title={post.title} data-span={post.span} data-tone={tones[tone % 4]}>
   <div class="post-closed">
     {
       first && (
@@ -38,6 +41,7 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
             widths={[320, 480, 640, 960]}
             sizes="(min-width: 56rem) 20vw, 100vw"
             priority={priority}
+            pass={pass}
           />
         </a>
       )
@@ -47,7 +51,7 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
         <div class="post-more">
           {rest.map((img, i) => (
             <a class="post-photo" href={href(i + 2)} data-photo={i + 2}>
-              <Photo src={img} alt={`${post.title}, photo ${i + 2}`} widths={[120, 200, 320]} sizes="(min-width: 56rem) 5vw, 25vw" />
+              <Photo src={img} alt={`${post.title}, photo ${i + 2}`} widths={[120, 200, 320]} sizes="(min-width: 56rem) 5vw, 25vw" pass={pass} />
             </a>
           ))}
         </div>
@@ -69,10 +73,13 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
                     widths={[480, 720, 1080, 1600]}
                     sizes="(min-width: 56rem) 50vw, 100vw"
                     priority={open && i === current - 1}
+                    pass={pass}
                   />
                 </a>
               ) : (
-                <Photo src={img} alt={post.title} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 50vw, 100vw" priority={open} />
+                <div class="post-photo">
+                  <Photo src={img} alt={post.title} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 50vw, 100vw" priority={open} pass={pass} />
+                </div>
               )}
             </div>
           ))
@@ -83,7 +90,7 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
           <div class="post-thumbs">
             {post.images.map((img, i) => (
               <a href={href(i + 1)} data-photo={i + 1} aria-current={i === current - 1 ? 'true' : undefined}>
-                <Photo src={img} alt={`Photo ${i + 1}`} widths={[120, 240]} sizes="3.5rem" />
+                <Photo src={img} alt={`Photo ${i + 1}`} widths={[120, 240]} sizes="3.5rem" pass={pass} />
               </a>
             ))}
           </div>

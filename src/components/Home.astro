@@ -10,7 +10,7 @@ import Column from './Column.astro';
 import JournalPost from './JournalPost.astro';
 import { getCategories, type ProductImage } from '../lib/catalog';
 import { getPosts } from '../lib/journal';
-import { settings, instagramUrl, instagramHandle, facebookUrl, link } from '../lib/site';
+import { settings, instagramUrl, instagramHandle, link } from '../lib/site';
 
 interface Props {
   open?: { id: string; photo: number };
@@ -43,11 +43,8 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
     <dl class="rows">
       <div>
         <dt>
-          {settings.location && <>{settings.location}<br /></>}
-          {settings.email && <><a href={`mailto:${settings.email}`}>{settings.email}</a><br /></>}
           {settings.phone && <><a href={`tel:${tel}`}>{settings.phone}</a><br /></>}
-          {settings.instagram && <><a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a><br /></>}
-          {settings.facebook && <a href={facebookUrl(settings.facebook)}>Facebook</a>}
+          {settings.instagram && <a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a>}
         </dt>
         <dd>
           <h1 class="title">{page?.data.heading || settings.site_name}</h1>
@@ -85,11 +82,55 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
   <Column label={page?.data.featured_heading || 'Journal'} journal>
     {
       posts.length ? (
-        <div class="journal" data-base={link('/')} data-site={settings.site_name}>
-          {posts.map((post, i) => (
-            <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} />
-          ))}
+        <>
+        <svg class="visually-hidden" width="0" height="0" aria-hidden="true">
+          <filter id="journal-paper" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="2" stitchTiles="stitch" result="blot"></feTurbulence>
+            <feComponentTransfer in="blot" result="coverage">
+              <feFuncR type="linear" slope="0.22" intercept="0.78"></feFuncR>
+              <feFuncG type="linear" slope="0.22" intercept="0.78"></feFuncG>
+              <feFuncB type="linear" slope="0.22" intercept="0.78"></feFuncB>
+            </feComponentTransfer>
+            <feBlend in="SourceGraphic" in2="coverage" mode="multiply" result="laid"></feBlend>
+            <feTurbulence type="turbulence" baseFrequency="0.45" numOctaves="1" seed="9" stitchTiles="stitch" result="stipple"></feTurbulence>
+            <feComponentTransfer in="stipple" result="dots">
+              <feFuncR type="linear" slope="2.8" intercept="-0.9"></feFuncR>
+              <feFuncG type="linear" slope="2.8" intercept="-0.9"></feFuncG>
+              <feFuncB type="linear" slope="2.8" intercept="-0.9"></feFuncB>
+            </feComponentTransfer>
+            <feComponentTransfer in="dots" result="ink">
+              <feFuncR type="linear" slope="0.32" intercept="0.68"></feFuncR>
+              <feFuncG type="linear" slope="0.32" intercept="0.68"></feFuncG>
+              <feFuncB type="linear" slope="0.32" intercept="0.68"></feFuncB>
+            </feComponentTransfer>
+            <feBlend in="laid" in2="ink" mode="multiply"></feBlend>
+          </filter>
+        </svg>
+        <div
+          class:list={[
+            'journal',
+            { 'journal--tone': settings.journal_gray || settings.journal_color },
+            { 'journal--gray': settings.journal_gray },
+          ]}
+          data-base={link('/')}
+          data-site={settings.site_name}
+        >
+          {posts.map((post, i) => {
+            const year = post.date?.getUTCFullYear();
+            const prev = i > 0 ? posts[i - 1].date?.getUTCFullYear() : year;
+            return (
+              <>
+                {year != null && year !== prev && (
+                  <div class="journal-year">
+                    <h2 class="journal-year-label">{year}</h2>
+                  </div>
+                )}
+                <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} tone={i % 4} pass={settings.journal_gray || settings.journal_color} />
+              </>
+            );
+          })}
         </div>
+        </>
       ) : (
         <p class="empty">Nothing here yet.</p>
       )
@@ -131,12 +172,12 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
     };
     let packed = '';
     let packing = false;
-    const order = [...journal.querySelectorAll<HTMLElement>('.post')].flatMap((post) => {
-      if (Math.random() >= 0.5) return [post];
+    const order = [...journal.querySelectorAll<HTMLElement>(':scope > .post, :scope > .journal-year')].flatMap((el) => {
+      if (!el.classList.contains('post') || Math.random() >= 0.5) return [el];
       const space = document.createElement('div');
       space.className = 'journal-space';
       space.setAttribute('aria-hidden', 'true');
-      return [post, space];
+      return [el, space];
     });
 
     const pack = () => {
@@ -181,13 +222,17 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
           el.style.left = `${col * (track + gap)}px`;
           el.style.top = `${y}px`;
           el.style.width = `${span * track + (span - 1) * gap}px`;
-          el.classList.toggle('post--span', span > 1);
+          if (el.classList.contains('post')) el.classList.toggle('post--span', span > 1);
           const h = el.offsetHeight;
           for (let c = col; c < col + span; c++) colH[c] = y + h;
         };
 
         for (const el of items) {
-          const want = el.classList.contains('post') ? Number(el.dataset.span) || 1 : 1;
+          const want = el.classList.contains('journal-year')
+            ? n
+            : el.classList.contains('post')
+              ? Number(el.dataset.span) || 1
+              : 1;
           const span = Math.min(n, Math.max(1, want));
           let col = 0;
           let best = Infinity;

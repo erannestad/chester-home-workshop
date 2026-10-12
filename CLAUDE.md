@@ -31,7 +31,7 @@ npm run preview   # serve dist/
 | `src/content/categories/*.md` | Categories. Filename = id (`/shop/{id}/`) |
 | `src/content/pages/{home,about,contact}.md` | Page copy |
 | `src/content/journal/*.md` | Journal posts (home page, right side). Filename `YYYY-MM-DD-slug.md` |
-| `src/data/settings.json` | Business name, email, phone, Instagram, Facebook, announcement bar, ordering note |
+| `src/data/settings.json` | Business name, email, phone, Instagram, Facebook, announcement bar, ordering note, journal gray/color pass |
 | `src/assets/{products,journal,pages}/` | Photos. They must live here (not `public/`) so Astro optimizes them |
 | `src/lib/catalog.ts` | **Catalog adapter.** The only module that reads product/category data |
 | `src/lib/site.ts` | Settings loader with defaults |

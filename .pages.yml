@@ -369,3 +369,13 @@ content:
         label: Ordering note
         description: Shown under the button on every product page (pickup, shipping, timing).
         type: text
+      - name: journal_gray
+        label: Gray the journal photos
+        description: Tints every journal photo the same warm gray, with a print-like texture. Hovering a post shows the original. On by default. Turn off to use color tints, or full-color photos.
+        type: boolean
+        default: true
+      - name: journal_color
+        label: Color the journal photos
+        description: Tints each journal post a rusty color (orangy yellow, brown, plum, or green). Only applies when Gray the journal photos is off. Hovering a post shows the original.
+        type: boolean
+        default: false

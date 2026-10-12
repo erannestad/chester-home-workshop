@@ -11,9 +11,11 @@ type Settings = {
   facebook: string;
   announcement: string;
   ordering_note: string;
+  journal_color: boolean;
+  journal_gray: boolean;
 };
 
-const defaults: Settings = {
+const defaults: Omit<Settings, 'journal_color' | 'journal_gray'> = {
   site_name: 'Chester Home Workshop',
   tagline: '',
   location: '',
@@ -26,10 +28,15 @@ const defaults: Settings = {
 };
 
 const clean = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+const data = raw as Record<string, unknown>;
 
-export const settings: Settings = Object.fromEntries(
-  Object.keys(defaults).map((k) => [k, clean((raw as Record<string, unknown>)[k]) || defaults[k as keyof Settings]]),
-) as Settings;
+export const settings: Settings = {
+  ...(Object.fromEntries(
+    Object.keys(defaults).map((k) => [k, clean(data[k]) || defaults[k as keyof typeof defaults]]),
+  ) as Omit<Settings, 'journal_color' | 'journal_gray'>),
+  journal_color: data.journal_color === true,
+  journal_gray: data.journal_gray !== false,
+};
 
 /** Prefixes an internal path ("/shop/") with the deploy base ("/chester-home-workshop/"). */
 export function link(path: string): string {
