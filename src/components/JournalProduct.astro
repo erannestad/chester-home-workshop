@@ -1,7 +1,8 @@
 ---
 /*
   A shop product in the journal feed. Same closed layout as a journal post (photo,
-  extra thumbs, caption) but full color, no filter, and every link goes to the product page.
+  extra thumbs only when the product asks for them, caption) but full color, no filter,
+  and every link goes to the product page.
 */
 import Photo from './Photo.astro';
 import { priceLine, STATUS_LABEL, type Product } from '../lib/catalog';
@@ -14,7 +15,7 @@ interface Props {
 
 const { product, priority = false } = Astro.props;
 const [first, ...others] = product.images;
-const rest = others.slice(0, 4);
+const rest = product.journalMorePhotos ? others.slice(0, 4) : [];
 const href = link(`/products/${product.id}/`);
 ---
 

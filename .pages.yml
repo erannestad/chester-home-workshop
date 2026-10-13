@@ -181,6 +181,11 @@ content:
                   label: Two columns
                 - name: "3"
                   label: Three columns
+          - name: more_photos
+            label: Show more photos on homepage
+            description: Off shows only the first photo. On adds up to four small photos underneath, like a journal post. Only used when Feature on homepage is on.
+            type: boolean
+            default: false
       - name: draft
         label: Hide from website
         description: Keep this product saved but off the site.
@@ -422,3 +427,16 @@ content:
         description: Tints each journal post a rusty color (orangy yellow, brown, plum, or green). Only applies when Gray the journal photos is off. Hovering a post shows the original.
         type: boolean
         default: false
+      - name: journal_divider
+        label: Divide the journal by
+        description: "Where the journal draws a line between groups of posts. By month: Summer is June to August, Fall is September to November, Winter is December to February, Spring is March to May, shown as Fall 2026 (or Winter 2025–26). By solstice: a new line at each one, June 21 and December 21, shown as 2026 Summer Solstice or 2025 Winter Solstice."
+        type: select
+        default: solstices
+        options:
+          values:
+            - name: year
+              label: Year (2025)
+            - name: months
+              label: Season, by month (Fall 2026)
+            - name: solstices
+              label: Solstice (2026 Summer Solstice)

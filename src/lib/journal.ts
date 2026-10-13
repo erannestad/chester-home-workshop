@@ -29,6 +29,38 @@ export async function getPosts(): Promise<Post[]> {
 export const formatDate = (d: Date) =>
   d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 
+export type JournalDivider = 'year' | 'months' | 'solstices';
+
+const SEASONS = ['Winter', 'Spring', 'Summer', 'Fall'] as const;
+
+/** Solstice dates (month 0–11, day). Within a day of the real dates every year. */
+const SUMMER_SOLSTICE = [5, 21] as const;
+const WINTER_SOLSTICE = [11, 21] as const;
+
+const onOrAfter = (month: number, day: number, [m, d]: readonly [number, number]) =>
+  month > m || (month === m && day >= d);
+
+/**
+ * The divider a post falls under: its year, or its season.
+ * 'solstices' names the solstice that began it ("2025 Winter Solstice" runs to June 20, 2026);
+ * 'months' counts December toward the next year's winter ("Winter 2025–26").
+ */
+export function journalPeriod(d: Date, divider: JournalDivider): { key: string; label: string } {
+  const year = d.getUTCFullYear();
+  if (divider === 'year') return { key: String(year), label: String(year) };
+  const month = d.getUTCMonth();
+  if (divider === 'solstices') {
+    const day = d.getUTCDate();
+    if (onOrAfter(month, day, WINTER_SOLSTICE)) return { key: `${year}-winter`, label: `${year} Winter Solstice` };
+    if (onOrAfter(month, day, SUMMER_SOLSTICE)) return { key: `${year}-summer`, label: `${year} Summer Solstice` };
+    return { key: `${year - 1}-winter`, label: `${year - 1} Winter Solstice` };
+  }
+  const season = SEASONS[Math.floor(((month + 1) % 12) / 3)];
+  if (season !== 'Winter') return { key: `${year}-${season}`, label: `${season} ${year}` };
+  const end = month === 11 ? year + 1 : year;
+  return { key: `${end}-Winter`, label: `Winter ${end - 1}–${String(end).slice(-2)}` };
+}
+
 /** Insert extras as the 2nd or 3rd item in each group. Same ids always produce the same gaps. */
 export function scatterEvery<T, U>(
   items: T[],

@@ -10,7 +10,7 @@ import Column from './Column.astro';
 import JournalPost from './JournalPost.astro';
 import JournalProduct from './JournalProduct.astro';
 import { getCategories, getJournalProducts, type ProductImage } from '../lib/catalog';
-import { getPosts, scatterEvery } from '../lib/journal';
+import { getPosts, journalPeriod, scatterEvery } from '../lib/journal';
 import { CMS, cmsEditUrl, settings, instagramUrl, instagramHandle, link } from '../lib/site';
 
 interface Props {
@@ -126,13 +126,14 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
             }
             const post = entry.value;
             const prevPost = [...feed.slice(0, i)].reverse().find((e) => e.kind === 'item');
-            const year = post.date?.getUTCFullYear();
-            const prev = prevPost?.kind === 'item' ? prevPost.value.date?.getUTCFullYear() : year;
+            const period = post.date && journalPeriod(post.date, settings.journal_divider);
+            const prevDate = prevPost?.kind === 'item' ? prevPost.value.date : null;
+            const prev = prevDate ? journalPeriod(prevDate, settings.journal_divider) : period;
             return (
               <>
-                {year != null && year !== prev && (
+                {period && period.key !== prev?.key && (
                   <div class="journal-year">
-                    <h2 class="journal-year-label">{year}</h2>
+                    <h2 class="journal-year-label">{period.label}</h2>
                   </div>
                 )}
                 <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} tone={entry.index % 4} pass={settings.journal_gray || settings.journal_color} />

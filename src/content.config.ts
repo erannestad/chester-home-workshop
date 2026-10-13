@@ -87,6 +87,7 @@ const products = defineCollection({
           featured: flag(),
           order: homepageOrder(),
           columns: journalSpan(),
+          more_photos: flag(),
           journal_priority: homepageOrder(),
           journal_span: journalSpan(),
         })

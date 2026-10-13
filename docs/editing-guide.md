@@ -44,6 +44,7 @@ On a product, **Feature on homepage** puts it in the journal on the home page (f
 - **Feature on homepage**: turn on to show it, off to take it out.
 - **Order on homepage**: **1** is earlier (closer to the top) and **5** is later. Products with the same number are listed A to Z.
 - **Columns on homepage**: how many columns it covers on a wide screen. Most stay at one. Use two or three for a larger photo. On a phone it is always one column.
+- **Show more photos on homepage**: off (the usual) shows just the first photo. Turn on to add up to four small photos underneath.
 
 A hidden product never appears, even with this on. This does not change the shop.
 
@@ -79,6 +80,10 @@ Click **Categories** → **Add an entry** → give it a name and a short descrip
 - **Ordering note**: shown under the button on every product page (pickup, shipping, timing).
 - **Gray the journal photos**: tints every journal photo the same warm gray, with a print-like texture. Hovering a post shows the original. This is on by default. Turn it off to use the color tints, or to keep photos in full color.
 - **Color the journal photos**: tints each journal post a rusty color. Only applies when Gray the journal photos is off. Hovering a post shows the original.
+- **Divide the journal by**: where the journal draws a line between groups of posts.
+  - *Year*: a line between years (*2025*).
+  - *Season, by month*: Summer is June to August, Fall is September to November, Winter is December to February, Spring is March to May. Shows as *Fall 2026*; winter crosses New Year, so it shows as *Winter 2025–26*.
+  - *Solstice* (the usual setting): a new line at each one, June 21 and December 21. Shows as *2026 Summer Solstice*. Posts from January to June 20 sit under the December before, e.g. *2025 Winter Solstice*.
 
 ## Photo tips
 

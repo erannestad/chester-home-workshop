@@ -1,5 +1,6 @@
 // Site-wide settings, edited by the CMS in src/data/settings.json.
 import raw from '../data/settings.json';
+import type { JournalDivider } from './journal';
 
 type Settings = {
   site_name: string;
@@ -13,9 +14,12 @@ type Settings = {
   ordering_note: string;
   journal_color: boolean;
   journal_gray: boolean;
+  journal_divider: JournalDivider;
 };
 
-const defaults: Omit<Settings, 'journal_color' | 'journal_gray'> = {
+type Flags = 'journal_color' | 'journal_gray' | 'journal_divider';
+
+const defaults: Omit<Settings, Flags> = {
   site_name: 'Chester Home Workshop',
   tagline: '',
   location: '',
@@ -33,9 +37,10 @@ const data = raw as Record<string, unknown>;
 export const settings: Settings = {
   ...(Object.fromEntries(
     Object.keys(defaults).map((k) => [k, clean(data[k]) || defaults[k as keyof typeof defaults]]),
-  ) as Omit<Settings, 'journal_color' | 'journal_gray'>),
+  ) as Omit<Settings, Flags>),
   journal_color: data.journal_color === true,
   journal_gray: data.journal_gray !== false,
+  journal_divider: (['year', 'months'] as const).find((v) => v === data.journal_divider) ?? 'solstices',
 };
 
 /** Prefixes an internal path ("/shop/") with the deploy base ("/chester-home-workshop/"). */

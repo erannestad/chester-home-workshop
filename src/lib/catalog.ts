@@ -28,6 +28,7 @@ export type Product = {
   inJournal: boolean;
   journalPriority: number | null; // 1 first … 5 last, among products on the home page
   journalSpan: number; // 1–3 home-page columns on a wide screen
+  journalMorePhotos: boolean; // small extra photos under the first one on the home page
   draft: boolean;
   bodyHtml: string; // long description, already rendered to HTML
 };
@@ -60,6 +61,7 @@ async function loadProducts(): Promise<Product[]> {
     inJournal: data.homepage?.featured || data.in_journal,
     journalPriority: data.homepage?.order ?? data.homepage?.journal_priority ?? data.journal_priority,
     journalSpan: data.homepage?.columns ?? data.homepage?.journal_span ?? data.journal_span,
+    journalMorePhotos: data.homepage?.more_photos ?? false,
     draft: data.draft,
     bodyHtml: rendered?.html ?? '',
   }));
