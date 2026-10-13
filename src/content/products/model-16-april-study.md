@@ -5,7 +5,7 @@ images:
   - ../../assets/products/dsc03404-copy4000px.jpg
 category: watercolors.md
 price: 1200
-status: sold_out
+status: available
 summary: Study of flowers from Cambridge Massachussets, April 2026
 details:
   - label: Dimensions
