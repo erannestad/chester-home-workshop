@@ -1,7 +1,6 @@
 ---
 title: Model 14
 images:
-  - ../../assets/products/model-14adjust.jpg
   - ../../assets/products/model-14adjust-1.jpg
 category: watercolors.md
 price: 4000
