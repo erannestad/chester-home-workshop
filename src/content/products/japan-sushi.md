@@ -12,11 +12,11 @@ details:
     value: Watercolor on cotton paper
   - label: Framing
     value: Unframed; framing available
-order: 1
+order: 3
 in_journal: true
 homepage:
   featured: true
-  journal_priority: "1"
+  journal_priority: "3"
   journal_span: "3"
 draft: false
 ---
