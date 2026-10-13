@@ -16,8 +16,8 @@ order: 1
 in_journal: false
 homepage:
   featured: true
-  journal_priority: "5"
-  journal_span: "1"
+  journal_priority: "1"
+  journal_span: "3"
 draft: false
 ---
 Painted on site on a still morning in late summer.
