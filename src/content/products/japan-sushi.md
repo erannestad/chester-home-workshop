@@ -13,7 +13,7 @@ details:
   - label: Framing
     value: Unframed; framing available
 featured: true
-order: 3
+order: 1
 draft: true
 ---
 Painted on site on a still morning in late summer.
