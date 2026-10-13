@@ -14,6 +14,8 @@ details:
     value: Unframed; framing available
 featured: true
 order: 3
+in_journal: true
+journal_priority: 2
 draft: false
 ---
 Painted on site on a still morning in late summer.

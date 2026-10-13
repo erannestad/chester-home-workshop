@@ -1,0 +1,64 @@
+---
+/*
+  A shop product in the journal feed. Same closed layout as a journal post (photo,
+  extra thumbs, caption) but full color, no filter, and every link goes to the product page.
+*/
+import Photo from './Photo.astro';
+import { priceLine, STATUS_LABEL, type Product } from '../lib/catalog';
+import { link } from '../lib/site';
+
+interface Props {
+  product: Product;
+  priority?: boolean;
+}
+
+const { product, priority = false } = Astro.props;
+const [first, ...others] = product.images;
+const rest = others.slice(0, 4);
+const href = link(`/products/${product.id}/`);
+---
+
+<article class="post post--product" id={`product-${product.id}`} data-span="1">
+  <div class="post-closed">
+    {
+      first && (
+        <a class="post-photo" href={href}>
+          <Photo
+            src={first}
+            alt={product.title}
+            widths={[320, 480, 640, 960]}
+            sizes="(min-width: 56rem) 20vw, 100vw"
+            priority={priority}
+          />
+        </a>
+      )
+    }
+    {
+      rest.length > 0 && (
+        <div class="post-more">
+          {rest.map((img, i) => (
+            <a class="post-photo" href={href}>
+              <Photo src={img} alt={`${product.title}, photo ${i + 2}`} widths={[120, 200, 320]} sizes="(min-width: 56rem) 5vw, 25vw" />
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  <div class="caption">
+    <p class="caption-index">
+      {priceLine(product)}
+      {product.status !== 'available' && (
+        <>
+          <br />
+          <span class="label">{STATUS_LABEL[product.status]}</span>
+        </>
+      )}
+    </p>
+    <div>
+      <h3 class="title"><a href={href}>{product.title}</a></h3>
+      {product.summary && <p>{product.summary}</p>}
+    </div>
+  </div>
+</article>

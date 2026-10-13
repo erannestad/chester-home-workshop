@@ -63,6 +63,11 @@ const products = defineCollection({
         .transform((v) => (v ?? []).filter((d) => d.label || d.value)),
       featured: flag(),
       order: num(),
+      in_journal: flag(),
+      journal_priority: num().transform((v) => {
+        if (v === null) return null;
+        return Math.min(10, Math.max(1, Math.round(v)));
+      }),
       draft: flag(),
     }),
 });

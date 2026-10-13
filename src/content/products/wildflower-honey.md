@@ -14,6 +14,8 @@ details:
     value: Summer
 featured: true
 order: 4
+in_journal: true
+journal_priority: 3
 draft: false
 ---
 Raw and unfiltered. Honey naturally crystallizes over time; warm the jar gently in water to soften.

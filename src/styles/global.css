@@ -248,7 +248,8 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .post img { width: 100%; background: none; }
 .post-closed .post-photo { margin-bottom: var(--s2); }
 .post-more { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 var(--s2); margin-bottom: var(--s2); align-items: start; }
-.post time { color: var(--ink-soft); }
+.post time,
+.post--product .caption-index { color: var(--ink-soft); }
 .post .title { margin-bottom: var(--s1); }
 .post-photo { display: block; line-height: 0; }
 /*
@@ -258,19 +259,19 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   post; color cycles rusty hues. Extra thumbnails skip the SVG stipple so it doesn't clip as
   a strip along the bottom. Hover eases the whole pass off (grain included).
 */
-.journal--tone .post { --tone: var(--tone-ochre); --tone-ink: var(--tone-ochre-ink); }
-.journal--tone .post[data-tone="mustard"] { --tone: var(--tone-mustard); --tone-ink: var(--tone-mustard-ink); }
-.journal--tone .post[data-tone="plum"] { --tone: var(--tone-plum); --tone-ink: var(--tone-plum-ink); }
-.journal--tone .post[data-tone="olive"] { --tone: var(--tone-olive); --tone-ink: var(--tone-olive-ink); }
-.journal--gray .post,
-.journal--gray .post[data-tone] {
+.journal--tone .post:not(.post--product) { --tone: var(--tone-ochre); --tone-ink: var(--tone-ochre-ink); }
+.journal--tone .post:not(.post--product)[data-tone="mustard"] { --tone: var(--tone-mustard); --tone-ink: var(--tone-mustard-ink); }
+.journal--tone .post:not(.post--product)[data-tone="plum"] { --tone: var(--tone-plum); --tone-ink: var(--tone-plum-ink); }
+.journal--tone .post:not(.post--product)[data-tone="olive"] { --tone: var(--tone-olive); --tone-ink: var(--tone-olive-ink); }
+.journal--gray .post:not(.post--product),
+.journal--gray .post:not(.post--product)[data-tone] {
   --tone: var(--tone-gray);
   --tone-ink: var(--tone-gray-ink);
 }
-.journal--tone .post,
-.journal--tone .post time,
-.journal--tone .post-count { color: var(--tone-ink); }
-.journal--tone .post-photo,
+.journal--tone .post:not(.post--product),
+.journal--tone .post:not(.post--product) time,
+.journal--tone .post:not(.post--product) .post-count { color: var(--tone-ink); }
+.journal--tone .post:not(.post--product) .post-photo,
 .journal--tone .post-thumbs a {
   position: relative;
 }
@@ -279,7 +280,7 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   inherits: false;
   initial-value: 2px;
 }
-.journal--tone .post-closed .post-photo {
+.journal--tone .post:not(.post--product) .post-closed .post-photo {
   --feather: 2px;
   -webkit-mask-image:
     linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
@@ -317,13 +318,13 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 }
 @media (hover: hover) {
   .journal--tone .post:hover .post-pass { opacity: 0; }
-  .journal--tone .post:hover .post-closed .post-photo { --feather: 0px; }
+  .journal--tone .post:not(.post--product):hover .post-closed .post-photo { --feather: 0px; }
 }
 .journal--tone .post:focus-within .post-pass { opacity: 0; }
-.journal--tone .post:focus-within .post-closed .post-photo { --feather: 0px; }
+.journal--tone .post:not(.post--product):focus-within .post-closed .post-photo { --feather: 0px; }
 @media (prefers-reduced-motion: reduce) {
   .journal--tone .post-pass,
-  .journal--tone .post-closed .post-photo { transition: none; }
+  .journal--tone .post:not(.post--product) .post-closed .post-photo { transition: none; }
 }
 
 /* An open post spans the journal's columns and shows one large photo at a time. */

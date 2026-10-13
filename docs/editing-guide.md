@@ -39,6 +39,17 @@ Open the product → turn on **Hide from website** → Save. It's kept, so you c
 
 Turn on **Show first in the shop** to move an item to the top of its category.
 
+## Show a product in the journal
+
+The journal on the home page can include shop items as well as posts. They appear in full color (no gray or rusty filter) among the posts, always the 2nd or 3rd item in a group, and tap through to the product page.
+
+1. Open the product.
+2. Turn on **Show in the journal**.
+3. Set **Journal order** from 1 to 10. **1** is earlier in the journal (closer to the top), **10** is later. If two items share a number, they are listed A to Z.
+4. Save.
+
+Turn **Show in the journal** off to take it back out. **Journal order** only changes the journal, not the shop. A hidden product never appears in the journal, even with this on.
+
 ## Write a journal post
 
 The right side of the home page is the journal: photos and a line or two about what's going on in the workshop, newest first.

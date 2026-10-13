@@ -8,8 +8,9 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Column from './Column.astro';
 import JournalPost from './JournalPost.astro';
-import { getCategories, type ProductImage } from '../lib/catalog';
-import { getPosts } from '../lib/journal';
+import JournalProduct from './JournalProduct.astro';
+import { getCategories, getJournalProducts, type ProductImage } from '../lib/catalog';
+import { getPosts, scatterEvery } from '../lib/journal';
 import { settings, instagramUrl, instagramHandle, link } from '../lib/site';
 
 interface Props {
@@ -23,6 +24,8 @@ const { open, title, description, image } = Astro.props;
 const page = await getEntry('pages', 'home');
 const categories = await getCategories();
 const posts = await getPosts();
+const journalProducts = await getJournalProducts();
+const feed = scatterEvery(posts, journalProducts, (p) => p.id, (p) => p.id);
 const tel = settings.phone.replace(/[^\d+]/g, '');
 ---
 
@@ -81,7 +84,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
 
   <Column label={page?.data.featured_heading || 'Journal'} journal>
     {
-      posts.length ? (
+      posts.length || journalProducts.length ? (
         <>
         <svg class="visually-hidden" width="0" height="0" aria-hidden="true">
           <filter id="journal-paper" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
@@ -115,9 +118,14 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
           data-base={link('/')}
           data-site={settings.site_name}
         >
-          {posts.map((post, i) => {
+          {feed.map((entry, i) => {
+            if (entry.kind === 'extra') {
+              return <JournalProduct product={entry.value} priority={!open && i < 3} />;
+            }
+            const post = entry.value;
+            const prevPost = [...feed.slice(0, i)].reverse().find((e) => e.kind === 'item');
             const year = post.date?.getUTCFullYear();
-            const prev = i > 0 ? posts[i - 1].date?.getUTCFullYear() : year;
+            const prev = prevPost?.kind === 'item' ? prevPost.value.date?.getUTCFullYear() : year;
             return (
               <>
                 {year != null && year !== prev && (
@@ -125,7 +133,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
                     <h2 class="journal-year-label">{year}</h2>
                   </div>
                 )}
-                <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} tone={i % 4} pass={settings.journal_gray || settings.journal_color} />
+                <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} tone={entry.index % 4} pass={settings.journal_gray || settings.journal_color} />
               </>
             );
           })}

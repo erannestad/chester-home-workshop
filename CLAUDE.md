@@ -38,6 +38,7 @@ npm run preview   # serve dist/
 | `src/lib/journal.ts` | Journal loader (`getPosts()`, newest first) |
 | `src/components/Home.astro` | Home page body, shared by `pages/index.astro` and `pages/journal/[id]/[...photo].astro` |
 | `src/components/JournalPost.astro` | One journal post, closed (photo, thumbnails, caption) or open (spans the journal's columns, one photo at a time) |
+| `src/components/JournalProduct.astro` | A shop product in the journal feed (full color, links to the product page) |
 | `src/site.config.ts` | Dev-only config (contact `formEndpoint`) |
 | `src/components/BuyBox.astro` | **The only place purchase UI/logic lives** |
 | `src/components/Photo.astro` | Wrapper around `<Image>` for local or remote photos |
