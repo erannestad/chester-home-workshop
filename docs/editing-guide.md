@@ -9,14 +9,14 @@ On any page of the website, **Edit** in the bottom corner (next to **Admin**) op
 1. Click **Products** → **Add an entry**.
 2. Fill in:
    - **Name**: e.g. *Indigo Shibori Linen*
-   - **Photos**: click to upload. The first photo is the main one. Phone photos are fine.
+   - **Photos**: click to upload. The first photo is the main one. Each file must be JPEG, PNG, or WebP and under about 3 MB (see Photo tips).
    - **Category**: pick from the list
    - **Price ($)**: just the number, e.g. `28`. Leave blank if it's quoted or "price on request."
    - **Price note** (optional): *per yard*, *8 oz jar*, *Original, 9 × 12 in.*, *Quoted per piece*
    - **Availability**: Available · Made to order / by quote · Sold
    - **Short description**: a sentence or two
    - **Full description**: as much as you like
-   - **Details** (optional): rows like *Material / Linen*, *Size / 18 × 18 in.*
+   - **Details**: starts with Dimensions, Material (*watercolor on paper, mounted on panel*), and Year. Fill in the blanks. Change or delete a row if the product is not a watercolor.
 3. Click **Save**.
 
 ## Copy a product
@@ -37,22 +37,15 @@ Open the product → set **Availability** to **Sold** → Save. It stays on the 
 
 Open the product → turn on **Hide from website** → Save. It's kept, so you can turn it back on later.
 
-## Homepage settings
+## Feature on homepage
 
-On a product, **Homepage settings** holds three fields:
+On a product, **Feature on homepage** puts it in the journal on the home page (full color, among the posts).
 
-- **Feature on homepage**: moves the item toward the top of the shop, so it is easier to find from the home page.
-- **Priority**: when more than one product is in the journal, **1** is earlier (closer to the top) and **10** is later. Products with the same number are listed A to Z.
-- **Columns**: how many columns the product covers in the journal on a wide screen. Most stay at one. Use two or three for a larger photo. On a phone it is always one column.
+- **Feature on homepage**: turn on to show it, off to take it out.
+- **Order on homepage**: **1** is earlier (closer to the top) and **5** is later. Products with the same number are listed A to Z.
+- **Columns on homepage**: how many columns it covers on a wide screen. Most stay at one. Use two or three for a larger photo. On a phone it is always one column.
 
-To put a product in the journal (full color, among the posts, always the 2nd or 3rd item in a group):
-
-1. Open the product.
-2. Turn on **Show in the journal**.
-3. Under **Homepage settings**, set **Priority** and **Columns**.
-4. Save.
-
-Turn **Show in the journal** off to take it back out. **Priority** and **Columns** only change the journal, not the shop. A hidden product never appears in the journal, even with this on.
+A hidden product never appears, even with this on. This does not change the shop.
 
 ## Write a journal post
 
@@ -91,6 +84,8 @@ Click **Categories** → **Add an entry** → give it a name and a short descrip
 
 - Natural daylight, plain background, and the same spot each time keeps the shop looking consistent.
 - Photos display as portrait rectangles (a bit taller than wide) in the shop, so frame with a little room around the item.
-- If an upload is refused, the photo is probably HEIC. On iPhone: Settings → Camera → Formats → *Most Compatible*. Or share or export it as a JPEG first.
+- Each photo must be under about **3 MB**, or the editor shows “Failed to upload file: 413”. Phone photos are often larger than that. Uploading several at once does not help.
+- On a Mac, open the photo in Preview → File → Export… → JPEG, quality 70–80, longest side about 2000 px. That is plenty; the website resizes them. If **Resize for website** is in the right-click Quick Actions menu, that makes a `{name}-cms.jpg` next to the original, about 1 MB.
+- If an upload is refused and the file is already small, it is probably HEIC. On iPhone: Settings → Camera → Formats → *Most Compatible*. Or share or export it as a JPEG first.
 
 If something looks wrong after saving, wait a minute and refresh. If it still looks wrong, text Eric.

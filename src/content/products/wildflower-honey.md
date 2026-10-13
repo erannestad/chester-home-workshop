@@ -13,10 +13,10 @@ details:
   - label: Harvest
     value: Summer
 order: 4
-in_journal: true
 homepage:
   featured: true
-  journal_priority: 3
+  order: 3
+  columns: 1
 draft: false
 ---
 Raw and unfiltered. Honey naturally crystallizes over time; warm the jar gently in water to soften.

@@ -46,7 +46,7 @@ content:
     format: yaml-frontmatter
     filename: "{primary}.md"
     view:
-      fields: [images, title, category, price, status, order, homepage.featured, homepage.journal_priority, homepage.journal_span, in_journal, draft]
+      fields: [images, title, category, price, status, order, homepage.featured, homepage.order, homepage.columns, draft]
       primary: title
       search: [title, summary]
       sort: [title, price, order]
@@ -74,7 +74,7 @@ content:
         required: true
       - name: images
         label: Photos
-        description: The first photo is the main one. Phone photos are fine; the site resizes them.
+        description: The first photo is the main one. Use JPEG, PNG, or WebP under about 3 MB each (phone photos are often too large). In Preview on a Mac: File → Export…, JPEG, quality 70–80, longest side about 2000 px. The site resizes them from there.
         type: image
         options:
           media: products
@@ -121,9 +121,16 @@ content:
           media: false
       - name: details
         label: Details
-        description: Optional rows like Material / Linen, Size / 18 × 18 in.
+        description: New products start with Dimensions, Material, and Year, set up for watercolors. Change or delete a row if it does not apply.
         type: object
         list: true
+        default:
+          - label: Dimensions
+            value: ""
+          - label: Material
+            value: watercolor on paper, mounted on panel
+          - label: Year
+            value: ""
         fields:
           - name: label
             label: Label
@@ -135,25 +142,20 @@ content:
         label: Sort order
         description: Optional. Lower numbers appear first in the shop.
         type: number
-      - name: in_journal
-        label: Show in the journal
-        description: Adds this product to the home-page journal, in full color (no gray filter). Hidden products never appear, even with this on. This does not change the shop.
-        type: boolean
-        default: false
       - name: homepage
-        label: Homepage settings
+        label: Feature on homepage
+        description: Turn on to put this product in the journal on the home page, in full color. Then set its order and width. Hidden products never appear, even with this on. This does not change the shop.
         type: object
         fields:
           - name: featured
             label: Feature on homepage
-            description: Moves this item toward the top of the shop, so it is easier to find from the home page.
             type: boolean
             default: false
-          - name: journal_priority
-            label: Priority
-            description: When more than one product is in the journal, 1 is first and 10 is last. Products with the same number are listed A to Z. Only used when Show in the journal is on.
+          - name: order
+            label: Order on homepage
+            description: 1 is earlier (closer to the top) and 5 is later. Products with the same number are listed A to Z. Only used when Feature on homepage is on.
             type: select
-            default: "5"
+            default: "3"
             options:
               values:
                 - name: "1"
@@ -165,20 +167,10 @@ content:
                 - name: "4"
                   label: "4"
                 - name: "5"
-                  label: "5"
-                - name: "6"
-                  label: "6"
-                - name: "7"
-                  label: "7"
-                - name: "8"
-                  label: "8"
-                - name: "9"
-                  label: "9"
-                - name: "10"
-                  label: "10 — last"
-          - name: journal_span
-            label: Columns
-            description: How many columns this product covers in the journal on a wide screen. Most stay at one. Use two or three for a larger photo. Only used when Show in the journal is on.
+                  label: "5 — last"
+          - name: columns
+            label: Columns on homepage
+            description: How many columns this product covers on a wide screen. Most stay at one. Use two or three for a larger photo. On a phone it is always one column. Only used when Feature on homepage is on.
             type: select
             default: "1"
             options:
@@ -257,7 +249,7 @@ content:
         required: true
       - name: images
         label: Photos
-        description: The first photo is shown large; any others appear as small photos underneath.
+        description: The first photo is shown large; any others appear as small photos underneath. Use JPEG, PNG, or WebP under about 3 MB each (phone photos are often too large). In Preview on a Mac: File → Export…, JPEG, quality 70–80, longest side about 2000 px.
         type: image
         options:
           media: journal
@@ -312,6 +304,7 @@ content:
             type: text
           - name: image
             label: Large photo
+            description: JPEG, PNG, or WebP under about 3 MB. Phone photos are often too large. In Preview: File → Export…, JPEG, quality 70–80, longest side about 2000 px.
             type: image
             options:
               media: pages
@@ -348,6 +341,7 @@ content:
               media: false
           - name: image
             label: Photo
+            description: JPEG, PNG, or WebP under about 3 MB. Phone photos are often too large. In Preview: File → Export…, JPEG, quality 70–80, longest side about 2000 px.
             type: image
             options:
               media: pages

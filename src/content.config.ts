@@ -40,11 +40,11 @@ const categoryRef = () =>
     .nullish()
     .transform((v) => (v ? v.split('/').pop()!.replace(/\.mdx?$/, '').trim() || null : null));
 
-/** Journal product order 1–10; blank stays blank */
-const journalPriority = () =>
+/** Homepage / journal product order 1–5; blank stays blank. Older 1–10 values still clamp safely. */
+const homepageOrder = () =>
   num().transform((v) => {
     if (v === null) return null;
-    return Math.min(10, Math.max(1, Math.round(v)));
+    return Math.min(5, Math.max(1, Math.round(v)));
   });
 
 /** Journal columns 1–3; blank or junk becomes 1 */
@@ -78,14 +78,16 @@ const products = defineCollection({
       featured: flag(),
       order: num(),
       in_journal: flag(),
-      journal_priority: journalPriority(),
+      journal_priority: homepageOrder(),
       journal_span: journalSpan(),
-      // Nested Homepage settings from the CMS. Flat keys above still work
+      // Nested Feature on homepage from the CMS. Older keys still work
       // so an older file or a partial save can't break the build.
       homepage: z
         .object({
           featured: flag(),
-          journal_priority: journalPriority(),
+          order: homepageOrder(),
+          columns: journalSpan(),
+          journal_priority: homepageOrder(),
           journal_span: journalSpan(),
         })
         .nullish(),

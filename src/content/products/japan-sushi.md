@@ -13,11 +13,10 @@ details:
   - label: Framing
     value: Unframed; framing available
 order: 3
-in_journal: true
 homepage:
   featured: true
-  journal_priority: "3"
-  journal_span: "2"
+  order: 3
+  columns: 2
 draft: false
 ---
 Painted on site on a still morning in late summer.

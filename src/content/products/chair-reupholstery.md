@@ -13,7 +13,7 @@ details:
     value: Yours, or choose from our hand-dyed cloth
 order: 4
 homepage:
-  featured: true
+  featured: false
 draft: false
 ---
 Send a photo of the piece and rough measurements, and we'll reply with a quote and a few fabric suggestions.

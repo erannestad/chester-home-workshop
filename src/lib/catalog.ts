@@ -24,11 +24,10 @@ export type Product = {
   status: Status;
   summary: string;
   details: { label: string; value: string }[];
-  featured: boolean;
   order: number | null;
   inJournal: boolean;
-  journalPriority: number | null; // 1 first … 10 last, among products in the journal
-  journalSpan: number; // 1–3 journal columns on a wide screen
+  journalPriority: number | null; // 1 first … 5 last, among products on the home page
+  journalSpan: number; // 1–3 home-page columns on a wide screen
   draft: boolean;
   bodyHtml: string; // long description, already rendered to HTML
 };
@@ -57,11 +56,10 @@ async function loadProducts(): Promise<Product[]> {
     status: data.status,
     summary: data.summary,
     details: data.details,
-    featured: data.homepage?.featured || data.featured,
     order: data.order,
-    inJournal: data.in_journal,
-    journalPriority: data.homepage?.journal_priority ?? data.journal_priority,
-    journalSpan: data.homepage?.journal_span ?? data.journal_span,
+    inJournal: data.homepage?.featured || data.in_journal,
+    journalPriority: data.homepage?.order ?? data.homepage?.journal_priority ?? data.journal_priority,
+    journalSpan: data.homepage?.columns ?? data.homepage?.journal_span ?? data.journal_span,
     draft: data.draft,
     bodyHtml: rendered?.html ?? '',
   }));
@@ -80,13 +78,12 @@ async function loadCategories(): Promise<Category[]> {
 
 /* ---------- Public API used by pages ---------- */
 
-/** Published products: manual order first, then featured, sold items last, then A–Z. Drafts appear only in `npm run dev`. */
+/** Published products: manual order first, sold items last, then A–Z. Drafts appear only in `npm run dev`. */
 export async function getProducts(): Promise<Product[]> {
   const all = (await loadProducts()).filter((p) => import.meta.env.DEV || !p.draft);
   return all.sort(
     (a, b) =>
       (a.order ?? LAST) - (b.order ?? LAST) ||
-      Number(b.featured) - Number(a.featured) ||
       Number(a.status === 'sold_out') - Number(b.status === 'sold_out') ||
       a.title.localeCompare(b.title),
   );
@@ -98,11 +95,11 @@ export async function getCategories(): Promise<Category[]> {
   );
 }
 
-/** Products marked Show in the journal, 1 first through 10 last. Drafts appear only in `npm run dev`. */
+/** Products marked Feature on homepage, 1 first through 5 last. Drafts appear only in `npm run dev`. */
 export async function getJournalProducts(): Promise<Product[]> {
   const all = (await loadProducts()).filter((p) => (import.meta.env.DEV || !p.draft) && p.inJournal);
   return all.sort(
-    (a, b) => (a.journalPriority ?? 10) - (b.journalPriority ?? 10) || a.title.localeCompare(b.title),
+    (a, b) => (a.journalPriority ?? 5) - (b.journalPriority ?? 5) || a.title.localeCompare(b.title),
   );
 }
 
