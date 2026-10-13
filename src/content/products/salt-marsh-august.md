@@ -8,7 +8,8 @@ price: 180
 price_note: Original, 8 × 10 in.
 status: sold_out
 summary: Marsh grass and goldenrod under a hazy sky.
-featured: false
+homepage:
+  featured: false
 draft: false
 ---
 This painting has found a home. Similar work is available on commission.

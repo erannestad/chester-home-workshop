@@ -12,7 +12,8 @@ details:
     value: 18 × 18 in.
   - label: Material
     value: Cotton
-featured: false
+homepage:
+  featured: false
 draft: false
 ---
 Hemmed by hand and dyed with hulls gathered in the fall.

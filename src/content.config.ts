@@ -40,6 +40,20 @@ const categoryRef = () =>
     .nullish()
     .transform((v) => (v ? v.split('/').pop()!.replace(/\.mdx?$/, '').trim() || null : null));
 
+/** Journal product order 1–10; blank stays blank */
+const journalPriority = () =>
+  num().transform((v) => {
+    if (v === null) return null;
+    return Math.min(10, Math.max(1, Math.round(v)));
+  });
+
+/** Journal columns 1–3; blank or junk becomes 1 */
+const journalSpan = () =>
+  num().transform((v) => {
+    const n = v ?? 1;
+    return Math.min(3, Math.max(1, Math.round(n)));
+  });
+
 const products = defineCollection({
   loader: glob({ base: './src/content/products', pattern: '**/*.md' }),
   schema: ({ image }) =>
@@ -64,14 +78,17 @@ const products = defineCollection({
       featured: flag(),
       order: num(),
       in_journal: flag(),
-      journal_priority: num().transform((v) => {
-        if (v === null) return null;
-        return Math.min(10, Math.max(1, Math.round(v)));
-      }),
-      journal_span: num().transform((v) => {
-        const n = v ?? 1;
-        return Math.min(3, Math.max(1, Math.round(n)));
-      }),
+      journal_priority: journalPriority(),
+      journal_span: journalSpan(),
+      // Nested Homepage settings from the CMS. Flat keys above still work
+      // so an older file or a partial save can't break the build.
+      homepage: z
+        .object({
+          featured: flag(),
+          journal_priority: journalPriority(),
+          journal_span: journalSpan(),
+        })
+        .nullish(),
       draft: flag(),
     }),
 });

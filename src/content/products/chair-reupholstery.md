@@ -11,8 +11,9 @@ details:
     value: Usually 3–5 weeks
   - label: Fabric
     value: Yours, or choose from our hand-dyed cloth
-featured: true
 order: 4
+homepage:
+  featured: true
 draft: false
 ---
 Send a photo of the piece and rough measurements, and we'll reply with a quote and a few fabric suggestions.

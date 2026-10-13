@@ -35,21 +35,22 @@ Open the product → set **Availability** to **Sold** → Save. It stays on the 
 
 Open the product → turn on **Hide from website** → Save. It's kept, so you can turn it back on later.
 
-## Show a product first
+## Homepage settings
 
-Turn on **Show first in the shop** to move an item to the top of its category.
+On a product, **Homepage settings** holds three fields:
 
-## Show a product in the journal
+- **Feature on homepage**: moves the item toward the top of the shop, so it is easier to find from the home page.
+- **Priority**: when more than one product is in the journal, **1** is earlier (closer to the top) and **10** is later. Products with the same number are listed A to Z.
+- **Columns**: how many columns the product covers in the journal on a wide screen. Most stay at one. Use two or three for a larger photo. On a phone it is always one column.
 
-The journal on the home page can include shop items as well as posts. They appear in full color (no gray or rusty filter) among the posts, always the 2nd or 3rd item in a group, and tap through to the product page.
+To put a product in the journal (full color, among the posts, always the 2nd or 3rd item in a group):
 
 1. Open the product.
 2. Turn on **Show in the journal**.
-3. Set **Journal order** from 1 to 10. **1** is earlier in the journal (closer to the top), **10** is later. If two items share a number, they are listed A to Z.
-4. Set **Columns** to one, two, or three. That is how wide the product is in the journal on a wide screen. Most stay at one. Use two or three for a larger photo. On a phone it is always one column.
-5. Save.
+3. Under **Homepage settings**, set **Priority** and **Columns**.
+4. Save.
 
-Turn **Show in the journal** off to take it back out. **Journal order** only changes the journal, not the shop. A hidden product never appears in the journal, even with this on.
+Turn **Show in the journal** off to take it back out. **Priority** and **Columns** only change the journal, not the shop. A hidden product never appears in the journal, even with this on.
 
 ## Write a journal post
 

@@ -15,7 +15,8 @@ details:
     value: 54 in.
   - label: Care
     value: Wash cold, line dry
-featured: false
+homepage:
+  featured: false
 draft: false
 ---
 Each length is folded, bound and dipped by hand, so no two yards are quite alike. Good for curtains, pillow covers and table linens.

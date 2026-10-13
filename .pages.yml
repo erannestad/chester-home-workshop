@@ -46,7 +46,7 @@ content:
     format: yaml-frontmatter
     filename: "{primary}.md"
     view:
-      fields: [images, title, category, price, status, in_journal, draft]
+      fields: [images, title, category, price, status, order, homepage.featured, homepage.journal_priority, homepage.journal_span, in_journal, draft]
       primary: title
       search: [title, summary]
       sort: [title, price, order]
@@ -131,11 +131,6 @@ content:
           - name: value
             label: Value
             type: string
-      - name: featured
-        label: Show first in the shop
-        description: Moves this item to the top of its category.
-        type: boolean
-        default: false
       - name: order
         label: Sort order
         description: Optional. Lower numbers appear first in the shop.
@@ -145,46 +140,55 @@ content:
         description: Adds this product to the home-page journal, in full color (no gray filter). Hidden products never appear, even with this on. This does not change the shop.
         type: boolean
         default: false
-      - name: journal_priority
-        label: Journal order
-        description: When more than one product is in the journal, 1 is first and 10 is last. Products with the same number are listed A to Z. Only used when Show in the journal is on.
-        type: select
-        default: "5"
-        options:
-          values:
-            - name: "1"
-              label: "1 — first"
-            - name: "2"
-              label: "2"
-            - name: "3"
-              label: "3"
-            - name: "4"
-              label: "4"
-            - name: "5"
-              label: "5"
-            - name: "6"
-              label: "6"
-            - name: "7"
-              label: "7"
-            - name: "8"
-              label: "8"
-            - name: "9"
-              label: "9"
-            - name: "10"
-              label: "10 — last"
-      - name: journal_span
-        label: Columns
-        description: How many columns this product covers in the journal on a wide screen. Most stay at one. Use two or three for a larger photo. Only used when Show in the journal is on.
-        type: select
-        default: "1"
-        options:
-          values:
-            - name: "1"
-              label: One column
-            - name: "2"
-              label: Two columns
-            - name: "3"
-              label: Three columns
+      - name: homepage
+        label: Homepage settings
+        type: object
+        fields:
+          - name: featured
+            label: Feature on homepage
+            description: Moves this item toward the top of the shop, so it is easier to find from the home page.
+            type: boolean
+            default: false
+          - name: journal_priority
+            label: Priority
+            description: When more than one product is in the journal, 1 is first and 10 is last. Products with the same number are listed A to Z. Only used when Show in the journal is on.
+            type: select
+            default: "5"
+            options:
+              values:
+                - name: "1"
+                  label: "1 — first"
+                - name: "2"
+                  label: "2"
+                - name: "3"
+                  label: "3"
+                - name: "4"
+                  label: "4"
+                - name: "5"
+                  label: "5"
+                - name: "6"
+                  label: "6"
+                - name: "7"
+                  label: "7"
+                - name: "8"
+                  label: "8"
+                - name: "9"
+                  label: "9"
+                - name: "10"
+                  label: "10 — last"
+          - name: journal_span
+            label: Columns
+            description: How many columns this product covers in the journal on a wide screen. Most stay at one. Use two or three for a larger photo. Only used when Show in the journal is on.
+            type: select
+            default: "1"
+            options:
+              values:
+                - name: "1"
+                  label: One column
+                - name: "2"
+                  label: Two columns
+                - name: "3"
+                  label: Three columns
       - name: draft
         label: Hide from website
         description: Keep this product saved but off the site.
