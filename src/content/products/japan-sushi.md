@@ -12,9 +12,12 @@ details:
     value: Watercolor on cotton paper
   - label: Framing
     value: Unframed; framing available
-order: 1
+order: 3
+in_journal: true
 homepage:
   featured: true
-draft: true
+  journal_priority: "3"
+  journal_span: "2"
+draft: false
 ---
 Painted on site on a still morning in late summer.
