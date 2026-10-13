@@ -12,9 +12,7 @@ details:
   - label: Fabric
     value: Yours, or choose from our hand-dyed cloth
 featured: true
-order: 2
-in_journal: true
-journal_priority: 1
+order: 5
 draft: false
 ---
 Send a photo of the piece and rough measurements, and we'll reply with a quote and a few fabric suggestions.
