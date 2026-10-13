@@ -16,8 +16,8 @@ details:
     value: "2026"
 in_journal: false
 homepage:
-  featured: false
-  journal_priority: "5"
+  featured: true
+  journal_priority: "1"
   journal_span: "1"
 draft: false
 ---
