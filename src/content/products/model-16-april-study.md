@@ -2,6 +2,7 @@
 title: Model 16 (April Study)
 images:
   - ../../assets/products/dsc03397-copy4000px.jpg
+  - ../../assets/products/dsc03404-copy4000px.jpg
 category: watercolors.md
 price: 1200
 status: sold_out
