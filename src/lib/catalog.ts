@@ -28,6 +28,7 @@ export type Product = {
   order: number | null;
   inJournal: boolean;
   journalPriority: number | null; // 1 first … 10 last, among products in the journal
+  journalSpan: number; // 1–3 journal columns on a wide screen
   draft: boolean;
   bodyHtml: string; // long description, already rendered to HTML
 };
@@ -60,6 +61,7 @@ async function loadProducts(): Promise<Product[]> {
     order: data.order,
     inJournal: data.in_journal,
     journalPriority: data.journal_priority,
+    journalSpan: data.journal_span,
     draft: data.draft,
     bodyHtml: rendered?.html ?? '',
   }));

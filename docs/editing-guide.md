@@ -46,7 +46,8 @@ The journal on the home page can include shop items as well as posts. They appea
 1. Open the product.
 2. Turn on **Show in the journal**.
 3. Set **Journal order** from 1 to 10. **1** is earlier in the journal (closer to the top), **10** is later. If two items share a number, they are listed A to Z.
-4. Save.
+4. Set **Columns** to one, two, or three. That is how wide the product is in the journal on a wide screen. Most stay at one. Use two or three for a larger photo. On a phone it is always one column.
+5. Save.
 
 Turn **Show in the journal** off to take it back out. **Journal order** only changes the journal, not the shop. A hidden product never appears in the journal, even with this on.
 

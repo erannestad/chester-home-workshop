@@ -68,6 +68,10 @@ const products = defineCollection({
         if (v === null) return null;
         return Math.min(10, Math.max(1, Math.round(v)));
       }),
+      journal_span: num().transform((v) => {
+        const n = v ?? 1;
+        return Math.min(3, Math.max(1, Math.round(n)));
+      }),
       draft: flag(),
     }),
 });

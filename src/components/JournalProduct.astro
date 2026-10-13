@@ -18,7 +18,7 @@ const rest = others.slice(0, 4);
 const href = link(`/products/${product.id}/`);
 ---
 
-<article class="post post--product" id={`product-${product.id}`} data-span="1">
+<article class="post post--product" id={`product-${product.id}`} data-span={product.journalSpan}>
   <div class="post-closed">
     {
       first && (
