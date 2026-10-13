@@ -112,8 +112,8 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
         <div
           class:list={[
             'journal',
-            { 'journal--tone': settings.journal_gray || settings.journal_color },
-            { 'journal--gray': settings.journal_gray },
+            { 'journal--tone': settings.journal_photos !== 'color' },
+            { 'journal--gray': settings.journal_photos === 'gray' },
           ]}
           data-base={link('/')}
           data-site={settings.site_name}
@@ -136,7 +136,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
                     <h2 class="journal-year-label">{period.label}</h2>
                   </div>
                 )}
-                <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} tone={entry.index % 4} pass={settings.journal_gray || settings.journal_color} />
+                <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} tone={entry.index % 4} pass={settings.journal_photos !== 'color'} />
               </>
             );
           })}

@@ -417,16 +417,19 @@ content:
         label: Ordering note
         description: Shown under the button on every product page (pickup, shipping, timing).
         type: text
-      - name: journal_gray
-        label: Gray the journal photos
-        description: Tints every journal photo the same warm gray, with a print-like texture. Hovering a post shows the original. On by default. Turn off to use color tints, or full-color photos.
-        type: boolean
-        default: true
-      - name: journal_color
-        label: Color the journal photos
-        description: Tints each journal post a rusty color (orangy yellow, brown, plum, or green). Only applies when Gray the journal photos is off. Hovering a post shows the original.
-        type: boolean
-        default: false
+      - name: journal_photos
+        label: Journal photos
+        description: "How journal photos look on the home page. Full color: the photos as they are. Tint: each post gets a rusty color (orangy yellow, brown, plum, or green). Grayscale: every photo the same warm gray, with a print-like texture. With Tint or Grayscale, hovering a post shows the original. Featured products are always in full color."
+        type: select
+        default: gray
+        options:
+          values:
+            - name: color
+              label: Full color
+            - name: tint
+              label: Tint
+            - name: gray
+              label: Grayscale
       - name: journal_divider
         label: Divide the journal by
         description: "Where the journal draws a line between groups of posts. By month: Summer is June to August, Fall is September to November, Winter is December to February, Spring is March to May, shown as Fall 2026 (or Winter 2025–26). By solstice: a new line at each one, June 21 and December 21, shown as 2026 Summer Solstice or 2025 Winter Solstice."

@@ -12,12 +12,22 @@ type Settings = {
   facebook: string;
   announcement: string;
   ordering_note: string;
-  journal_color: boolean;
-  journal_gray: boolean;
+  journal_photos: JournalPhotos;
   journal_divider: JournalDivider;
 };
 
-type Flags = 'journal_color' | 'journal_gray' | 'journal_divider';
+/** color: untouched; tint: a rusty color per post; gray: one warm gray with a print texture */
+export type JournalPhotos = 'color' | 'tint' | 'gray';
+
+type Flags = 'journal_photos' | 'journal_divider';
+
+/** Older settings files used two switches, journal_gray and journal_color. */
+function journalPhotos(): JournalPhotos {
+  const set = (['color', 'tint', 'gray'] as const).find((v) => v === data.journal_photos);
+  if (set) return set;
+  if (data.journal_gray !== false) return 'gray';
+  return data.journal_color === true ? 'tint' : 'color';
+}
 
 const defaults: Omit<Settings, Flags> = {
   site_name: 'Chester Home Workshop',
@@ -38,8 +48,7 @@ export const settings: Settings = {
   ...(Object.fromEntries(
     Object.keys(defaults).map((k) => [k, clean(data[k]) || defaults[k as keyof typeof defaults]]),
   ) as Omit<Settings, Flags>),
-  journal_color: data.journal_color === true,
-  journal_gray: data.journal_gray !== false,
+  journal_photos: journalPhotos(),
   journal_divider: (['year', 'months'] as const).find((v) => v === data.journal_divider) ?? 'solstices',
 };
 

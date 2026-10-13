@@ -78,8 +78,11 @@ Click **Categories** → **Add an entry** → give it a name and a short descrip
 
 - **Announcement bar**: a short message across the top of every page, e.g. *Fresh honey is in. Pickup Saturdays.* Clear it to hide the bar.
 - **Ordering note**: shown under the button on every product page (pickup, shipping, timing).
-- **Gray the journal photos**: tints every journal photo the same warm gray, with a print-like texture. Hovering a post shows the original. This is on by default. Turn it off to use the color tints, or to keep photos in full color.
-- **Color the journal photos**: tints each journal post a rusty color. Only applies when Gray the journal photos is off. Hovering a post shows the original.
+- **Journal photos**: how journal photos look on the home page.
+  - *Full color*: the photos as they are.
+  - *Tint*: each post gets a rusty color (orangy yellow, brown, plum, or green).
+  - *Grayscale* (the usual setting): every photo the same warm gray, with a print-like texture.
+  - With Tint or Grayscale, hovering a post shows the original. Featured products are always in full color.
 - **Divide the journal by**: where the journal draws a line between groups of posts.
   - *Year*: a line between years (*2025*).
   - *Season, by month*: Summer is June to August, Fall is September to November, Winter is December to February, Spring is March to May. Shows as *Fall 2026*; winter crosses New Year, so it shows as *Winter 2025–26*.
