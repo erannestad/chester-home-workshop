@@ -2,6 +2,8 @@
 
 You'll make all changes at **app.pagescms.org**. Sign in with the email link you were invited with. Every time you click **Save**, the website updates by itself in about a minute.
 
+On any page of the website, **Edit** in the bottom corner (next to **Admin**) opens that product, post, or page in the editor.
+
 ## Add a product
 
 1. Click **Products** → **Add an entry**.

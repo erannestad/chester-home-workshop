@@ -11,7 +11,7 @@ import JournalPost from './JournalPost.astro';
 import JournalProduct from './JournalProduct.astro';
 import { getCategories, getJournalProducts, type ProductImage } from '../lib/catalog';
 import { getPosts, scatterEvery } from '../lib/journal';
-import { settings, instagramUrl, instagramHandle, link } from '../lib/site';
+import { CMS, cmsEditUrl, settings, instagramUrl, instagramHandle, link } from '../lib/site';
 
 interface Props {
   open?: { id: string; photo: number };
@@ -117,6 +117,8 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
           ]}
           data-base={link('/')}
           data-site={settings.site_name}
+          data-cms={CMS}
+          data-edit-home={cmsEditUrl('/')}
         >
           {feed.map((entry, i) => {
             if (entry.kind === 'extra') {
@@ -154,7 +156,17 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
   if (journal) {
     const base = journal.dataset.base ?? '/';
     const site = journal.dataset.site ?? document.title;
+    const cms = journal.dataset.cms ?? '';
+    const editHome = journal.dataset.editHome ?? '';
+    const edits = document.querySelectorAll<HTMLAnchorElement>('.cms-edit');
     const pattern = new RegExp(`^${base}journal/([^/]+)/(?:(\\d+)/)?$`);
+    const syncEdit = (id: string | null) => {
+      const href = id
+        ? `${cms}/collection/journal/edit/${encodeURIComponent(`src/content/journal/${id}.md`)}`
+        : editHome;
+      if (!href) return;
+      for (const a of edits) a.href = href;
+    };
     const wrap = (n: number, count: number) => ((n - 1 + count) % count) + 1;
     const url = (id: string, n: number) => `${base}journal/${id}/${n > 1 ? `${n}/` : ''}`;
     const path = (href: string) => new URL(href, location.origin).pathname;
@@ -299,6 +311,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
         if (counter) counter.textContent = `${photo} / ${count}`;
         document.title = `${post.dataset.title} · ${site}`;
       }
+      syncEdit(id);
       pack();
     };
 

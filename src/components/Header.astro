@@ -1,12 +1,13 @@
 ---
 /* The thin bar with the site name and menu: along the bottom of the frame on wide screens, at the top on phones. */
-import { settings, instagramUrl, facebookUrl, link } from '../lib/site';
+import { settings, instagramUrl, facebookUrl, link, cmsEditUrl } from '../lib/site';
 import Logo from './Logo.astro';
 
 const year = new Date().getFullYear();
 const path = Astro.url.pathname;
 const current = (href: string, prefixes: string[] = []) =>
   path === href || prefixes.some((p) => path.startsWith(p)) ? 'page' : undefined;
+const edit = cmsEditUrl(path);
 ---
 
 <header class="bar">
@@ -21,11 +22,11 @@ const current = (href: string, prefixes: string[] = []) =>
     </ul>
   </nav>
   <p class="fine">
-    © {settings.site_name} {year} · <a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
+    © {settings.site_name} {year}{edit && <> · <a class="cms-edit" href={edit} target="_blank" rel="noreferrer">Edit</a></>} · <a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
   </p>
 </header>
 <footer class="foot">
   <p class="fine">
-    © {settings.site_name} {year} · <a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
+    © {settings.site_name} {year}{edit && <> · <a class="cms-edit" href={edit} target="_blank" rel="noreferrer">Edit</a></>} · <a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
   </p>
 </footer>

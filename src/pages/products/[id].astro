@@ -44,7 +44,7 @@ const others = (await getProducts()).filter((p) => p.id !== product.id && p.cate
     </dl>
   </Column>
 
-  <Column label={product.title}>
+  <Column label={product.title} journal gallery>
     <div class="photos">
       {
         product.images.length ? (
@@ -52,8 +52,8 @@ const others = (await getProducts()).filter((p) => p.id !== product.id && p.cate
             <Photo
               src={img}
               alt={i === 0 ? product.title : `${product.title}, view ${i + 1}`}
-              widths={[480, 720, 960, 1280]}
-              sizes="(min-width: 56rem) 36vw, 100vw"
+              widths={[480, 720, 960, 1600]}
+              sizes="(min-width: 56rem) 64vw, 100vw"
               priority={i === 0}
             />
           ))
@@ -62,15 +62,17 @@ const others = (await getProducts()).filter((p) => p.id !== product.id && p.cate
         )
       }
     </div>
+    {
+      others.length > 0 && (
+        <section class="related">
+          <h2>Related products</h2>
+          <div class="shop-grid">
+            {others.map((p, i) => (
+              <ProductCard product={p} index={i + 1} />
+            ))}
+          </div>
+        </section>
+      )
+    }
   </Column>
-
-  {
-    others.length > 0 && (
-      <Column label={category ? `More ${category.title}` : 'More'} href={category && link(`/shop/${category.id}/`)}>
-        {others.map((p, i) => (
-          <ProductCard product={p} index={i + 1} />
-        ))}
-      </Column>
-    )
-  }
 </Base>

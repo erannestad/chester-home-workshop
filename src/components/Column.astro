@@ -12,13 +12,14 @@ interface Props {
   href?: string;
   wide?: boolean;
   journal?: boolean; // extra-wide column whose body flows into narrow sub-columns
+  gallery?: boolean; // product photos: fit the visible column, not taller than the viewport
 }
 
-const { label = '', href, wide = false, journal = false } = Astro.props;
+const { label = '', href, wide = false, journal = false, gallery = false } = Astro.props;
 const isHome = Astro.url.pathname === link('/');
 ---
 
-<section class:list={['col', { 'col--wide': wide, 'col--journal': journal }]} aria-label={label || (wide ? settings.site_name : undefined)}>
+<section class:list={['col', { 'col--wide': wide, 'col--journal': journal, 'col--gallery': gallery }]} aria-label={label || (wide ? settings.site_name : undefined)}>
   <header class="col-head">
     {wide && <a class="col-home" href={link('/')} aria-current={isHome ? 'page' : undefined}><Logo />{settings.site_name}</a>}
     {label && (href ? <a href={href}>{label}</a> : <span>{label}</span>)}

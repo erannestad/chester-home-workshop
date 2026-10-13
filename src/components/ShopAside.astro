@@ -1,0 +1,51 @@
+---
+/*
+  Left column on shop pages: heading, copy, and the category list.
+  Paired with a journal-width column of products so this column stays one width.
+*/
+import Column from './Column.astro';
+import { type Category } from '../lib/catalog';
+import { link } from '../lib/site';
+
+interface Props {
+  title: string;
+  count: number;
+  categories: Category[];
+  current?: string | null; // category id, or null on Shop everything
+  summary?: string;
+  bodyHtml?: string;
+}
+
+const { title, count, categories, current = null, summary = '', bodyHtml = '' } = Astro.props;
+---
+
+<Column label="Shop" href={current ? link('/shop/') : undefined} wide>
+  <dl class="rows">
+    <div>
+      <dt><h1 class="title">{title}</h1></dt>
+      <dd>
+        {bodyHtml ? <div class="prose" set:html={bodyHtml} /> : summary && <p>{summary}</p>}
+        <p class="muted">{count} {count === 1 ? 'item' : 'items'}</p>
+      </dd>
+    </div>
+    {
+      categories.length > 0 && (
+        <div>
+          <dt>Categories</dt>
+          <dd>
+            <ul class="plain">
+              <li>
+                <a href={link('/shop/')} aria-current={current === null ? 'page' : undefined}>Shop everything</a>
+              </li>
+              {categories.map((c) => (
+                <li>
+                  <a href={link(`/shop/${c.id}/`)} aria-current={c.id === current ? 'page' : undefined}>{c.title}</a>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      )
+    }
+  </dl>
+</Column>

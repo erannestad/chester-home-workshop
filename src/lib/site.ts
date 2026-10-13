@@ -43,6 +43,29 @@ export function link(path: string): string {
   return import.meta.env.BASE_URL.replace(/\/$/, '') + path;
 }
 
+export const CMS = 'https://app.pagescms.org/erannestad/chester-home-workshop/main';
+
+const cmsFile = (name: string) => `${CMS}/file/${name}`;
+const cmsEntry = (collection: string, file: string) =>
+  `${CMS}/collection/${collection}/edit/${encodeURIComponent(file)}`;
+
+/** Pages CMS editor for whatever this page is showing, or null if there isn't one. */
+export function cmsEditUrl(pathname: string): string | null {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  let path = pathname;
+  if (base && path.startsWith(base)) path = path.slice(base.length) || '/';
+  const parts = path.replace(/\/+$/, '').split('/').filter(Boolean);
+
+  if (parts.length === 0) return cmsFile('home');
+  if (parts[0] === 'about') return cmsFile('about');
+  if (parts[0] === 'contact') return cmsFile('contact');
+  if (parts[0] === 'products' && parts[1]) return cmsEntry('products', `src/content/products/${parts[1]}.md`);
+  if (parts[0] === 'journal' && parts[1]) return cmsEntry('journal', `src/content/journal/${parts[1]}.md`);
+  if (parts[0] === 'shop' && parts[1]) return cmsEntry('categories', `src/content/categories/${parts[1]}.md`);
+  if (parts[0] === 'shop') return `${CMS}/collection/products`;
+  return null;
+}
+
 /** Accepts "@handle", "handle" or a full URL. */
 export function instagramUrl(value: string): string {
   if (!value) return '';

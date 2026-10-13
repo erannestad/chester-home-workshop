@@ -3,6 +3,7 @@ import type { GetStaticPaths } from 'astro';
 import Base from '../../layouts/Base.astro';
 import Column from '../../components/Column.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import ShopAside from '../../components/ShopAside.astro';
 import { getCategories, getProducts, type Category } from '../../lib/catalog';
 import { link } from '../../lib/site';
 
@@ -14,47 +15,28 @@ export const getStaticPaths = (async () => {
 const { category } = Astro.props as { category: Category };
 const categories = await getCategories();
 const products = (await getProducts()).filter((p) => p.category === category.id);
-
-// Spread the items across up to three columns, left to right.
-const count = Math.min(3, Math.max(1, products.length));
-const columns = Array.from({ length: count }, (_, c) => products.filter((_, i) => i % count === c));
 ---
 
 <Base title={category.title} description={category.summary}>
-  <Column label="Shop" href={link('/shop/')} wide>
-    <dl class="rows">
-      <div>
-        <dt><h1 class="title">{category.title}</h1></dt>
-        <dd>
-          {category.bodyHtml ? <div class="prose" set:html={category.bodyHtml} /> : category.summary && <p>{category.summary}</p>}
-          <p class="muted">{products.length} {products.length === 1 ? 'item' : 'items'}</p>
-        </dd>
-      </div>
-      <div>
-        <dt>Categories</dt>
-        <dd>
-          <ul class="plain">
-            {categories.map((c) => (
-              <li>
-                <a href={link(`/shop/${c.id}/`)} aria-current={c.id === category.id ? 'page' : undefined}>{c.title}</a>
-              </li>
-            ))}
-          </ul>
-        </dd>
-      </div>
-    </dl>
+  <ShopAside
+    title={category.title}
+    count={products.length}
+    categories={categories}
+    current={category.id}
+    summary={category.summary}
+    bodyHtml={category.bodyHtml}
+  />
+  <Column label={category.title} journal>
+    {
+      products.length > 0 ? (
+        <div class="shop-grid">
+          {products.map((p, i) => (
+            <ProductCard product={p} index={i + 1} priority={i < 3} />
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Nothing is listed here right now. <a href={link('/contact/')}>Get in touch</a> to ask about current work.</p>
+      )
+    }
   </Column>
-
-  {
-    columns.map((items, ci) => (
-      <Column label={ci === 0 ? category.title : ''}>
-        {items.map((p, i) => (
-          <ProductCard product={p} index={i * count + ci + 1} priority={i === 0} />
-        ))}
-        {products.length === 0 && (
-          <p class="empty">Nothing is listed here right now. <a href={link('/contact/')}>Get in touch</a> to ask about current work.</p>
-        )}
-      </Column>
-    ))
-  }
 </Base>
