@@ -13,7 +13,7 @@ details:
   - label: Framing
     value: Unframed; framing available
 order: 1
-in_journal: false
+in_journal: true
 homepage:
   featured: true
   journal_priority: "1"
