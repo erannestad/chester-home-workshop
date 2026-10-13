@@ -1,5 +1,7 @@
 ---
 title: Model 14
+images:
+  - ../../assets/products/model-14on-panel-large.jpeg
 category: watercolors.md
 price: 4000
 status: available
