@@ -14,8 +14,7 @@ details:
     value: Summer
 order: 4
 homepage:
-  featured: true
-  order: 3
+  featured: false
   columns: 1
 draft: false
 ---
