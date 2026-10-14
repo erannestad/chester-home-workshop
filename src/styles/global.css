@@ -291,8 +291,9 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   the vertical rule between its two columns; the rule on its left stays. --bleed (set by
   the packer) reaches that rule in the gutter; the padding keeps the text and photo on the
   column edge, the same inset as every other post. Gaps inside the frame use --pad, the
-  same 10px as that inset. The photo frame is 3 wide by 2 tall. One photo sits inside it,
-  whole, and the packer pins the bottom from that measured height.
+  same 10px as that inset, except the space between the caption and the photos. The photo
+  frame is 3 wide by 2 tall. One photo sits inside it, whole, and the packer pins the
+  bottom from that measured height.
 */
 .journal-feature { padding-bottom: var(--s6); }
 .journal-feature-frame {
@@ -333,7 +334,7 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .journal-feature .caption {
   grid-template-columns: var(--cap-index) minmax(0, 1fr) var(--cap-index);
   padding-top: var(--pad);
-  padding-bottom: var(--pad);
+  padding-bottom: var(--s5);
 }
 .journal-feature .caption p { margin-bottom: 0; }
 .journal-feature .caption-index { color: var(--ink-soft); }
@@ -433,6 +434,8 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   object-fit: contain;
   object-position: left top;
 }
+/* The photo on screen, and the thumbnail that matches it, stay in color. */
+.journal--tone .post-thumbs a[aria-current] .post-pass { opacity: 0; }
 @media (hover: hover) {
   .journal--tone .post:hover .post-pass { opacity: 0; }
   .journal--tone .post:not(.post--product):hover .post-closed .post-photo { --feather: 0px; }
@@ -451,24 +454,27 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .post--open {
   grid-column: 1 / -1;
   background: var(--bg);
-  padding-top: var(--s6);
+  padding-top: var(--s2);
   margin-bottom: var(--s6);
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
 }
 /* At the top of the journal the label bar already draws the line. */
 .post--open:first-child { padding-top: 0; border-top: 0; }
-/* Date sits in the first journal column; title and copy fill the rest. */
+/* Paddles sit at the left of the top bar. Under the photo, the date takes the first journal column. The title and description stack beside it, two columns wide at most. */
 .post--open .caption {
   grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  gap: var(--gap);
+  column-gap: var(--gap);
+  row-gap: var(--s1);
+  align-items: start;
 }
-.post--open .caption > :last-child { grid-column: 2 / -1; }
+.post--open .caption-index { grid-column: 1; }
+.post--open .caption-copy { grid-column: 2 / span min(2, calc(var(--cols) - 1)); }
 /*
   The large photo with thumbnails always to its right. The photo sits in one frame per post,
-  sized from its tallest and widest photos (--tallest / --widest, width ÷ height), so the post
-  keeps the same height and the thumbnails stay put while stepping through. The 75dvh cap keeps
-  Previous / Next in view.
+  sized so its widest photo (--widest, width ÷ height) fits. Every photo is shown at the
+  frame's full height (never cropped), so the post keeps the same height and the thumbnails
+  and text stay put while stepping through. The right rail stays compact and anchored to the right edge.
 */
 .post-stage {
   --thumbs: calc(3.5rem * 2 + var(--s2));
@@ -480,41 +486,93 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   margin-bottom: var(--s2);
 }
 .post-stage--single { --thumbs: 0px; --gap: 0px; }
+/* The arrows sit at the left; the X stays at the far right. */
+.post-topbar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+  margin-bottom: var(--s6);
+}
+.post-topbar-controls { display: flex; gap: var(--s3); }
+.post-topbar-close {
+  margin-left: auto;
+  width: 1lh;
+  height: 1lh;
+  padding: 0;
+  line-height: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.post-topbar-close svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
 .post-view {
   --room: calc(100cqw - var(--thumbs) - var(--gap));
-  --h: min(75dvh, calc(var(--room) / var(--tallest, 0.75)));
+  --h: min(75dvh, 900px, calc(var(--room) / var(--widest, 0.75)));
   flex: none;
   height: var(--h);
-  width: min(var(--room), calc(var(--h) * var(--widest, 0.75)));
+  width: calc(var(--h) * var(--widest, 0.75));
 }
 .post-slide { height: 100%; display: flex; align-items: flex-start; }
 .post-slide .post-photo {
-  height: auto;
+  display: block;
+  height: 100%;
   max-width: 100%;
-  max-height: 100%;
 }
 .post-slide img {
   width: auto;
-  height: auto;
+  height: 100%;
   max-width: 100%;
-  max-height: 100%;
   object-fit: contain;
   object-position: left top;
   background: none;
   margin-bottom: 0;
 }
-.post-thumbs { flex: none; display: grid; grid-template-columns: repeat(2, 3.5rem); gap: var(--s2); }
+.post-side {
+  flex: none;
+  width: var(--thumbs);
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s2);
+}
+.post-thumbs {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 3.5rem);
+  gap: var(--s2);
+}
 .post-thumbs img { aspect-ratio: 1; object-fit: cover; margin-bottom: 0; }
 .post-thumbs a { display: block; }
 .post-thumbs a[aria-current] { outline: 1px solid var(--ink); outline-offset: 2px; }
 @media (max-width: 56rem) {
-  .post--open .caption { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
-  .post--open .caption > :last-child { grid-column: auto; }
-  .post-stage { --thumbs: 3.5rem; --gap: var(--s2); }
+  .post-stage { --gap: var(--s2); }
   .post-stage--single { --thumbs: 0px; --gap: 0px; }
-  .post-thumbs { grid-template-columns: 3.5rem; }
+  .post-side { gap: var(--s1); }
 }
-.post-nav { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); margin-bottom: var(--s4); }
+.post-nav { display: flex; flex-wrap: wrap; gap: var(--s3); margin: 0; }
+.post-side .post-nav { justify-content: flex-start; }
+.paddle,
+.post-topbar-close,
+.post-nav--close a {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.paddle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1lh;
+  height: 1lh;
+  flex: none;
+}
+.paddle svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.post-topbar-close:hover,
+.post-nav--close a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
 .post-count { color: var(--ink-soft); }
 .post-close { margin-left: auto; }
 

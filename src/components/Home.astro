@@ -300,11 +300,7 @@ const featuredPhotos = featuredProducts
         };
 
         const spanOf = (el: HTMLElement) => {
-          const want = el.classList.contains('journal-year')
-            ? n
-            : el.classList.contains('post')
-              ? Number(el.dataset.span) || 1
-              : 1;
+          const want = el.classList.contains('post') ? Number(el.dataset.span) || 1 : 1;
           // Small = 1 column, Medium = 2, Large = 2 (3 only once there are 4+ columns).
           const cap = want >= 3 && n < 4 ? 2 : want;
           return Math.min(n, Math.max(1, cap));
@@ -316,7 +312,8 @@ const featuredPhotos = featuredProducts
           // The first post always takes the top left; on short screens the category drops
           // below it rather than pushing it down.
           const span = (n >= 4 ? 3 : Math.min(2, n));
-          if (items.length) {
+          // A season line is an anchor handled below, never the clamped first post.
+          if (items.length && !items[0].classList.contains('journal-year')) {
             // Narrower if it would otherwise share a column with the category, but Medium and
             // Large never drop below 2.
             const first = spanOf(items[0]);
@@ -337,6 +334,17 @@ const featuredPhotos = featuredProducts
         }
 
         for (const el of rest) {
+          // A season or year line spans the whole journal and stays where the posts above end.
+          // Every column starts fresh under it, so the next posts share that top and flow around
+          // the featured category from there.
+          if (el.classList.contains('journal-year')) {
+            const y = Math.max(0, ...colH);
+            box(el, 0, n);
+            el.style.top = `${y}px`;
+            const h = el.offsetHeight;
+            for (let c = 0; c < n; c++) colH[c] = Math.max(colH[c], y + h);
+            continue;
+          }
           const span = spanOf(el);
           let col = 0;
           let best = Infinity;

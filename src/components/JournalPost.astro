@@ -28,7 +28,7 @@ const wrap = (n: number) => ((n - 1 + count) % count) + 1;
 const href = (n: number) => link(`/journal/${post.id}/${n > 1 ? `${n}/` : ''}`) + `#${post.id}`;
 // The open view is one fixed frame that fits every photo, so stepping through them never resizes the post.
 const ratios = post.images.map((img) => img.width / img.height);
-const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Math.max(...ratios)}` : undefined;
+const frame = ratios.length ? `--widest: ${Math.max(...ratios)}` : undefined;
 ---
 
 <article class:list={['post', { 'post--open': open }]} id={post.id} data-count={count} data-title={post.title} data-span={post.span} data-tone={tones[tone % 4]}>
@@ -61,6 +61,27 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
   </div>
 
   <div class="post-gallery">
+    <div class="post-topbar">
+      {count > 1 && (
+        <div class="post-topbar-controls">
+          <a class="paddle" href={href(wrap(current - 1))} data-photo={wrap(current - 1)} data-step="prev" aria-label="Previous photo">
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M10 3L5 8L10 13" />
+            </svg>
+          </a>
+          <a class="paddle" href={href(wrap(current + 1))} data-photo={wrap(current + 1)} data-step="next" aria-label="Next photo">
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M6 3L11 8L6 13" />
+            </svg>
+          </a>
+        </div>
+      )}
+      <a class="post-topbar-close" href={link('/') + `#${post.id}`} data-close aria-label="Close">
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M3 3L13 13M13 3L3 13" />
+        </svg>
+      </a>
+    </div>
     <div class:list={['post-stage', { 'post-stage--single': count === 1 }]} style={frame}>
       <div class="post-view">
         {
@@ -74,12 +95,11 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
                     widths={[480, 720, 1080, 1600]}
                     sizes="(min-width: 56rem) 50vw, 100vw"
                     priority={open && i === current - 1}
-                    pass={pass && !(colorFirst && i === 0)}
                   />
                 </a>
               ) : (
                 <div class="post-photo">
-                  <Photo src={img} alt={post.title} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 50vw, 100vw" priority={open} pass={pass && !colorFirst} />
+                  <Photo src={img} alt={post.title} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 50vw, 100vw" priority={open} />
                 </div>
               )}
             </div>
@@ -88,33 +108,27 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
       </div>
       {
         count > 1 && (
-          <div class="post-thumbs">
-            {post.images.map((img, i) => (
-              <a href={href(i + 1)} data-photo={i + 1} aria-current={i === current - 1 ? 'true' : undefined}>
-                <Photo src={img} alt={`Photo ${i + 1}`} widths={[120, 240]} sizes="3.5rem" pass={pass} />
-              </a>
-            ))}
+          <div class="post-side">
+            <div class="post-thumbs">
+              {post.images.map((img, i) => (
+                <a href={href(i + 1)} data-photo={i + 1} aria-current={i === current - 1 ? 'true' : undefined}>
+                  <Photo src={img} alt={`Photo ${i + 1}`} widths={[120, 240]} sizes="3.5rem" pass={pass} />
+                </a>
+              ))}
+            </div>
           </div>
         )
       }
     </div>
-    <nav class="post-nav" aria-label="Photos">
-      {
-        count > 1 && (
-          <>
-            <a href={href(wrap(current - 1))} data-photo={wrap(current - 1)} data-step="prev">Previous</a>
-            <span class="post-count">{current} / {count}</span>
-            <a href={href(wrap(current + 1))} data-photo={wrap(current + 1)} data-step="next">Next</a>
-          </>
-        )
-      }
-      <a class="post-close" href={link('/') + `#${post.id}`} data-close>Close</a>
-    </nav>
   </div>
 
   <div class="caption">
-    <p class="caption-index">{post.date && <time datetime={post.date.toISOString().slice(0, 10)}>{formatDate(post.date)}</time>}</p>
-    <div>
+    {post.date && (
+      <p class="caption-index">
+        <time datetime={post.date.toISOString().slice(0, 10)}>{formatDate(post.date)}</time>
+      </p>
+    )}
+    <div class="caption-copy">
       <h3 class="title"><a href={href(1)} data-photo="1">{post.title}</a></h3>
       {post.bodyHtml && <div class="prose" set:html={post.bodyHtml} />}
     </div>

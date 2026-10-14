@@ -32,8 +32,16 @@ const href = link(`/shop/${category.id}/`);
       {
         photos.length > 1 && (
           <p class="feature-paddles">
-            <button type="button" data-feature-step="-1" aria-label="Previous photo">←</button>
-            <button type="button" data-feature-step="1" aria-label="Next photo">→</button>
+            <button type="button" class="paddle" data-feature-step="-1" aria-label="Previous photo">
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M10 3L5 8L10 13" />
+              </svg>
+            </button>
+            <button type="button" class="paddle" data-feature-step="1" aria-label="Next photo">
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M6 3L11 8L6 13" />
+              </svg>
+            </button>
           </p>
         )
       }
