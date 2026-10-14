@@ -138,7 +138,7 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .bar nav ul { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); margin: 0; padding: 0; list-style: none; }
 .fine { color: var(--ink-soft); margin: 0; }
 .bar .fine { display: none; }
-/* Phones: the bar sits at the top, so © and Admin get their own line at the bottom. */
+/* Phones: the bar sits at the top, so the update line and Admin get their own line at the bottom. */
 .foot { margin: 0 var(--pad); padding: var(--s1) 0; border-top: 1px solid var(--rule); }
 
 @media (min-width: 56rem) {

@@ -2,6 +2,9 @@
 import raw from '../data/settings.json';
 import type { JournalDivider } from './journal';
 
+/** Set in astro.config.mjs from `git log -1`. Empty when git isn't available. */
+declare const __SITE_UPDATED__: string;
+
 type Settings = {
   site_name: string;
   tagline: string;
@@ -51,6 +54,22 @@ export const settings: Settings = {
   journal_photos: journalPhotos(),
   journal_divider: (['year', 'months'] as const).find((v) => v === data.journal_divider) ?? 'solstices',
 };
+
+/** Commit time of the build, shown in the footer. Chester is Eastern time. */
+export function lastUpdated(): { iso: string; label: string } | null {
+  try {
+    const iso = __SITE_UPDATED__;
+    if (!iso) return null;
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return null;
+    const zone = 'America/New_York';
+    const day = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: zone });
+    const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: zone });
+    return { iso: date.toISOString(), label: `Updated ${day}, ${time}` };
+  } catch {
+    return null;
+  }
+}
 
 /** Prefixes an internal path ("/shop/") with the deploy base ("/chester-home-workshop/"). */
 export function link(path: string): string {

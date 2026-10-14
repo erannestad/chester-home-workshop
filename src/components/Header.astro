@@ -1,8 +1,8 @@
 ---
 /* The thin bar with the site name and menu: along the bottom of the frame on wide screens, at the top on phones. */
-import { settings, instagramUrl, facebookUrl, link, cmsEditUrl } from '../lib/site';
+import { settings, instagramUrl, facebookUrl, link, cmsEditUrl, lastUpdated } from '../lib/site';
 
-const year = new Date().getFullYear();
+const updated = lastUpdated();
 const path = Astro.url.pathname;
 const isHome = path === link('/');
 const current = (href: string, prefixes: string[] = []) =>
@@ -22,11 +22,11 @@ const edit = cmsEditUrl(path);
     </ul>
   </nav>
   <p class="fine">
-    © {settings.site_name} {year}{edit && <> · <a class="cms-edit" href={edit} target="_blank" rel="noreferrer">Edit</a></>} · <a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
+    {updated && <time datetime={updated.iso}>{updated.label}</time>}{updated && ' · '}{edit && <><a class="cms-edit" href={edit} target="_blank" rel="noreferrer">Edit</a> · </>}<a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
   </p>
 </header>
 <footer class="foot">
   <p class="fine">
-    © {settings.site_name} {year}{edit && <> · <a class="cms-edit" href={edit} target="_blank" rel="noreferrer">Edit</a></>} · <a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
+    {updated && <time datetime={updated.iso}>{updated.label}</time>}{updated && ' · '}{edit && <><a class="cms-edit" href={edit} target="_blank" rel="noreferrer">Edit</a> · </>}<a href="https://app.pagescms.org" target="_blank" rel="noreferrer">Admin</a>
   </p>
 </footer>
