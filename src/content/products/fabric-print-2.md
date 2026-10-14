@@ -12,9 +12,9 @@ details:
     value: 18 × 18 in.
   - label: Material
     value: Cotton
-in_journal: false
+in_journal: true
 homepage:
-  featured: false
+  featured: true
   journal_priority: "5"
   journal_span: "1"
 draft: false
