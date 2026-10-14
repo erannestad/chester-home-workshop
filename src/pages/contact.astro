@@ -1,7 +1,7 @@
 ---
 import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Column from '../components/Column.astro';
+import PageColumns from '../components/PageColumns.astro';
 import { settings, instagramUrl, instagramHandle, facebookUrl } from '../lib/site';
 import { siteConfig } from '../site.config';
 
@@ -12,23 +12,13 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
 ---
 
 <Base title={page?.data.title || 'Contact'} description={page?.data.intro}>
-  <Column label={page?.data.title || 'Contact'} wide>
-    <dl class="rows">
+  <PageColumns label={page?.data.title || 'Contact'} mainLabel="Write to us">
+    <dl slot="side" class="rows">
       <div>
         <dt><h1 class="title">{page?.data.heading || 'Contact'}</h1></dt>
         <dd>
           {page?.data.intro && <p>{page.data.intro}</p>}
           <div class="prose">{Content && <Content />}</div>
-          <p class="asking" id="asking" hidden>Asking about: <em id="asking-item"></em></p>
-          {
-            !endpoint && settings.email && (
-              <p>
-                <a class="button" id="mail-button" data-email={settings.email} href={`mailto:${settings.email}?subject=Inquiry`}>
-                  Write to us
-                </a>
-              </p>
-            )
-          }
         </dd>
       </div>
       {settings.email && <div class="row-tight"><dt>Email</dt><dd><a href={`mailto:${settings.email}`}>{settings.email}</a></dd></div>}
@@ -37,11 +27,9 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
       {settings.facebook && <div class="row-tight"><dt>Facebook</dt><dd><a href={facebookUrl(settings.facebook)}>{settings.site_name}</a></dd></div>}
       {settings.location && <div class="row-tight"><dt>Location</dt><dd>{settings.location}</dd></div>}
     </dl>
-  </Column>
-
-  {
-    endpoint && (
-      <Column label="Write to us">
+    <p class="asking" id="asking" hidden>Asking about: <em id="asking-item"></em></p>
+    {
+      endpoint ? (
         <form class="form" method="post" action={endpoint}>
           <label>
             Name
@@ -61,9 +49,17 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
           </label>
           <button class="button" type="submit">Send</button>
         </form>
-      </Column>
-    )
-  }
+      ) : (
+        settings.email && (
+          <p>
+            <a class="button" id="mail-button" data-email={settings.email} href={`mailto:${settings.email}?subject=Inquiry`}>
+              Write to us
+            </a>
+          </p>
+        )
+      )
+    }
+  </PageColumns>
 
   <!-- Pre-fills the inquiry when arriving from a product page (/contact/?item=...). -->
   <script is:inline>

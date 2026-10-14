@@ -2,15 +2,15 @@
 import { getEntry, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Column from '../components/Column.astro';
+import PageColumns from '../components/PageColumns.astro';
 
 const page = await getEntry('pages', 'about');
 const { Content } = page ? await render(page) : { Content: null };
 ---
 
 <Base title={page?.data.title || 'About'} description={page?.data.intro} image={page?.data.image}>
-  <Column label={page?.data.title || 'About'} wide>
-    <dl class="rows">
+  <PageColumns label={page?.data.title || 'About'} mainLabel={page?.data.image_alt || ''}>
+    <dl slot="side" class="rows">
       <div>
         <dt><h1 class="title">{page?.data.heading || page?.data.title || 'About'}</h1></dt>
         <dd>
@@ -19,18 +19,16 @@ const { Content } = page ? await render(page) : { Content: null };
         </dd>
       </div>
     </dl>
-  </Column>
-  {
-    page?.data.image && (
-      <Column label={page.data.image_alt || ''}>
+    {
+      page?.data.image && (
         <Image
           src={page.data.image}
           alt={page.data.image_alt}
-          widths={[480, 720, 960, 1280]}
-          sizes="(min-width: 56rem) 40vw, 100vw"
+          widths={[480, 720, 960, 1280, 1600]}
+          sizes="(min-width: 56rem) 66vw, 100vw"
           priority
         />
-      </Column>
-    )
-  }
+      )
+    }
+  </PageColumns>
 </Base>

@@ -1,0 +1,23 @@
+---
+/*
+  The column split used by the home page and the shop: a wide text column on the left,
+  a journal-width column on the right. About, contact, and any new page should use this
+  so the two columns stay the same widths everywhere.
+*/
+import Column from './Column.astro';
+
+interface Props {
+  label: string;
+  href?: string;
+  mainLabel?: string;
+}
+
+const { label, href, mainLabel = '' } = Astro.props;
+---
+
+<Column label={label} href={href} wide>
+  <slot name="side" />
+</Column>
+<Column label={mainLabel} journal>
+  <slot />
+</Column>

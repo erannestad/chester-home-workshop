@@ -53,7 +53,7 @@ const featuredPhotos = featuredProducts
       </div>
       {
         shopCategories.length > 0 && (
-          <div class="pin-bottom">
+          <div class:list={['pin-bottom', { 'shop-block': services.length > 0 }]}>
             <dt><a href={link('/shop/')}>Shop</a></dt>
             <dd>
               {shopCategories.map((c) => (
@@ -62,10 +62,6 @@ const featuredPhotos = featuredProducts
                   {c.summary && <span class="muted shop-summary">{c.summary}</span>}
                 </p>
               ))}
-              <p class="all-items">
-                <a href={link('/shop/')}>All Items</a>
-                <span class="muted shop-summary">Everything in one place.</span>
-              </p>
             </dd>
           </div>
         )
@@ -441,6 +437,18 @@ const featuredPhotos = featuredProducts
       if (!a || !post) return;
       e.preventDefault();
       go(post, a);
+    });
+
+    // A click anywhere outside the open entry closes it. Links still navigate, and a click
+    // that opens another entry is handled above.
+    document.addEventListener('click', (e) => {
+      if (e.button !== 0 || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const post = openPost();
+      if (!post) return;
+      const target = e.target;
+      if (!(target instanceof Element) || target.closest('.post--open') || target.closest('a')) return;
+      const close = post.querySelector<HTMLAnchorElement>('a[data-close]');
+      if (close) go(post, close);
     });
 
     document.addEventListener('keydown', (e) => {

@@ -170,6 +170,7 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 /* The rule above Shop belongs to Shop. Contact has no rule under it. */
 .rows--split > div:first-child { border-bottom: 0; }
 .rows--split > .pin-bottom { border-top: 1px solid var(--rule); }
+.rows--split > .shop-block { border-bottom: 0; }
 .rows--split > div:last-child { border-bottom: 0; }
 /* Home info column: About stays at the top; Shop, Services and Contact sit on the bottom. */
 @media (min-width: 56rem) {
@@ -366,6 +367,19 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .post time,
 .post--product .caption-index { color: var(--ink-soft); }
 .post .title { margin-bottom: var(--s1); }
+/* The italic title and the description read as one line: Title: description. */
+.post .caption-copy .title,
+.post .caption-copy .prose,
+.post .caption-copy .prose p,
+.post--product .caption-copy > p {
+  display: inline;
+}
+.post .caption-copy .title { margin-bottom: 0; }
+.post .caption-copy:has(.prose) .title::after,
+.post--product .caption-copy:has(> p) .title::after {
+  content: ": ";
+  font-style: normal;
+}
 .post-photo { display: block; line-height: 0; }
 /*
   Optional photo pass (Site settings → Gray or Color the journal photos). A Riso stipple sits
