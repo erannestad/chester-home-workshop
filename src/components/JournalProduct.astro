@@ -17,6 +17,11 @@ const { product, priority = false } = Astro.props;
 const [first, ...others] = product.images;
 const rest = product.journalMorePhotos ? others.slice(0, 4) : [];
 const href = link(`/products/${product.id}/`);
+const wide = product.journalSpan >= 2;
+const closedWidths = wide ? [480, 720, 1080, 1600] : [320, 480, 640, 960];
+const closedSizes = wide
+  ? `(min-width: 56rem) ${product.journalSpan >= 3 ? 50 : 45}vw, 100vw`
+  : '(min-width: 56rem) 22vw, 100vw';
 ---
 
 <article class="post post--product" id={`product-${product.id}`} data-span={product.journalSpan}>
@@ -27,8 +32,8 @@ const href = link(`/products/${product.id}/`);
           <Photo
             src={first}
             alt={product.title}
-            widths={[320, 480, 640, 960]}
-            sizes="(min-width: 56rem) 20vw, 100vw"
+            widths={closedWidths}
+            sizes={closedSizes}
             priority={priority}
           />
         </a>

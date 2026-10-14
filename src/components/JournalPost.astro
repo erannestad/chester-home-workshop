@@ -29,6 +29,13 @@ const href = (n: number) => link(`/journal/${post.id}/${n > 1 ? `${n}/` : ''}`) 
 // The open view is one fixed frame that fits every photo, so stepping through them never resizes the post.
 const ratios = post.images.map((img) => img.width / img.height);
 const frame = ratios.length ? `--widest: ${Math.max(...ratios)}` : undefined;
+// Medium and large entries are two or three columns wide. Tell the browser that, and offer
+// the same source sizes as the open view, or the closed photo looks soft next to it.
+const wide = post.span >= 2;
+const closedWidths = wide ? [480, 720, 1080, 1600] : [320, 480, 640, 960];
+const closedSizes = wide
+  ? `(min-width: 56rem) ${post.span >= 3 ? 50 : 45}vw, 100vw`
+  : '(min-width: 56rem) 22vw, 100vw';
 ---
 
 <article class:list={['post', { 'post--open': open }]} id={post.id} data-count={count} data-title={post.title} data-span={post.span} data-tone={tones[tone % 4]}>
@@ -39,8 +46,8 @@ const frame = ratios.length ? `--widest: ${Math.max(...ratios)}` : undefined;
           <Photo
             src={first}
             alt={post.title}
-            widths={[320, 480, 640, 960]}
-            sizes="(min-width: 56rem) 20vw, 100vw"
+            widths={closedWidths}
+            sizes={closedSizes}
             priority={priority}
             pass={pass && !colorFirst}
           />

@@ -144,6 +144,7 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 @media (min-width: 56rem) {
   .bar { order: 0; border-bottom: 0; border-top: 1px solid var(--rule); }
   .bar .fine { display: block; margin-left: auto; }
+  .bar .wordmark, .bar .bar-social { display: none; }
   .foot { display: none; }
 }
 
@@ -170,7 +171,8 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 /* The rule above Shop belongs to Shop. Contact has no rule under it. */
 .rows--split > div:first-child { border-bottom: 0; }
 .rows--split > .pin-bottom { border-top: 1px solid var(--rule); }
-.rows--split > .shop-block { border-bottom: 0; }
+.rows--split > .shop-block { border-bottom: 0; padding-bottom: var(--s4); }
+.rows--split > .shop-block + div { padding-top: 0; }
 .rows--split > div:last-child { border-bottom: 0; }
 /* Home info column: About stays at the top; Shop, Services and Contact sit on the bottom. */
 @media (min-width: 56rem) {

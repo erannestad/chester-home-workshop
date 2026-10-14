@@ -17,8 +17,8 @@ const edit = cmsEditUrl(path);
       <li><a href={link('/shop/')} aria-current={current(link('/shop/'), [link('/shop/'), link('/products/')])}>Shop</a></li>
       <li><a href={link('/about/')} aria-current={current(link('/about/'))}>About</a></li>
       <li><a href={link('/contact/')} aria-current={current(link('/contact/'))}>Contact</a></li>
-      {settings.instagram && <li><a href={instagramUrl(settings.instagram)}>Instagram</a></li>}
-      {settings.facebook && <li><a href={facebookUrl(settings.facebook)}>Facebook</a></li>}
+      {settings.instagram && <li class="bar-social"><a href={instagramUrl(settings.instagram)}>Instagram</a></li>}
+      {settings.facebook && <li class="bar-social"><a href={facebookUrl(settings.facebook)}>Facebook</a></li>}
     </ul>
   </nav>
   <p class="fine">

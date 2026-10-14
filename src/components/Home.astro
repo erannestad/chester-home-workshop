@@ -69,7 +69,7 @@ const featuredPhotos = featuredProducts
       {
         services.length > 0 && (
           <div class:list={[{ 'pin-bottom': shopCategories.length === 0 }]}>
-            <dt>Services</dt>
+            <dt><a href={link('/shop/')}>Services</a></dt>
             <dd>
               {services.map((c) => (
                 <p>
