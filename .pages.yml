@@ -200,7 +200,7 @@ content:
     format: yaml-frontmatter
     filename: "{primary}.md"
     view:
-      fields: [title, order]
+      fields: [title, order, featured]
       primary: title
       sort: [order, title]
       default:
@@ -213,7 +213,7 @@ content:
         required: true
       - name: summary
         label: Short description
-        description: Shown on the home page under "What we make".
+        description: Shown on the home page under "Shop".
         type: text
       - name: body
         label: Category page text
@@ -226,6 +226,11 @@ content:
         label: Sort order
         description: Lower numbers appear first.
         type: number
+      - name: featured
+        label: Feature on homepage
+        description: Shows this category in the bottom right corner of the journal on the home page. If more than one is on, the one with the lowest Sort order is shown.
+        type: boolean
+        default: false
 
   # ---------------------------------------------------------------- Journal
   - name: journal
@@ -301,26 +306,24 @@ content:
             type: string
             hidden: true
             default: Home
-          - name: heading
-            label: Headline
-            type: text
           - name: intro
             label: Introduction
             type: text
           - name: image
-            label: Large photo
-            description: JPEG, PNG, or WebP under about 3 MB. Phone photos are often too large. In Preview: File → Export…, JPEG, quality 70–80, longest side about 2000 px.
+            label: Sharing photo
+            description: Not shown on the page. This is the picture that appears when someone shares a link to the site, e.g. in a text message or on Facebook. JPEG, PNG, or WebP under about 3 MB.
             type: image
             options:
               media: pages
-          - name: image_alt
-            label: Photo description
-            description: A few words describing the photo, for screen readers.
-            type: string
           - name: featured_heading
             label: Journal heading
             description: The label above the journal on the home page, e.g. "Journal" or "From the workshop".
             type: string
+          - name: first_photo_color
+            label: Keep the first photo in color
+            description: The first photo in the journal stays in color. The other photos still follow Journal photos in Site settings.
+            type: boolean
+            default: false
 
       - name: about
         label: About page

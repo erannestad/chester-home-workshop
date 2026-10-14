@@ -39,6 +39,8 @@ npm run preview   # serve dist/
 | `src/components/Home.astro` | Home page body, shared by `pages/index.astro` and `pages/journal/[id]/[...photo].astro` |
 | `src/components/JournalPost.astro` | One journal post, closed (photo, thumbnails, caption) or open (spans the journal's columns, one photo at a time) |
 | `src/components/JournalProduct.astro` | A shop product in the journal feed (full color, links to the product page) |
+| `src/components/JournalCategory.astro` | The featured category, pinned by the journal script to the bottom of the rightmost column. One product photo sits, uncropped, in a 3:2 frame |
+| `src/components/HomeArt.astro` + `src/assets/home-art/` | Custom art at the top of the home page (not in the CMS). One image = still; several = slow looping sequence in filename order. Empty folder = nothing shown |
 | `src/site.config.ts` | Dev-only config (contact `formEndpoint`) |
 | `src/components/BuyBox.astro` | **The only place purchase UI/logic lives** |
 | `src/components/Photo.astro` | Wrapper around `<Image>` for local or remote photos |
@@ -64,7 +66,7 @@ npm run preview   # serve dist/
 ## Design rules
 
 - Minimal, warm, quiet. A Maine / coastal Connecticut feel. A "sophisticated vanilla HTML/CSS" look.
-- **No transitions, animations, fades or page transitions.** No `transition`, no `@keyframes`, no Astro `<ClientRouter />`, no scroll effects. Hover states change instantly (underline thickness, button invert).
+- **No transitions, animations, fades or page transitions.** No `transition`, no `@keyframes`, no Astro `<ClientRouter />`, no scroll effects. Hover states change instantly (underline thickness, button invert). Exceptions: the home art loop in `HomeArt.astro` (hard cuts between frames, paused for reduced motion), and the journal photo pass (photos fade from color to gray one second after load; hover eases the pass off).
 - **Layout: Cargo-style column index.** On wide screens a frame (no outer border) fills the window; pages are a row of `Column.astro` panels (label bar on top, each scrolls on its own) with a thin bar (`Header.astro`: name, menu, ©) along the bottom. Below `56rem` columns stack and the bar moves to the top. Products render as `ProductCard.astro` entries (image, then a two-part caption: numeral left, details right). Info uses `.rows` (label left, text right, hairline between rows).
 - **One serif family, one size** (`--text`). Hierarchy comes from italics (`.title`), small caps (`.label`) and hairline rules (`--rule`), not from size, weight or extra fonts.
 - **Color:** `--brand` (black now, may become a brownish red; candidates are in `tokens.css`) plus white. Body text uses `--ink`, never `--brand`, so changing the brand color doesn't recolor paragraphs. Use the existing tokens; don't hard-code colors.

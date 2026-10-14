@@ -102,6 +102,7 @@ const categories = defineCollection({
     title: z.string(),
     summary: text(),
     order: num(),
+    featured: flag(),
   }),
 });
 
@@ -115,6 +116,7 @@ const pages = defineCollection({
       image: image().nullish(),
       image_alt: text(),
       featured_heading: text(),
+      first_photo_color: flag(),
     }),
 });
 

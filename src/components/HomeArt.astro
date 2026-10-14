@@ -1,0 +1,43 @@
+---
+/*
+  The custom piece at the top of the home page. A design file, not CMS content: drop images
+  into src/assets/home-art/ (jpg, png or webp). One image shows as a still; several play in
+  filename order as a slow loop (01.jpg, 02.jpg, ...). No images, nothing renders.
+  The loop is the one deliberate exception to the no-animation rule.
+*/
+import { Image } from 'astro:assets';
+
+const SECONDS_PER_FRAME = 0.6;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/home-art/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+});
+const frames = Object.keys(files)
+  .sort()
+  .map((key) => files[key].default);
+const n = frames.length;
+const name = `home-art-${n}`;
+const keyframes = `@keyframes ${name} { 0% { visibility: visible; } ${(100 / n).toFixed(4)}%, 100% { visibility: hidden; } }`;
+---
+
+{
+  n > 0 && (
+    <div
+      class:list={['home-art', { 'home-art--loop': n > 1 }]}
+      style={`--name: ${name}; --loop: ${n * SECONDS_PER_FRAME}s;`}
+      aria-hidden="true"
+    >
+      {n > 1 && <style set:html={keyframes} />}
+      {frames.map((src, i) => (
+        <Image
+          src={src}
+          alt=""
+          widths={[480, 720, 1080]}
+          sizes="(min-width: 56rem) 36vw, 100vw"
+          loading="eager"
+          style={`animation-delay: ${-((n - i) % n) * SECONDS_PER_FRAME}s;`}
+        />
+      ))}
+    </div>
+  )
+}

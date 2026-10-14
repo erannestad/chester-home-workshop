@@ -66,11 +66,13 @@ Give products a **Sort order** number. Lower numbers come first. Products withou
 
 Click **Categories** → **Add an entry** → give it a name and a short description → Save. It then appears in the product Category list and on the site.
 
+Turn on **Feature on homepage** on a category to show it in the bottom right corner of the journal, linking to that category's shop page. If more than one is on, the one with the lowest Sort order is shown.
+
 ## Edit page text
 
-- **Pages → Home page**: headline, introduction, large photo, and the heading above the journal
+- **Pages → Home page**: introduction, the heading above the journal, the sharing photo (not shown on the page; it's the picture that appears when someone shares a link to the site), and **Keep the first photo in color** (the first journal photo stays in color; the rest follow Journal photos)
 - **Pages → About page**: your story and a photo
-- **Pages → Contact page**: the welcome text
+- **Pages → Contact page**: the welcome text, also shown under Contact on the home page
 
 ## Announcements, email, phone, Instagram, Facebook
 

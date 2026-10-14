@@ -38,6 +38,7 @@ export type Category = {
   title: string;
   summary: string;
   order: number | null;
+  featured: boolean; // shown in the bottom right corner of the home-page journal
   bodyHtml: string;
 };
 
@@ -74,6 +75,7 @@ async function loadCategories(): Promise<Category[]> {
     title: data.title,
     summary: data.summary,
     order: data.order,
+    featured: data.featured,
     bodyHtml: rendered?.html ?? '',
   }));
 }
@@ -95,6 +97,11 @@ export async function getCategories(): Promise<Category[]> {
   return (await loadCategories()).sort(
     (a, b) => (a.order ?? LAST) - (b.order ?? LAST) || a.title.localeCompare(b.title),
   );
+}
+
+/** The category placed in the bottom right corner of the journal: the first featured one, by Sort order. */
+export async function getFeaturedCategory(): Promise<Category | null> {
+  return (await getCategories()).find((c) => c.featured) ?? null;
 }
 
 /** Products marked Feature on homepage, 1 first through 5 last. Drafts appear only in `npm run dev`. */

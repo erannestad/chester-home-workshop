@@ -30,10 +30,12 @@ img, picture { display: block; max-width: 100%; height: auto; }
 h1, h2, h3, h4 { font-size: inherit; font-weight: 400; line-height: inherit; margin: 0; }
 p, ul, ol, dl, dd { margin: 0 0 var(--s4); }
 p:last-child, ul:last-child, dd > :last-child { margin-bottom: 0; }
-p { text-wrap: pretty; line-height: 1.25; }
+p { text-wrap: pretty; }
 
 a { color: inherit; text-decoration: none; }
 a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.wordmark, .wordmark:hover, .wordmark[aria-current],
+.col-home, .col-home:hover, .col-home[aria-current] { text-decoration: none; }
 .prose a, .rows dd p a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 .prose a:hover, .rows dd p a:hover { text-decoration-thickness: 2px; }
 
@@ -69,11 +71,14 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 /* ---------- Frame + columns ----------
    Phones: columns stack and the page scrolls normally.
    Wide screens: the frame fills the window, columns sit side by side and each scrolls on its own. */
+/* The top margin matches the side edges, where the column padding adds to the frame margin. */
 .frame {
+  --frame-top: calc(var(--frame) + var(--pad));
   display: flex;
   flex-direction: column;
   margin: var(--frame);
-  min-height: calc(100dvh - var(--frame) * 2);
+  margin-top: var(--frame-top);
+  min-height: calc(100dvh - var(--frame) - var(--frame-top));
 }
 
 .announcement {
@@ -101,7 +106,7 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .col-home { display: none; }
 
 @media (min-width: 56rem) {
-  .frame { height: calc(100dvh - var(--frame) * 2); }
+  .frame { height: calc(100dvh - var(--frame) - var(--frame-top)); }
   .columns { display: flex; min-height: 0; overflow-x: auto; }
   .col {
     flex: 1 1 0;
@@ -130,15 +135,6 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   padding: var(--s1) 0;
   border-bottom: 1px solid var(--rule);
 }
-/* One line tall, so the bars keep their height. */
-.logo {
-  display: inline-block;
-  width: calc(var(--text) * var(--leading));
-  height: calc(var(--text) * var(--leading));
-  margin-right: 0.5em;
-  vertical-align: top;
-  object-fit: cover;
-}
 .bar nav ul { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); margin: 0; padding: 0; list-style: none; }
 .fine { color: var(--ink-soft); margin: 0; }
 .bar .fine { display: none; }
@@ -165,12 +161,40 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .rows dt { overflow-wrap: anywhere; }
 .rows dt .title { margin-bottom: var(--s1); }
 .rows dd { margin: 0; }
+.rows .all-items { margin-top: var(--s6); }
+.rows .shop-summary { display: block; margin-top: var(--s2); }
 /* Phones: the next column's label bar draws this line, so don't double it. */
 @media (max-width: 56rem) {
   .col-body > .rows:last-child > div:last-child { border-bottom: 0; }
 }
+/* The rule above Shop belongs to Shop. Contact has no rule under it. */
+.rows--split > div:first-child { border-bottom: 0; }
+.rows--split > .pin-bottom { border-top: 1px solid var(--rule); }
+.rows--split > div:last-child { border-bottom: 0; }
+/* Home info column: About stays at the top; Shop, Services and Contact sit on the bottom. */
+@media (min-width: 56rem) {
+  .col--wide .col-body { display: flex; flex-direction: column; }
+  .col--wide .rows--split {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .col--wide .rows--split > .pin-bottom { margin-top: auto; }
+}
 
-.lead-image { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--wash); margin-bottom: var(--pad); }
+/* ---------- Home art (HomeArt.astro) ----------
+   Frames stack in one grid cell; each is shown for its slice of the loop with hard cuts.
+   This loop is the one exception to the no-animation rule. */
+.home-art { display: grid; margin-bottom: var(--pad); }
+.home-art img { grid-area: 1 / 1; width: 100%; height: auto; }
+.home-art--loop img {
+  visibility: hidden;
+  animation: var(--name) var(--loop) linear infinite both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-art--loop img { animation: none; }
+  .home-art--loop img:first-child { visibility: visible; }
+}
 
 /* ---------- Entries (a product in a column) ---------- */
 .shop-grid {
@@ -190,8 +214,17 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .caption p { margin-bottom: var(--s3); }
 .caption-index { margin: 0; }
 .caption-text { color: var(--ink); }
-/* Journal captions follow the same 1-to-2 split as .rows, so the date isn't a half-width empty column. */
+/* Journal captions follow the same 1-to-2 split as .rows, so the date isn't a half-width empty column.
+   A post that spans 2 or 3 columns keeps that date column at one third of a single column. */
+.post .caption, .journal-feature .caption {
+  /* One journal column, measured from the journal itself; the date column is a third of it, less its share of the gap. */
+  --cap-index: calc(((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols) - var(--s4)) / 3);
+}
 .post .caption { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.post[data-span="2"]:not(.post--open) .caption,
+.post[data-span="3"]:not(.post--open) .caption {
+  grid-template-columns: var(--cap-index) minmax(0, 1fr);
+}
 
 /*
   Journal: newest first. Without JS this is a row grid. The script in Home.astro packs posts
@@ -222,7 +255,8 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 .journal-pack { position: relative; }
 .journal-pack > .post,
 .journal-pack > .journal-space,
-.journal-pack > .journal-year { position: absolute; }
+.journal-pack > .journal-year,
+.journal-pack > .journal-feature { position: absolute; }
 .journal-year {
   grid-column: 1 / -1;
   display: flex;
@@ -248,9 +282,47 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   padding-right: var(--s4);
 }
 .post--span { background: var(--bg); }
-.journal > .post[data-span="2"] { grid-column: span 2; }
+.journal > .post[data-span="2"],
+.journal > .journal-feature { grid-column: span 2; }
 .journal > .post[data-span="3"] { grid-column: span 3; }
 .post { padding-bottom: var(--s6); }
+/*
+  Featured category: caption on top, photo below, two columns wide. The white frame covers
+  the vertical rule between its two columns; the rule on its left stays. --bleed (set by
+  the packer) reaches that rule in the gutter; the padding keeps the text and photo on the
+  column edge, the same inset as every other post. Gaps inside the frame use --pad, the
+  same 10px as that inset. The photo frame is 3 wide by 2 tall. One photo sits inside it,
+  whole, and the packer pins the bottom from that measured height.
+*/
+.journal-feature { padding-bottom: var(--s6); }
+.journal-feature-frame {
+  background: var(--bg);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding-left: var(--bleed, 0px);
+}
+.journal-feature-photo {
+  display: block;
+  position: relative;
+  aspect-ratio: 3 / 2;
+  background: var(--tone-gray);
+  margin-bottom: var(--pad);
+}
+.journal-feature-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.journal-feature .caption {
+  grid-template-columns: var(--cap-index) minmax(0, 1fr);
+  padding-top: var(--pad);
+  padding-bottom: var(--pad);
+}
+.journal-feature .caption p { margin-bottom: 0; }
+.journal-feature .caption-index { color: var(--ink-soft); }
+.journal-feature .title { margin-bottom: var(--s1); }
 .journal-space { aspect-ratio: 1; margin-bottom: var(--s6); }
 .post img { width: 100%; background: none; }
 .post-closed .post-photo { margin-bottom: var(--s2); }
@@ -283,7 +355,8 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   on the photo, then grayscale, then contrast (black and white points in, mids stay), then
   screen: darkest pixels become the tone and whites stay white. Gray uses one tone for every
   post; color cycles rusty hues. Extra thumbnails skip the SVG stipple so it doesn't clip as
-  a strip along the bottom. Hover eases the whole pass off (grain included).
+  a strip along the bottom. Photos paint in color; a second later the pass fades in.
+  Hover eases the whole pass off (grain included).
 */
 .journal--tone .post:not(.post--product) { --tone: var(--tone-ochre); --tone-ink: var(--tone-ochre-ink); }
 .journal--tone .post:not(.post--product)[data-tone="mustard"] { --tone: var(--tone-mustard); --tone-ink: var(--tone-mustard-ink); }
@@ -325,8 +398,10 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   overflow: hidden;
   pointer-events: none;
   background-color: var(--tone);
-  transition: opacity 0.35s ease;
+  opacity: 0;
+  transition: opacity 0.6s ease;
 }
+.journal--tone.is-settled .post-pass { opacity: 1; }
 .journal--tone .post-pass img {
   width: 100%;
   height: 100%;
@@ -351,6 +426,7 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
 @media (prefers-reduced-motion: reduce) {
   .journal--tone .post-pass,
   .journal--tone .post:not(.post--product) .post-closed .post-photo { transition: none; }
+  .journal--tone .post-pass { opacity: 1; }
 }
 
 /* An open post spans the journal's columns and shows one large photo at a time. */

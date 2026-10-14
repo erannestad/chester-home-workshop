@@ -4,14 +4,15 @@
   names the post to show two columns wide with one large photo.
 */
 import { getEntry } from 'astro:content';
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Column from './Column.astro';
 import JournalPost from './JournalPost.astro';
 import JournalProduct from './JournalProduct.astro';
-import { getCategories, getJournalProducts, type ProductImage } from '../lib/catalog';
+import JournalCategory from './JournalCategory.astro';
+import HomeArt from './HomeArt.astro';
+import { getCategories, getFeaturedCategory, getJournalProducts, getProducts, type ProductImage } from '../lib/catalog';
 import { getPosts, journalPeriod, scatterEvery } from '../lib/journal';
-import { CMS, cmsEditUrl, settings, instagramUrl, instagramHandle, link } from '../lib/site';
+import { CMS, cmsEditUrl, settings, link } from '../lib/site';
 
 interface Props {
   open?: { id: string; photo: number };
@@ -22,61 +23,74 @@ interface Props {
 
 const { open, title, description, image } = Astro.props;
 const page = await getEntry('pages', 'home');
+const contact = await getEntry('pages', 'contact');
 const categories = await getCategories();
+// Upholstery is offered as a service, so it sits under Services instead of Shop.
+const services = categories.filter((c) => c.id === 'upholstery');
+const shopCategories = categories.filter((c) => c.id !== 'upholstery');
 const posts = await getPosts();
 const journalProducts = await getJournalProducts();
 const feed = scatterEvery(posts, journalProducts, (p) => p.id, (p) => p.id);
-const tel = settings.phone.replace(/[^\d+]/g, '');
+const featuredCategory = await getFeaturedCategory();
+const featuredProducts = featuredCategory
+  ? (await getProducts()).filter((p) => p.category === featuredCategory.id)
+  : [];
+const featuredProduct = featuredProducts.find((p) => p.images.length);
+const featuredPhoto = featuredProduct
+  ? { src: featuredProduct.images[0], alt: featuredProduct.title, href: link(`/products/${featuredProduct.id}/`) }
+  : null;
 ---
 
 <Base title={title} description={description || page?.data.intro || settings.tagline} image={image ?? page?.data.image}>
   <Column wide>
-    {
-      page?.data.image && (
-        <Image
-          src={page.data.image}
-          alt={page.data.image_alt}
-          class="lead-image"
-          widths={[480, 720, 1080]}
-          sizes="(min-width: 56rem) 36vw, 100vw"
-          priority={!open}
-        />
-      )
-    }
-    <dl class="rows">
+    <HomeArt />
+    <dl class="rows rows--split">
       <div>
         <dt>
-          {settings.phone && <><a href={`tel:${tel}`}>{settings.phone}</a><br /></>}
-          {settings.instagram && <a href={instagramUrl(settings.instagram)}>{instagramHandle(settings.instagram)}</a>}
+          <h1 class="visually-hidden">{settings.site_name}</h1>
+          <a href={link('/about/')}>About</a>
         </dt>
-        <dd>
-          <h1 class="title">{page?.data.heading || settings.site_name}</h1>
-          {page?.data.intro && <p>{page.data.intro}</p>}
-        </dd>
+        <dd>{page?.data.intro && <p>{page.data.intro}</p>}</dd>
       </div>
       {
-        categories.length > 0 && (
-          <div>
-            <dt>What we make</dt>
+        shopCategories.length > 0 && (
+          <div class="pin-bottom">
+            <dt><a href={link('/shop/')}>Shop</a></dt>
             <dd>
-              {categories.map((c) => (
+              {shopCategories.map((c) => (
                 <p>
                   <a href={link(`/shop/${c.id}/`)}>{c.title}</a>
-                  {c.summary && <><br /><span class="muted">{c.summary}</span></>}
+                  {c.summary && <span class="muted shop-summary">{c.summary}</span>}
                 </p>
               ))}
-              <p><a href={link('/shop/')}>Shop everything</a></p>
+              <p class="all-items">
+                <a href={link('/shop/')}>All Items</a>
+                <span class="muted shop-summary">Everything in one place.</span>
+              </p>
             </dd>
           </div>
         )
       }
-      <div>
-        <dt>Commissions</dt>
+      {
+        services.length > 0 && (
+          <div class:list={[{ 'pin-bottom': shopCategories.length === 0 }]}>
+            <dt>Services</dt>
+            <dd>
+              {services.map((c) => (
+                <p>
+                  <a href={link(`/shop/${c.id}/`)}>{c.title}</a>
+                  {c.summary && <span class="muted shop-summary">{c.summary}</span>}
+                </p>
+              ))}
+            </dd>
+          </div>
+        )
+      }
+      <div class:list={[{ 'pin-bottom': shopCategories.length === 0 && services.length === 0 }]}>
+        <dt><a href={link('/contact/')}>Contact</a></dt>
         <dd>
-          <p>
-            Custom fabric colors, painted commissions and upholstery work are quoted individually.{' '}
-            <a href={link('/contact/')}>Get in touch</a> with what you have in mind.
-          </p>
+          {contact?.data.intro && <p>{contact.data.intro}</p>}
+          <p><a href={link('/contact/')}>Contact us</a></p>
         </dd>
       </div>
     </dl>
@@ -136,10 +150,11 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
                     <h2 class="journal-year-label">{period.label}</h2>
                   </div>
                 )}
-                <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} tone={entry.index % 4} pass={settings.journal_photos !== 'color'} />
+                <JournalPost post={post} priority={!open && i < 3} photo={open?.id === post.id ? open.photo : undefined} tone={entry.index % 4} pass={settings.journal_photos !== 'color'} colorFirst={!!page?.data.first_photo_color && i === 0} />
               </>
             );
           })}
+          {featuredCategory && <JournalCategory category={featuredCategory} count={featuredProducts.length} photo={featuredPhoto} />}
         </div>
         </>
       ) : (
@@ -155,6 +170,8 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
   const journal = document.querySelector<HTMLElement>('.journal');
 
   if (journal) {
+    // Color first, then the gray pass. Reduced motion stays gray from the first paint.
+    window.setTimeout(() => journal.classList.add('is-settled'), 1000);
     const base = journal.dataset.base ?? '/';
     const site = journal.dataset.site ?? document.title;
     const cms = journal.dataset.cms ?? '';
@@ -177,6 +194,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
     const tokens = getComputedStyle(document.documentElement);
     const colMin = px(tokens.getPropertyValue('--col-min'));
     const packMin = px(tokens.getPropertyValue('--journal-min'));
+    const threeMin = px(tokens.getPropertyValue('--journal-min-3'));
     const gap = px(tokens.getPropertyValue('--pad')) * 2;
     const scroller = (el: HTMLElement) => {
       for (let p = el.parentElement; p; p = p.parentElement) {
@@ -193,6 +211,9 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
     };
     let packed = '';
     let packing = false;
+    const corner = journal.querySelector<HTMLElement>('.journal-feature');
+    const body = journal.closest<HTMLElement>('.col-body');
+    journal.style.paddingBottom = '';
     const order = [...journal.querySelectorAll<HTMLElement>(':scope > .post, :scope > .journal-year')].flatMap((el) => {
       if (!el.classList.contains('post') || Math.random() >= 0.5) return [el];
       const space = document.createElement('div');
@@ -204,27 +225,36 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
     const pack = () => {
       if (packing) return;
       // 3 and 4 columns use a slightly narrower min so they hold further as the window
-      // shrinks; 5+ stay on --col-min so a normal desktop doesn't pick up an extra column.
+      // shrinks (3 narrower still); 5+ stay on --col-min so a normal desktop doesn't pick
+      // up an extra column.
       const inner = journal.clientWidth + gap;
       const full = Math.max(1, Math.floor(inner / (colMin + gap)));
       const tight = Math.max(1, Math.floor(inner / (packMin + gap)));
-      const n = full >= 5 ? full : Math.min(4, tight);
+      const fitsThree = inner >= 3 * (threeMin + gap);
+      const n = full >= 5 ? full : tight >= 3 ? Math.min(4, tight) : fitsThree ? 3 : tight;
       const open = order.find((p) => p.classList.contains('post--open'));
-      const key = `${n}:${Math.round(journal.clientWidth)}:${open?.id ?? ''}`;
+      const padTop = body ? parseFloat(getComputedStyle(body).paddingTop) : 0;
+      const padBottom = body ? parseFloat(getComputedStyle(body).paddingBottom) : 0;
+      const viewH = body ? body.clientHeight - padTop - padBottom : journal.clientHeight;
+      const key = `${n}:${Math.round(journal.clientWidth)}:${Math.round(viewH)}:${open?.id ?? ''}`;
       if (key === packed) return;
       packed = key;
       packing = true;
       try {
       journal.style.setProperty('--cols', String(n));
       journal.classList.add('is-packed');
+      corner?.classList.remove('is-pinned');
 
       const i = open ? order.indexOf(open) : -1;
       const before = i === -1 ? order : order.slice(0, i);
       const after = i === -1 ? [] : order.slice(i + 1);
 
-      const fill = (name: string, items: HTMLElement[]) => {
+      type Hole = { col: number; span: number; top: number; bottom: number };
+
+      // pin: 'view' = bottom right of the first screen, 'top' = top right of the pack.
+      const fill = (name: string, items: HTMLElement[], feature: HTMLElement | null, pin: 'view' | 'top' | null) => {
         let row = journal.querySelector<HTMLElement>(`:scope > .journal-pack[data-pack="${name}"]`);
-        if (!items.length) {
+        if (!items.length && !feature) {
           row?.remove();
           return;
         }
@@ -233,43 +263,106 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
           row.className = 'journal-pack';
           row.dataset.pack = name;
         }
-        row.replaceChildren(...items);
+        row.replaceChildren(...items, ...(feature ? [feature] : []));
         journal.append(row);
 
         const track = (journal.clientWidth - (n - 1) * gap) / n;
         const colH = Array.from({ length: n }, () => 0);
-        const place = (el: HTMLElement, col: number, span: number) => {
-          const y = Math.max(...colH.slice(col, col + span));
-          el.style.left = `${col * (track + gap)}px`;
-          el.style.top = `${y}px`;
-          el.style.width = `${span * track + (span - 1) * gap}px`;
+        const width = (span: number) => span * track + (span - 1) * gap;
+        // Half a gutter less the rule, so the frame's lines meet the vertical rule on its left
+        // and the rule itself stays visible.
+        const box = (el: HTMLElement, col: number, span: number) => {
+          const bleed = el === feature && col > 0 ? gap / 2 - 1 : 0;
+          if (el === feature) el.style.setProperty('--bleed', `${bleed}px`);
+          el.style.width = `${width(span) + bleed}px`;
+          el.style.left = `${col * (track + gap) - bleed}px`;
+        };
+        const hit = (hole: Hole | null, col: number, span: number, y: number, h: number) =>
+          !!hole &&
+          col < hole.col + hole.span &&
+          hole.col < col + span &&
+          y < hole.bottom &&
+          y + h > hole.top;
+        const startY = (col: number, span: number, hole: Hole | null) => {
+          let y = Math.max(...colH.slice(col, col + span));
+          if (hole && hit(hole, col, span, y, 1) && y < hole.bottom) y = hole.bottom;
+          return y;
+        };
+        const place = (el: HTMLElement, col: number, span: number, hole: Hole | null, at?: number) => {
+          box(el, col, span);
           if (el.classList.contains('post')) el.classList.toggle('post--span', span > 1);
+          let y = at ?? startY(col, span, hole);
           const h = el.offsetHeight;
+          if (hole && hit(hole, col, span, y, h)) y = hole.bottom;
+          el.style.top = `${y}px`;
           for (let c = col; c < col + span; c++) colH[c] = y + h;
         };
 
-        for (const el of items) {
+        const spanOf = (el: HTMLElement) => {
           const want = el.classList.contains('journal-year')
             ? n
             : el.classList.contains('post')
               ? Number(el.dataset.span) || 1
               : 1;
-          const span = Math.min(n, Math.max(1, want));
+          return Math.min(n, Math.max(1, want));
+        };
+
+        let hole: Hole | null = null;
+        let rest = items;
+        if (feature && pin && n > 1) {
+          // The first post always takes the top left; on short screens the category drops
+          // below it rather than pushing it down.
+          if (items.length) {
+            place(items[0], 0, spanOf(items[0]), null);
+            rest = items.slice(1);
+          }
+          const span = Math.min(2, n);
+          const col = n - span;
+          box(feature, col, span);
+          const h = feature.offsetHeight;
+          // 'view': the frame's bottom rule sits 1px past the column's edge, under the bar's
+          // top rule, so the two read as one line.
+          const frame = feature.querySelector<HTMLElement>('.journal-feature-frame');
+          const frameH = frame ? frame.offsetHeight : h;
+          const want = pin === 'view' ? Math.max(0, viewH + padBottom + 1 - frameH) : 0;
+          const top = Math.max(want, ...colH.slice(col, col + span));
+          feature.style.top = `${top}px`;
+          hole = { col, span, top, bottom: top + h };
+        }
+
+        for (const el of rest) {
+          const span = spanOf(el);
           let col = 0;
           let best = Infinity;
           for (let c = 0; c <= n - span; c++) {
-            const h = Math.max(...colH.slice(c, c + span));
-            if (h < best) {
-              best = h;
+            const y = startY(c, span, hole);
+            if (y < best) {
+              best = y;
               col = c;
             }
           }
-          place(el, col, span);
+          place(el, col, span, hole);
         }
-        row.style.height = `${Math.max(0, ...colH)}px`;
+
+        if (feature && !hole) {
+          const span = Math.min(2, n);
+          place(feature, n > 1 ? n - span : 0, span, null);
+        }
+
+        const packedH = Math.max(0, ...colH, hole?.bottom ?? 0);
+        row.style.height = `${packedH}px`;
       };
 
-      fill('before', before);
+      // The category sits at the bottom right of the first screen. If an open post is so near
+      // the top that nothing fills that screen, it sits just under the open post instead.
+      let cornerHome: 'before' | 'after' = 'before';
+      if (open && corner) {
+        fill('before', before, null, null);
+        const beforeRow = journal.querySelector<HTMLElement>(':scope > .journal-pack[data-pack="before"]');
+        const beforeH = beforeRow ? parseFloat(beforeRow.style.height) || 0 : 0;
+        if (n === 1 || beforeH < viewH) cornerHome = 'after';
+      }
+      fill('before', before, cornerHome === 'before' ? corner : null, 'view');
       if (open) {
         open.classList.remove('post--span');
         open.style.left = '';
@@ -277,7 +370,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
         open.style.width = '';
         journal.append(open);
       }
-      fill('after', after);
+      fill('after', after, cornerHome === 'after' ? corner : null, 'top');
       } finally {
         packing = false;
       }
@@ -360,6 +453,7 @@ const tel = settings.phone.replace(/[^\d+]/g, '');
     if (initial) keep(initial, pack);
     else pack();
     new ResizeObserver(relayout).observe(journal);
+    if (body) new ResizeObserver(relayout).observe(body);
     journal.querySelectorAll('img').forEach((img) => {
       if (img.complete || img.closest('.post-gallery')) return;
       img.addEventListener('load', () => { packed = ''; relayout(); }, { once: true });

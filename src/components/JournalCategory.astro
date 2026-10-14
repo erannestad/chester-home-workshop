@@ -1,0 +1,33 @@
+---
+/*
+  The featured shop category in the journal. Two columns wide; the script in Home.astro
+  reserves a hole at the bottom right of the first screen so posts flow around it.
+*/
+import { type Category, type ProductImage } from '../lib/catalog';
+import { link } from '../lib/site';
+import Photo from './Photo.astro';
+
+interface Props {
+  category: Category;
+  count: number;
+  photo?: { src: ProductImage; alt: string; href: string } | null;
+}
+
+const { category, count, photo = null } = Astro.props;
+const href = link(`/shop/${category.id}/`);
+---
+
+<article class="journal-feature" id={`category-${category.id}`} data-span="2">
+  <div class="journal-feature-frame">
+    <div class="caption">
+      <p class="caption-index">{count} {count === 1 ? 'item' : 'items'}</p>
+      <div>
+        <h3 class="title"><a href={href}>{category.title}</a></h3>
+        {category.summary && <p>{category.summary}</p>}
+      </div>
+    </div>
+    <a class="journal-feature-photo" href={photo?.href ?? href} aria-label={photo ? undefined : category.title}>
+      {photo && <Photo src={photo.src} alt={photo.alt} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 40vw, 100vw" />}
+    </a>
+  </div>
+</article>

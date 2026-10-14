@@ -14,10 +14,11 @@ interface Props {
   photo?: number; // open the post at this photo (1-based)
   tone?: number; // 0–3, cycles the rusty photo pass
   pass?: boolean; // gray/color photo pass (duplicate img so the pass can ease off)
+  colorFirst?: boolean; // leave this post's first photo in color
 }
 
 const tones = ['ochre', 'mustard', 'plum', 'olive'] as const;
-const { post, priority = false, photo, tone = 0, pass = false } = Astro.props;
+const { post, priority = false, photo, tone = 0, pass = false, colorFirst = false } = Astro.props;
 const open = photo !== undefined;
 const [first, ...others] = post.images;
 const rest = others.slice(0, 4); // one row under the closed post; the gallery shows them all
@@ -41,7 +42,7 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
             widths={[320, 480, 640, 960]}
             sizes="(min-width: 56rem) 20vw, 100vw"
             priority={priority}
-            pass={pass}
+            pass={pass && !colorFirst}
           />
         </a>
       )
@@ -73,12 +74,12 @@ const frame = ratios.length ? `--tallest: ${Math.min(...ratios)}; --widest: ${Ma
                     widths={[480, 720, 1080, 1600]}
                     sizes="(min-width: 56rem) 50vw, 100vw"
                     priority={open && i === current - 1}
-                    pass={pass}
+                    pass={pass && !(colorFirst && i === 0)}
                   />
                 </a>
               ) : (
                 <div class="post-photo">
-                  <Photo src={img} alt={post.title} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 50vw, 100vw" priority={open} pass={pass} />
+                  <Photo src={img} alt={post.title} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 50vw, 100vw" priority={open} pass={pass && !colorFirst} />
                 </div>
               )}
             </div>
