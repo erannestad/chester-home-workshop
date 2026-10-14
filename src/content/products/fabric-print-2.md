@@ -17,6 +17,6 @@ homepage:
   featured: false
   journal_priority: "5"
   journal_span: "1"
-draft: true
+draft: false
 ---
 Hemmed by hand and dyed with hulls gathered in the fall.
