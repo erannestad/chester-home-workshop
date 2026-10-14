@@ -1,7 +1,7 @@
 ---
-title: "Napkin Copy"
+title: Napkin Copy
 images:
-  - ../../assets/products/4764547711222066351282282935723104784261973709n.jpg
+  - ../../assets/products/localhost.webp
 category: fabric.md
 price: 36
 price_note: Set of four
@@ -12,8 +12,11 @@ details:
     value: 18 × 18 in.
   - label: Material
     value: Cotton
+in_journal: false
 homepage:
   featured: false
+  journal_priority: "5"
+  journal_span: "1"
 draft: true
 ---
 Hemmed by hand and dyed with hulls gathered in the fall.
