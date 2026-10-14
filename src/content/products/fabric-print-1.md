@@ -1,7 +1,7 @@
 ---
 title: "Fabric Print #1"
 images:
-  - ../../assets/products/localhost-2.webp
+  - ../../assets/products/localhost-1.webp
 category: fabric.md
 price: 36
 price_note: Set of four
