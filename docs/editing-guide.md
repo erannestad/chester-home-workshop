@@ -43,7 +43,7 @@ On a product, **Feature on homepage** puts it in the journal on the home page (f
 
 - **Feature on homepage**: turn on to show it, off to take it out.
 - **Order on homepage**: **1** is earlier (closer to the top) and **5** is later. Products with the same number are listed A to Z.
-- **Columns on homepage**: how many columns it covers on a wide screen. Most stay at one. Use two or three for a larger photo. On a phone it is always one column.
+- **Size on homepage**: Small, Medium or Large. Most stay Small. Medium shows a larger photo, and Large is the same as Medium except on very wide screens, where it gets even more room. On a phone it is always one column.
 - **Show more photos on homepage**: off (the usual) shows just the first photo. Turn on to add up to four small photos underneath.
 
 A hidden product never appears, even with this on. This does not change the shop.
@@ -54,7 +54,7 @@ The right side of the home page is the journal: photos and a line or two about w
 
 Click **Journal** → **Add an entry** → give it a title (e.g. *Two chairs back home*), pick the date, add photos, and write a sentence or two → Save. The first photo shows large and the next four appear small underneath. Visitors can click a post to open it wider and step through all its photos, in the order you added them.
 
-**Width** is how many columns the post covers on a wide screen: one (the usual size), two, or three. Use two or three when you want a photo to read larger. On a phone every post is one column.
+**Width** is how big the post shows on a wide screen: Small (the usual size), Medium, or Large. Medium is twice as wide as Small. Large is the same as Medium, except on very wide screens, where it gets a little more room. On a phone every post is one column.
 
 To take a post down without deleting it, turn on **Hide from website**.
 

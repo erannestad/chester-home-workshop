@@ -71,7 +71,7 @@ npm run preview   # serve dist/
 - **One serif family, one size** (`--text`). Hierarchy comes from italics (`.title`), small caps (`.label`) and hairline rules (`--rule`), not from size, weight or extra fonts.
 - **Color:** `--brand` (black now, may become a brownish red; candidates are in `tokens.css`) plus white. Body text uses `--ink`, never `--brand`, so changing the brand color doesn't recolor paragraphs. Use the existing tokens; don't hard-code colors.
 - Plain CSS only (no Tailwind, no CSS-in-JS). Add to the matching section of `global.css`.
-- Minimal client JS. Prefer HTML/CSS solutions. There are two scripts: the inline prefill on `/contact/`, and the journal script in `Home.astro`. The script packs posts so they fill tightly (a post's Width field can span 1–3 columns) and swaps open posts and photos in place. Each open post and photo is a real static page (`/journal/{id}/{n}/`); the script keeps the address bar, Back button and arrow keys in step.
+- Minimal client JS. Prefer HTML/CSS solutions. There are two scripts: the inline prefill on `/contact/`, and the journal script in `Home.astro`. The script packs posts so they fill tightly (a post's Width field is Small = 1 column, Medium = 2, Large = 2, or 3 once the journal has 4+ columns) and swaps open posts and photos in place. Each open post and photo is a real static page (`/journal/{id}/{n}/`); the script keeps the address bar, Back button and arrow keys in step.
 - Simple UI: no hamburger menu (the nav wraps on mobile), no carousels, no modals. The open journal post (Previous / Next) is the one gallery. Product photos stack in their own column.
 - Layout must work at 390px wide with no horizontal scroll.
 - Copy tone: plain, warm, short. No exclamation marks or marketing superlatives.

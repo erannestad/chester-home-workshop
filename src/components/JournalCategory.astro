@@ -2,6 +2,10 @@
 /*
   The featured shop category in the journal. Two columns wide; the script in Home.astro
   reserves a hole at the bottom right of the first screen so posts flow around it.
+  Photos sit in a row on the journal's column grid (vertical = one column, horizontal = two).
+  The current one starts at the left edge, the rest follow to its right and are cut off by the
+  frame's hard edge. Every 8 seconds (or on a paddle click) the row moves on one photo and
+  loops endlessly: the photo leaving fades out, the row shifts, the photo arriving fades in.
 */
 import { type Category, type ProductImage } from '../lib/catalog';
 import { link } from '../lib/site';
@@ -10,10 +14,10 @@ import Photo from './Photo.astro';
 interface Props {
   category: Category;
   count: number;
-  photo?: { src: ProductImage; alt: string; href: string } | null;
+  photos?: Array<{ src: ProductImage; alt: string; href: string }>;
 }
 
-const { category, count, photo = null } = Astro.props;
+const { category, count, photos = [] } = Astro.props;
 const href = link(`/shop/${category.id}/`);
 ---
 
@@ -25,9 +29,131 @@ const href = link(`/shop/${category.id}/`);
         <h3 class="title"><a href={href}>{category.title}</a></h3>
         {category.summary && <p>{category.summary}</p>}
       </div>
+      {
+        photos.length > 1 && (
+          <p class="feature-paddles">
+            <button type="button" data-feature-step="-1" aria-label="Previous photo">←</button>
+            <button type="button" data-feature-step="1" aria-label="Next photo">→</button>
+          </p>
+        )
+      }
     </div>
-    <a class="journal-feature-photo" href={photo?.href ?? href} aria-label={photo ? undefined : category.title}>
-      {photo && <Photo src={photo.src} alt={photo.alt} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 40vw, 100vw" />}
-    </a>
+    <div class="journal-feature-photo" data-feature-photos>
+      <div class="feature-track">
+        {
+          photos.length ? (
+            photos.map((p) => (
+              <a href={p.href} class:list={{ 'is-portrait': typeof p.src !== 'string' && p.src.height > p.src.width }}>
+                <Photo src={p.src} alt={p.alt} widths={[480, 720, 1080, 1600]} sizes="(min-width: 56rem) 40vw, 100vw" />
+              </a>
+            ))
+          ) : (
+            <a href={href} aria-label={category.title}></a>
+          )
+        }
+      </div>
+    </div>
   </div>
 </article>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.journal-feature').forEach((root) => {
+    const view = root.querySelector<HTMLElement>('[data-feature-photos]');
+    const track = root.querySelector<HTMLElement>('.feature-track');
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-feature-step]');
+    if (!view || !track || !buttons.length || track.children.length < 2) return;
+
+    // The current photo is always the track's first child. Moving on shifts the row, then the
+    // photo that left is moved to the end (or, going back, the last photo is moved to the front),
+    // so the row never runs out and never rewinds. Timings match the CSS on .feature-track.
+    const calm = matchMedia('(prefers-reduced-motion: reduce)');
+    const FADE = 300;
+    const MOVE = 500;
+    const slides = () => [...track.children] as HTMLElement[];
+    const gap = () => slides()[1].offsetLeft - slides()[0].offsetWidth;
+    const inView = (s: HTMLElement, shift: number) => {
+      const left = s.offsetLeft - shift;
+      return left < view.clientWidth && left + s.offsetWidth > 0;
+    };
+    const place = (shift: number) => (track.style.transform = shift ? `translateX(${-shift}px)` : '');
+
+    let steps: number[] = [];
+    const later = (ms: number, fn: () => void) => steps.push(window.setTimeout(fn, ms));
+    let finish = () => {};
+    const settle = () => {
+      steps.forEach((s) => window.clearTimeout(s));
+      steps = [];
+      track.classList.remove('is-moving');
+      finish();
+      finish = () => {};
+      slides().forEach((s) => (s.style.opacity = ''));
+    };
+
+    const forward = () => {
+      const first = slides()[0];
+      const shift = first.offsetWidth + gap();
+      finish = () => {
+        track.append(first);
+        place(0);
+      };
+      if (calm.matches) return settle();
+      slides().forEach((s) => {
+        if (!inView(s, shift) || !inView(s, 0)) s.style.opacity = '0';
+      });
+      later(FADE, () => {
+        track.classList.add('is-moving');
+        place(shift);
+      });
+      later(FADE + MOVE, settle);
+    };
+
+    const back = () => {
+      const last = slides()[slides().length - 1];
+      const shift = last.offsetWidth + gap();
+      if (calm.matches) {
+        track.prepend(last);
+        return;
+      }
+      // Photos that will be pushed out on the right fade first (including the last photo, if
+      // it is showing), then the last photo moves to the front, just out of view on the left.
+      slides().forEach((s) => {
+        if (s === last || s.offsetLeft + shift >= view.clientWidth) s.style.opacity = '0';
+      });
+      later(FADE, () => {
+        track.prepend(last);
+        place(shift);
+        void track.offsetWidth;
+        track.classList.add('is-moving');
+        place(0);
+      });
+      later(FADE + MOVE, settle);
+    };
+
+    const go = (step: number) => {
+      settle();
+      if (step > 0) forward();
+      else back();
+    };
+
+    // Move on every 8s. Paused while the pointer or focus is inside; off for reduced motion.
+    let timer: number | undefined;
+    const stop = () => window.clearInterval(timer);
+    const start = () => {
+      stop();
+      if (calm.matches) return;
+      timer = window.setInterval(() => go(1), 8000);
+    };
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        go(Number(b.dataset.featureStep));
+        start();
+      }),
+    );
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    root.addEventListener('focusin', stop);
+    root.addEventListener('focusout', start);
+    window.addEventListener('resize', settle);
+    start();
+  });
+</script>

@@ -47,6 +47,7 @@
   --head: calc(var(--text) * var(--leading) + var(--s1) * 2 + 1px); /* column label bar and site bar */
   --col-min: 15rem;          /* narrowest a column gets before the row scrolls sideways */
   --journal-min: 13.5rem;    /* journal keeps 3 and 4 columns a bit further as the window shrinks */
+  --journal-min-4: 12rem;     /* narrower before 4 columns drop to 3 */
   --journal-min-3: 10rem;     /* narrower still before 3 columns drop to 2 */
   --info-min: 20rem;         /* the wider first column */
   --stack: 56rem;            /* below this width, columns stack (set in global.css media queries) */

@@ -302,21 +302,36 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   padding-left: var(--bleed, 0px);
 }
 .journal-feature-photo {
-  display: block;
   position: relative;
-  aspect-ratio: 3 / 2;
-  background: var(--tone-gray);
+  overflow: hidden;
   margin-bottom: var(--pad);
+  /* No aspect ratio on the frame. Its height is what a vertical photo takes: one journal
+     column wide, 3 tall to 2 wide. Horizontal photos use that same height. */
+  --col-w: calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols));
+  height: calc(var(--col-w) * 4 / 3);
 }
-.journal-feature-photo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+/* Photos sit in a row on the journal's column grid: a vertical photo is one column wide, a
+   horizontal one two columns (gaps included). The current photo starts at the left edge; the rest
+   follow to its right and are cut off by the frame's hard right edge. The paddles slide the row. */
+.feature-track { display: flex; gap: var(--gap); height: 100%; width: max-content; }
+.feature-track.is-moving { transition: transform 500ms ease-in-out; }
+.feature-track a { transition: opacity 300ms; display: block; flex: none; height: 100%; width: calc(var(--col-w) * 2 + var(--gap)); }
+@media (prefers-reduced-motion: reduce) { .feature-track, .feature-track a { transition: none; } }
+.feature-track a.is-portrait { width: var(--col-w); }
+.feature-track img { display: block; width: 100%; height: 100%; object-fit: cover; max-width: none; }
+.feature-paddles { display: flex; justify-content: flex-end; align-items: flex-start; gap: var(--s3); margin: 0; }
+.feature-paddles button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
+.feature-paddles button:hover:not(:disabled) { text-decoration: underline; text-decoration-thickness: 2px; }
+.feature-paddles button:disabled { color: var(--ink-soft); cursor: default; }
 .journal-feature .caption {
-  grid-template-columns: var(--cap-index) minmax(0, 1fr);
+  grid-template-columns: var(--cap-index) minmax(0, 1fr) var(--cap-index);
   padding-top: var(--pad);
   padding-bottom: var(--pad);
 }
@@ -330,12 +345,13 @@ a:hover, a[aria-current] { text-decoration: underline; text-decoration-thickness
   --col: calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols));
   --thumb: calc((var(--col) - 3 * var(--s2)) / 4);
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* never drop to a second row, even mid-resize while --cols and the packed width disagree */
   gap: var(--s2);
   margin-bottom: var(--s2);
 }
 .post-more .post-photo {
-  flex: none;
+  flex: 0 1 var(--thumb); /* may shrink a hair, never wraps */
+  min-width: 0;
   width: var(--thumb);
   aspect-ratio: 1;
   overflow: hidden;

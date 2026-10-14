@@ -47,7 +47,7 @@ const homepageOrder = () =>
     return Math.min(5, Math.max(1, Math.round(v)));
   });
 
-/** Journal columns 1–3; blank or junk becomes 1 */
+/** Journal size: 1 Small, 2 Medium, 3 Large (Large is 2 columns until the journal has 4+); blank or junk becomes 1 */
 const journalSpan = () =>
   num().transform((v) => {
     const n = v ?? 1;
